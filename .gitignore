@@ -1,0 +1,34 @@
+# 🛑 Archivos generales del sistema y logs
+.DS_Store
+Thumbs.db
+*.log
+*.lock
+*.bak
+*.swp
+npm-debug.log
+yarn-error.log
+
+# 🚀 Laravel (backend/)
+backend/.phpunit.cache
+backend/node_modules/
+backend/public/build
+backend/public/hot
+backend/public/storage
+backend/storage/*.key
+backend/storage/pail
+backend/vendor/
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/.phpactor.json
+backend/.phpunit.result.cache
+backend/Homestead.json
+backend/Homestead.yaml
+backend/auth.json
+backend/.fleet
+backend/.idea
+backend/.nova
+backend/.vscode
+backend/.zed
+
+# ⚡ Angular (Vacío por ahora)

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="Laravel Coding Standards">
+    <description>Configuración personalizada para Laravel</description>
+
+    <!-- Basado en PSR-12 pero con ajustes -->
+    <rule ref="PSR12">
+        <!-- Ignorar errores en imports -->
+        <exclude name="Generic.Formatting.SpaceBeforeCast.NoSpace" />
+    </rule>
+
+    <!-- Ignorar archivos innecesarios -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/storage/*</exclude-pattern>
+    <exclude-pattern>*/bootstrap/*</exclude-pattern>
+    <exclude-pattern>*.blade.php</exclude-pattern>
+
+</ruleset>
