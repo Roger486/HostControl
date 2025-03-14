@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('accommodation_id')->constrained()->onDelete('cascade');
             $table->integer('area_size_m2');
-            $table->boolean('has_electricity');
-            $table->boolean('accepts_caravan');
+            $table->boolean('has_electricity')->default(false);
+            $table->boolean('accepts_caravan')->default(false);
             $table->timestamps();
         });
     }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('price_per_day'); // in centims of € to avoid float errors
             $table->boolean('is_available')->default(false);
             $table->text('comments')->nullable();
-            $table->enum('type', ['camping_spot', 'bungalow', 'room', 'house'])->index(); // index for faster searches
+            $table->enum('type', ['camping_spot', 'bungalow', 'room', 'house']);
             $table->timestamps();
         });
     }
