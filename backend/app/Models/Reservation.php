@@ -2,11 +2,79 @@
 
 namespace App\Models;
 
+use App\Models\Accommodation\Accommodation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reservation extends Model
 {
-    /** @use HasFactory<\Database\Factories\ReservationFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'booked_by_id',
+        'guest_id',
+        'accommodation_id',
+        'check_in_date',
+        'check_out_date',
+        'status',
+        'comments'
+    ];
+
+    protected $casts = [
+        'check_in_date' => 'date',
+        'check_out_date' => 'date',
+        'status' => 'string' // Ensures the Enum `status` is always stored and retrieved as a string
+    ];
+
+    /**
+     * Get the user that booked this reservation.
+     *
+     * A reservation is booked by a user.
+     */
+    public function bookedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'booked_by_id');
+    }
+
+    /**
+     * Get the user that will be staying for this reservation.
+     *
+     * A reservation has a guest user.
+     */
+    public function guest(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'guest_id');
+    }
+
+    /**
+     * Get the accommodation that is linked to this reservation.
+     *
+     * A reservation belongs to an accommodation.
+     */
+    public function accommodation(): BelongsTo
+    {
+        return $this->belongsTo(Accommodation::class, 'accommodation_id');
+    }
+
+    /**
+     * Get all companions linked to this reservation.
+     *
+     * A reservation can have multiple companions.
+     */
+    public function companions(): HasMany
+    {
+        return $this->hasMany(Companion::class, 'reservation_id');
+    }
+
+    /**
+     * Get the Reservation Logs performed on this reservation.
+     *
+     * A reservation has many log entries.
+     */
+    public function reservationLogs(): HasMany
+    {
+        return $this->hasMany(ReservationLog::class, 'reservation_id');
+    }
 }
