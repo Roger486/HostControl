@@ -59,7 +59,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime', // Carbon object
             'birthdate' => 'date', // Carbon object with only the date
             'password' => 'hashed', // Hashes any password when stored (irreversible)
-            'role' => 'string' // Ensures the Enum `role` is always stored and retrieved as a string
+            'role' => 'string', // Ensures the Enum `role` is always stored and retrieved as a string
+            'document_type' => 'string' // Ensures the Enum `document_type` is always stored and retrieved as a string
         ];
     }
 
