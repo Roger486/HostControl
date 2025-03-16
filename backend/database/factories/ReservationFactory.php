@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Accommodation\Accommodation;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,14 @@ class ReservationFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'booked_by_id' => User::inRandomOrder()->first()?->id ?? User::factory()->create()->id,
+            'guest_id' => User::inRandomOrder()->first()?->id ?? User::factory()->create()->id,
+            'accommodation_id' => Accommodation::inRandomOrder()->first()
+                ?->id ?? Accommodation::factory()->create()->id,
+            'check_in_date' => fake()->dateTimeBetween('now', '+1 year'),
+            'check_out_date' => fake()->dateTimeBetween('+2 days', '+1 year +10 days'),
+            'status' => fake()->randomElement(['pending', 'confirmed', 'cancelled']),
+            'comments' => fake()->optional()->text(100),
         ];
     }
 }

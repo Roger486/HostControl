@@ -12,12 +12,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(UserSeeder::class);
-        $this->call(AccommodationSeeder::class);
-        // Subtypes of Accomodation
-        $this->call(CampingSpotSeeder::class);
-        $this->call(BungalowSeeder::class);
-        $this->call(HouseSeeder::class);
-        $this->call(RoomSeeder::class);
+        $this->call([
+            UserSeeder::class,
+            AccommodationSeeder::class,
+            // Subtypes of Accomodation
+            CampingSpotSeeder::class,
+            BungalowSeeder::class,
+            RoomSeeder::class,
+            HouseSeeder::class,
+
+            ReservationSeeder::class
+        ]);
     }
 }
