@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('last_name_1', 100);
             $table->string('last_name_2', 100)->nullable();
             $table->date('birthdate');
+            $table->text('comments')->nullable();
             $table->timestamps();
             //Unique composite key unless no document is provided
             $table->unique(['reservation_id', 'document_number']);
