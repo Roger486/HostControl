@@ -1,0 +1,75 @@
+# 🛑 Archivos generales del sistema y logs
+.DS_Store
+Thumbs.db
+*.log
+*.lock
+*.bak
+*.swp
+npm-debug.log
+yarn-error.log
+
+# 🚀 Laravel (backend/)
+backend/.phpunit.cache
+backend/node_modules/
+backend/public/build
+backend/public/hot
+backend/public/storage
+backend/storage/*.key
+backend/storage/pail
+backend/vendor/
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/.phpactor.json
+backend/.phpunit.result.cache
+backend/Homestead.json
+backend/Homestead.yaml
+backend/auth.json
+backend/.fleet
+backend/.idea
+backend/.nova
+backend/.vscode
+backend/.zed
+
+# ⚡ Angular (Vacío por ahora)
+
+# Compiled output
+frontend/dist
+frontend/tmp
+frontend/out-tsc
+frontend/bazel-out
+
+# Node
+frontend/node_modules
+frontend/npm-debug.log
+frontend/yarn-error.log
+
+# IDEs and editors
+frontend/.idea/
+frontend/.project
+frontend/.classpath
+frontend/.c9/
+frontend/*.launch
+frontend/.settings/
+frontend/*.sublime-workspace
+
+# Visual Studio Code
+frontend/.vscode/*
+frontend/!.vscode/settings.json
+frontend/!.vscode/tasks.json
+frontend/!.vscode/launch.json
+frontend/!.vscode/extensions.json
+frontend/.history/*
+
+# Miscellaneous
+frontend/.angular/cache
+frontend/.sass-cache/
+frontend/connect.lock
+frontend/coverage
+frontend/libpeerconnection.log
+frontend/testem.log
+frontend/typings
+
+# System files
+frontend/.DS_Store
+frontend/Thumbs.db
