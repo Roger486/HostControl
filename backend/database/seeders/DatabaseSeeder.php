@@ -23,7 +23,9 @@ class DatabaseSeeder extends Seeder
             // With users and accommodations we can create reservations
             ReservationSeeder::class,
             // With reservations we can create companions
-            CompanionSeeder::class
+            CompanionSeeder::class,
+            // With admin users and reservations we can create reservation logs
+            ReservationLogSeeder::class
         ]);
     }
 }
