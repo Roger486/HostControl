@@ -16,7 +16,7 @@ class CompanionSeeder extends Seeder
     {
         // Gets all the reservations
         $allReservations = Reservation::with('accommodation')->get();
-        //with('accomodation')->get(); intead of all(); for performance (less DB accesses)
+        //with('accomodation')->get(); instead of all(); for performance (less DB accesses)
 
         // Gives every row a random amount of companions (taking into acount the accomodation capacity)
         $allReservations->each(function ($reservation) {
