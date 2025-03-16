@@ -11,6 +11,7 @@ class CampingSpot extends Model
     use HasFactory;
 
     protected $fillable = [
+        'accommodation_id',
         'area_size_m2',
         'has_electricity',
         'accepts_caravan'

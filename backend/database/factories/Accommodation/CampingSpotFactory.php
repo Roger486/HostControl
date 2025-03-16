@@ -17,7 +17,9 @@ class CampingSpotFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'area_size_m2' => fake()->numberBetween(10, 50),
+            'has_electricity' => fake()->boolean(),
+            'accepts_caravan' => fake()->boolean()
         ];
     }
 }

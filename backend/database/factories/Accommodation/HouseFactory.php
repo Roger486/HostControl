@@ -17,7 +17,9 @@ class HouseFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'bed_amount' => fake()->numberBetween(1, 6),
+            'room_amount' => fake()->numberBetween(1, 4),
+            'has_air_conditioning' => fake()->boolean()
         ];
     }
 }

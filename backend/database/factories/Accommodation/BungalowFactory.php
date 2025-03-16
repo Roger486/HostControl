@@ -17,7 +17,9 @@ class BungalowFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'bed_amount' => fake()->numberBetween(1, 6),
+            'has_air_conditioning' => fake()->boolean(),
+            'has_kitchen' => fake()->boolean()
         ];
     }
 }
