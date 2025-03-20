@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -26,10 +27,10 @@ class UserFactory extends Factory
             'password' => 'password',
             'birthdate' => fake()->date('Y-m-d', '-18 years'),
             'address' => fake()->address(),
-            'document_type' => fake()->randomElement(['DNI', 'NIE', 'Passport']),
-            'document_number' => Str::random(random_int(10, 20)),
+            'document_type' => fake()->randomElement(User::DOCUMENT_TYPES),
+            'document_number' => fake()->bothify('########??'),
             'phone' => fake()->phoneNumber(),
-            'role' => fake()->randomElement(['user', 'admin']),
+            'role' => fake()->randomElement(User::ROLES),
             'comments' => fake()->text(100),
             'remember_token' => Str::random(10),
         ];

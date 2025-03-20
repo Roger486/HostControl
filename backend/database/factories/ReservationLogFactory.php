@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Reservation;
+use App\Models\ReservationLog;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,11 +21,11 @@ class ReservationLogFactory extends Factory
     {
         return [
             // Looks for a random andmin user to asign its id, if none is found, create one
-            'user_id' => User::where('role', 'admin')->inRandomOrder()->first()?->id
-                ?? User::factory()->create(['role' => 'admin'])->id,
+            'user_id' => User::where('role', User::ROLE_ADMIN)->inRandomOrder()->first()?->id
+                ?? User::factory()->create(['role' => User::ROLE_ADMIN])->id,
             //Looks for a random reservation to asign its id, if none is found, create one
             'reservation_id' => Reservation::inRandomOrder()->first()?->id ?? Reservation::factory()->create()->id,
-            'action_type' => fake()->randomElement(['created', 'updated', 'cancelled', 'checked_in', 'checked_out']),
+            'action_type' => fake()->randomElement(ReservationLog::ACTIONS),
             'comments' => fake()->text()
         ];
     }

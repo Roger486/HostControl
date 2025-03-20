@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Accommodation\Accommodation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->integer('price_per_day'); // in centims of € to avoid float errors
             $table->boolean('is_available')->default(false);
             $table->text('comments')->nullable();
-            $table->enum('type', ['CampingSpot', 'Bungalow', 'Room', 'House']);
+            $table->enum('type', Accommodation::TYPES);
             $table->timestamps();
         });
     }

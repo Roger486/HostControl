@@ -10,6 +10,17 @@ class Companion extends Model
 {
     use HasFactory;
 
+    // Document Types
+    public const DOCUMENT_DNI = 'DNI';
+    public const DOCUMENT_NIE = 'NIE';
+    public const DOCUMENT_PASSPORT = 'Passport';
+
+    public const DOCUMENT_TYPES = [
+        self::DOCUMENT_DNI,
+        self::DOCUMENT_NIE,
+        self::DOCUMENT_PASSPORT
+    ];
+
     protected $fillable = [
         'reservation_id',
         'document_number',

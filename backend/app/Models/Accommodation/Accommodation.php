@@ -12,6 +12,19 @@ class Accommodation extends Model
 {
     use HasFactory;
 
+    // Accommodation Types
+    public const TYPE_HOUSE = 'house';
+    public const TYPE_BUNGALOW = 'bungalow';
+    public const TYPE_CAMPING_SPOT = 'camping_spot';
+    public const TYPE_ROOM = 'room';
+
+    public const TYPES = [
+        self::TYPE_HOUSE,
+        self::TYPE_BUNGALOW,
+        self::TYPE_CAMPING_SPOT,
+        self::TYPE_ROOM
+    ];
+
     protected $fillable = [
         'accommodation_code',
         'section',

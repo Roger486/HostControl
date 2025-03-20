@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,10 +22,10 @@ return new class extends Migration
             $table->string('password');
             $table->date('birthdate');
             $table->string('address', 200);
-            $table->enum('document_type', ['DNI', 'NIE', 'Passport'])->default('DNI');
+            $table->enum('document_type', User::DOCUMENT_TYPES)->default(User::DOCUMENT_DNI);
             $table->string('document_number', 20)->unique();
             $table->string('phone', 25);
-            $table->enum('role', ['user', 'admin'])->default('user');
+            $table->enum('role', User::ROLES)->default(User::ROLE_USER);
             $table->text('comments')->nullable();
             $table->rememberToken();
             $table->timestamps();

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Companion;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('reservation_id')->constrained()->onDelete('cascade');
             $table->string('document_number', 20)->nullable();
-            $table->enum('document_type', ['DNI', 'NIE', 'Passport'])->default('DNI');
+            $table->enum('document_type', Companion::DOCUMENT_TYPES)->default(Companion::DOCUMENT_DNI);
             $table->string('first_name', 100);
             $table->string('last_name_1', 100);
             $table->string('last_name_2', 100)->nullable();
