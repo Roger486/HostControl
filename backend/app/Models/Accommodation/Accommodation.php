@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 class Accommodation extends Model
 {
@@ -18,6 +19,9 @@ class Accommodation extends Model
     public const TYPE_CAMPING_SPOT = 'camping_spot';
     public const TYPE_ROOM = 'room';
 
+    /**
+     * All type values should be written in lower_snake_case
+     */
     public const TYPES = [
         self::TYPE_HOUSE,
         self::TYPE_BUNGALOW,
@@ -90,6 +94,20 @@ class Accommodation extends Model
     public function room(): HasOne
     {
         return $this->hasOne(Room::class, 'accommodation_id');
+    }
+
+    /**
+     * Return an array with the name of all relations with the correct lowerCamelCase format.
+     * Since the array TYPES must be written in lower_snake_case,
+     * we apply Str::camel to TYPES through array_map to make the conversion.
+     */
+    public static function withAllRelations()
+    {
+        return array_map([Str::class, 'camel'], self::TYPES);
+        /*
+        This sintax is also valid, but requires manual import of Str
+        array_map('Str::camel', Accommodation::TYPES)
+        */
     }
 
     /**
