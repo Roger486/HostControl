@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->all()); // change all() for validated() when activating validation rules
+        $user = User::create($request->all()); // TODO: change all() for validated() when activating validation rules
 
         return response()->json($user, 201);
     }
