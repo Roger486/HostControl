@@ -12,6 +12,17 @@ class Reservation extends Model
 {
     use HasFactory;
 
+    // Reservation Statuses
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_CONFIRMED = 'confirmed';
+    public const STATUS_CANCELLED = 'cancelled';
+
+    public const STATUSES = [
+        self::STATUS_PENDING,
+        self::STATUS_CONFIRMED,
+        self::STATUS_CANCELLED
+    ];
+
     protected $fillable = [
         'booked_by_id',
         'guest_id',

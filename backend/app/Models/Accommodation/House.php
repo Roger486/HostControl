@@ -11,6 +11,7 @@ class House extends Model
     use HasFactory;
 
     protected $fillable = [
+        'accommodation_id',
         'bed_amount',
         'room_amount',
         'has_air_conditioning'

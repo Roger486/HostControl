@@ -15,7 +15,7 @@ class BungalowSeeder extends Seeder
     public function run(): void
     {
         // Gets all the Accommodations of CampingSpot type without a linked Bungalow
-        $accommodationsWithoutCampingSpot = Accommodation::where('type', 'Bungalow')
+        $accommodationsWithoutCampingSpot = Accommodation::where('type', 'bungalow')
             ->whereDoesntHave('Bungalow')->get();
         // Gives every row a linked Bungalow freshly created
         $accommodationsWithoutCampingSpot->each(function ($accommodation) {

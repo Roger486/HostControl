@@ -15,7 +15,7 @@ class RoomSeeder extends Seeder
     public function run(): void
     {
         // Gets all the Accommodations of CampingSpot type without a linked Room
-        $accommodationsWithoutCampingSpot = Accommodation::where('type', 'Room')
+        $accommodationsWithoutCampingSpot = Accommodation::where('type', 'room')
         ->whereDoesntHave('Room')->get();
         // Gives every row a linked Room freshly created
         $accommodationsWithoutCampingSpot->each(function ($accommodation) {

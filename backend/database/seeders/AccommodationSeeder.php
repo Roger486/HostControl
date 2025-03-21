@@ -13,9 +13,8 @@ class AccommodationSeeder extends Seeder
      */
     public function run(): void
     {
-        Accommodation::factory()->count(10)->create(['type' => 'CampingSpot']);
-        Accommodation::factory()->count(10)->create(['type' => 'Bungalow']);
-        Accommodation::factory()->count(10)->create(['type' => 'Room']);
-        Accommodation::factory()->count(10)->create(['type' => 'House']);
+        foreach (Accommodation::TYPES as $accomodationType) {
+            Accommodation::factory()->count(10)->create(['type' => $accomodationType]);
+        }
     }
 }

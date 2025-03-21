@@ -14,6 +14,26 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
 
+    // Document Types
+    public const DOCUMENT_DNI = 'DNI';
+    public const DOCUMENT_NIE = 'NIE';
+    public const DOCUMENT_PASSPORT = 'Passport';
+
+    public const DOCUMENT_TYPES = [
+        self::DOCUMENT_DNI,
+        self::DOCUMENT_NIE,
+        self::DOCUMENT_PASSPORT
+    ];
+
+    // User Roles
+    public const ROLE_USER = 'user';
+    public const ROLE_ADMIN = 'admin';
+
+    public const ROLES = [
+        self::ROLE_USER,
+        self::ROLE_ADMIN
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
