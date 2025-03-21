@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Accommodation\Accommodation;
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -25,7 +26,7 @@ class ReservationFactory extends Factory
                 ?->id ?? Accommodation::factory()->create()->id,
             'check_in_date' => fake()->dateTimeBetween('now', '+1 year'),
             'check_out_date' => fake()->dateTimeBetween('+2 days', '+1 year +10 days'),
-            'status' => fake()->randomElement(['pending', 'confirmed', 'cancelled']),
+            'status' => fake()->randomElement(Reservation::STATUSES),
             'comments' => fake()->optional()->text(100),
         ];
     }

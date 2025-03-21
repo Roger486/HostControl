@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Companion;
 use App\Models\Reservation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -21,7 +22,7 @@ class CompanionFactory extends Factory
         return [
             'reservation_id' => Reservation::inRandomOrder()->first()?->id ?? Reservation::factory()->create()->id,
             'document_number' => fake()->optional()->bothify('########??'),
-            'document_type' => fake()->randomElement(['DNI', 'NIE', 'Passport']),
+            'document_type' => fake()->randomElement(Companion::DOCUMENT_TYPES),
             'first_name' => fake()->firstName(),
             'last_name_1' => fake()->lastName(),
             'last_name_2' => fake()->optional()->lastName(),
