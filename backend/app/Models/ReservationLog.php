@@ -29,7 +29,7 @@ class ReservationLog extends Model
         'user_id',
         'reservation_id',
         'action_type',
-        'comments'
+        'log_detail'
     ];
 
     protected $casts = [

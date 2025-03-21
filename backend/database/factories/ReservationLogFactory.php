@@ -26,7 +26,7 @@ class ReservationLogFactory extends Factory
             //Looks for a random reservation to asign its id, if none is found, create one
             'reservation_id' => Reservation::inRandomOrder()->first()?->id ?? Reservation::factory()->create()->id,
             'action_type' => fake()->randomElement(ReservationLog::ACTIONS),
-            'comments' => fake()->text()
+            'log_detail' => fake()->text()
         ];
     }
 }

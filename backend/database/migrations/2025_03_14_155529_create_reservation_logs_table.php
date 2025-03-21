@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('reservation_id')->constrained()->onDelete('cascade');
             $table->enum('action_type', ReservationLog::ACTIONS);
-            $table->text('comments')->nullable();
+            $table->text('log_detail')->nullable();
             $table->timestamps();
         });
     }
