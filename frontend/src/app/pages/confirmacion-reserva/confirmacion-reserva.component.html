@@ -1,0 +1,38 @@
+<section *ngIf="alojamiento">
+    <h2>Confirmación de Reserva</h2>
+    <p><strong>Alojamiento:</strong> {{ alojamiento.nombre }}</p>
+  
+    <form [formGroup]="reservaForm">
+      <h3>Acompañantes</h3>
+      <div formArrayName="acompanantes">
+        <div *ngFor="let acomp of acompanantes.controls; let i = index" [formGroupName]="i" style="border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem;">
+          <label>Nombre:</label>
+          <input type="text" formControlName="nombre">
+  
+          <label>Primer apellido:</label>
+          <input type="text" formControlName="papellido">
+  
+          <label>Segundo apellido:</label>
+          <input type="text" formControlName="sapellido">
+  
+          <label>Tipo de documento:</label>
+          <select formControlName="documento">
+            <option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{ tipo | uppercase }}</option>
+          </select>
+
+          <label>Número de documento:</label>
+          <input type="text" formControlName="num_documento">
+  
+          <button type="button" (click)="eliminarAcompanante(i)">Eliminar</button>
+        </div>
+      </div>
+  
+      <button type="button" (click)="agregarAcompanante()">+ Añadir acompañante</button>
+  
+      <h3>Comentarios</h3>
+      <textarea formControlName="comentarios" rows="4" placeholder="Comentarios adicionales..."></textarea>
+  
+      <br><br>
+      <button type="button" (click)="confirmarReserva()">Confirmar Reserva</button>
+    </form>
+  </section>

@@ -1,0 +1,14 @@
+<nav>
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/reserva">Reserva</a>
+
+    <ng-container *ngIf="!usuarioLogueado">
+        <a routerLink="/login">Iniciar sesión</a>
+        <a routerLink="/register">Registrarse</a>
+    </ng-container>
+
+    <ng-container *ngIf="usuarioLogueado">
+        <span>Hola, {{ usuarioLogueado.name }}</span>
+        <button (click)="logout()">Cerrar sesión</button>
+    </ng-container>
+</nav>
