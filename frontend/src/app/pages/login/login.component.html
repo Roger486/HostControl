@@ -1,0 +1,16 @@
+<section>
+  <h2>Iniciar sesión</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <label>Email:</label>
+    <input type="email" formControlName="email">
+
+    <label>Contraseña:</label>
+    <input type="password" formControlName="password">
+
+    <button type="submit">Entrar</button>
+  </form>
+
+  <div *ngIf="loginError" style="color:red; margin-top: 1rem;">
+    Email o contraseña incorrectos.
+  </div>
+</section>

@@ -1,0 +1,28 @@
+.reserva {
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+}
+  
+.formulario-busqueda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+  
+.formulario-busqueda div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+}
+  
+button {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    background-color: #00695c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}

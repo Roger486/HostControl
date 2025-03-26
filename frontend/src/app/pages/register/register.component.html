@@ -1,0 +1,48 @@
+<section>
+  <h2>Registro de usuario</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <label>Nombre:</label>
+    <input type="text" formControlName="name">
+
+    <label>Primer apellido:</label>
+    <input type="text" formControlName="papellido">
+
+    <label>Segundo apellido:</label>
+    <input type="text" formControlName="sapellido">
+
+    <label>Fecha de nacimiento:</label>
+    <input type="date" formControlName="fecha_nacimiento">
+
+    <label>Tipo de documento:</label>
+    <select formControlName="documento">
+      <option value="dni">DNI</option>
+      <option value="nie">NIE</option>
+      <option value="passport">Pasaporte</option>
+    </select>
+
+    <label>Número de documento:</label>
+    <input type="text" formControlName="num_documento">
+
+    <label>Teléfono:</label>
+    <input type="text" formControlName="telefono">
+
+    <label>Dirección:</label>
+    <input type="text" formControlName="direccion">
+
+    <label>Email:</label>
+    <input type="email" formControlName="email">
+
+    <label>Contraseña:</label>
+    <input type="password" formControlName="password1">
+
+    <label>Repetir contraseña:</label>
+    <input type="password" formControlName="password2">
+
+    <div *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.dirty" style="color:red;">
+      Las contraseñas no coinciden.
+    </div>
+
+    <button type="submit">Registrarse</button>
+  </form>
+</section>
