@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 use App\Models\Reservation;
-use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {
@@ -48,6 +47,10 @@ class ReservationController extends Controller
      */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
+
+        $this->authorize('update', $reservation); // use a policy, only por admins
+        // "check /app/Http/Policies" for more info
+
         $reservation->update($request->all());
 
         if ($request->has('companions') && is_array($request->companions)) {

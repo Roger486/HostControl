@@ -427,7 +427,7 @@ See User for booked_by and guest structure.
 
 **Description:** Update a reservation and its companions.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes (admin only)
 
 **Body (JSON):** Same as POST. Sending companions will replace all existing ones.
 
