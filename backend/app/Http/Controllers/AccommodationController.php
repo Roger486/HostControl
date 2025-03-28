@@ -15,7 +15,7 @@ class AccommodationController extends Controller
      */
     public function index()
     {
-        $accommodations = Accommodation::with(Accommodation::withAllRelations())->get();
+        $accommodations = Accommodation::with(Accommodation::withAllRelations())->paginate(10);
         return response()->json($accommodations);
     }
 
