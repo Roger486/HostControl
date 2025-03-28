@@ -7,6 +7,8 @@ If a route needs login, you must send a token in the headers like this:
 Authorization: Bearer <TOKEN>
 ```
 
+Some routes are public, but most require authentication via Laravel Sanctum.
+
 ---
 
 ## 👤 Users
@@ -390,7 +392,7 @@ See User for booked_by and guest structure.
 
 **Description:** Create a new reservation. You must include `companions` if there are any.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
 
 **Body (JSON):**
 ```json
