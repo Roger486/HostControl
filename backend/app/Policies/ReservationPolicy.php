@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Reservation;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ReservationPolicy
 {
@@ -13,7 +12,7 @@ class ReservationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === User::ROLE_ADMIN;
     }
 
     /**
@@ -21,7 +20,9 @@ class ReservationPolicy
      */
     public function view(User $user, Reservation $reservation): bool
     {
-        return false;
+        return $user->role === User::ROLE_ADMIN
+            || $user->id === $reservation->booked_by_id
+            || $user->id === $reservation->guest_id;
     }
 
     /**
@@ -29,7 +30,7 @@ class ReservationPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -45,7 +46,7 @@ class ReservationPolicy
      */
     public function delete(User $user, Reservation $reservation): bool
     {
-        return false;
+        return $user->role === User::ROLE_ADMIN;
     }
 
     /**

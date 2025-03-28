@@ -336,7 +336,9 @@ These endpoints allow you to manage reservations made by users, including their 
 **Description:** Get a paginated list of all reservations with user, accommodation and companion data included.
 See User for booked_by and guest structure.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`viewAny` policy)
 
 **Success response (200):**
 ```json
@@ -379,7 +381,9 @@ See User for booked_by and guest structure.
 
 **Description:** Get full details of a reservation by ID.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins, or users who are `booked_by` or `guest` of the reservation (`view` policy)
 
 **Success response (200):** Same structure as GET all
 
@@ -393,6 +397,8 @@ See User for booked_by and guest structure.
 **Description:** Create a new reservation. You must include `companions` if there are any.
 
 **Auth required:** ✅ Yes
+
+**Authorization:** Any authenticated user
 
 **Body (JSON):**
 ```json
@@ -427,7 +433,9 @@ See User for booked_by and guest structure.
 
 **Description:** Update a reservation and its companions.
 
-**Auth required:** ✅ Yes (admin only)
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy)
 
 **Body (JSON):** Same as POST. Sending companions will replace all existing ones.
 
@@ -441,9 +449,13 @@ See User for booked_by and guest structure.
 
 ### DELETE /api/reservations/{id}
 
+🔒 This endpoint is currently disabled.
+
 **Description:** Delete a reservation and its companions.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy)
 
 **Success response (204):** No content
 

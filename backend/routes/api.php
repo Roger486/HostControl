@@ -25,13 +25,17 @@ Route::delete('/accommodations/{accommodation}', [AccommodationController::class
 
 // RESERVATIONS
 // admin
-Route::middleware('auth:sanctum')->get('/reservations', [ReservationController::class, 'index']);
+Route::middleware('auth:sanctum')
+    ->get('/reservations', [ReservationController::class, 'index']);
 // any login
-Route::middleware('auth:sanctum')->post('/reservations', [ReservationController::class, 'store']);
+Route::middleware('auth:sanctum')
+    ->post('/reservations', [ReservationController::class, 'store']);
  // admin or user that matches (guest_id | booked_by_id)
-Route::middleware('auth:sanctum')->get('/reservations/{reservation}', [ReservationController::class, 'show']);
+Route::middleware('auth:sanctum')
+    ->get('/reservations/{reservation}', [ReservationController::class, 'show']);
 // admin
-Route::middleware('auth:sanctum')->put('/reservations/{reservation}', [ReservationController::class, 'update']);
+Route::middleware('auth:sanctum')
+    ->put('/reservations/{reservation}', [ReservationController::class, 'update']);
 //Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy']);
 
 
