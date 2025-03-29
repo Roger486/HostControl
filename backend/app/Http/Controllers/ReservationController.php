@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 use App\Models\Reservation;
-use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {
@@ -14,6 +13,8 @@ class ReservationController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Reservation::class);
+
         $reservations = Reservation::with('bookedBy', 'guest', 'accommodation', 'companions')->paginate(10);
         return response()->json($reservations, 200);
     }
@@ -23,6 +24,8 @@ class ReservationController extends Controller
      */
     public function store(StoreReservationRequest $request)
     {
+        $this->authorize('create', Reservation::class);
+
         // TODO: change all() for validated() when activating validation rules
         $reservation = Reservation::create($request->all());
 
@@ -40,6 +43,8 @@ class ReservationController extends Controller
      */
     public function show(Reservation $reservation)
     {
+        $this->authorize('view', $reservation);
+
         return response()->json($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']), 200);
     }
 
@@ -48,6 +53,10 @@ class ReservationController extends Controller
      */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
+
+        $this->authorize('update', $reservation); // use a policy, only for admins
+        // "check /app/Http/Policies" for more info
+
         $reservation->update($request->all());
 
         if ($request->has('companions') && is_array($request->companions)) {
@@ -65,6 +74,8 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
+        $this->authorize('delete', $reservation);
+
         $reservation->delete();
         return response()->noContent();
     }

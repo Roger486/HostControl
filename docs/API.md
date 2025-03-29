@@ -7,9 +7,22 @@ If a route needs login, you must send a token in the headers like this:
 Authorization: Bearer <TOKEN>
 ```
 
+Some routes are public, but most require authentication via Laravel Sanctum.
+
+---
+
+## Index
+
+### 👤 Users
+### 🏠 Accommodations
+### 🗓️ Reservations
+### 👮 Auth
+
+---
 ---
 
 ## 👤 Users
+
 
 These endpoints allow you to manage users (create, list, update, delete).
 
@@ -35,7 +48,9 @@ If you send something else, it may fail.
 
 **Description:** Get a paginated list of all users. Testing is recomended to see the different responses and understand it.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`viewAny` policy)
 
 **Success response (200):**
 ```json
@@ -80,7 +95,9 @@ If you send something else, it may fail.
 
 **Description:** Get data for a specific user.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins or the user themselves (`view` policy)
 
 **Success response (200):**
 ```json
@@ -143,7 +160,9 @@ If you send something else, it may fail.
 
 **Description:** Update a user.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins or the user themselves (`update` policy)
 
 **Body (same as POST):** Send only fields you want to update
 
@@ -159,7 +178,9 @@ If you send something else, it may fail.
 
 **Description:** Delete a user.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`delete` policy)
 
 **Success response (204):** No content
 
@@ -252,7 +273,9 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Description:** Create a new accommodation.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`create` policy)
 
 **Body (JSON):**
 ```json
@@ -282,7 +305,9 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Description:** Update general or type-specific fields of an accommodation.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy)
 
 **Body:** Same format as POST (you can send only fields to update)
 
@@ -298,7 +323,9 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Description:** Delete an accommodation and its type-specific record.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`delete` policy)
 
 **Success response (204):** No content
 
@@ -334,7 +361,9 @@ These endpoints allow you to manage reservations made by users, including their 
 **Description:** Get a paginated list of all reservations with user, accommodation and companion data included.
 See User for booked_by and guest structure.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`viewAny` policy)
 
 **Success response (200):**
 ```json
@@ -377,7 +406,9 @@ See User for booked_by and guest structure.
 
 **Description:** Get full details of a reservation by ID.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins, or users who are `booked_by` or `guest` of the reservation (`view` policy)
 
 **Success response (200):** Same structure as GET all
 
@@ -390,7 +421,9 @@ See User for booked_by and guest structure.
 
 **Description:** Create a new reservation. You must include `companions` if there are any.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Any authenticated user
 
 **Body (JSON):**
 ```json
@@ -425,7 +458,9 @@ See User for booked_by and guest structure.
 
 **Description:** Update a reservation and its companions.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy)
 
 **Body (JSON):** Same as POST. Sending companions will replace all existing ones.
 
@@ -439,9 +474,13 @@ See User for booked_by and guest structure.
 
 ### DELETE /api/reservations/{id}
 
+### 🔒 This endpoint is currently disabled.
+
 **Description:** Delete a reservation and its companions.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`delete` policy)
 
 **Success response (204):** No content
 
@@ -449,5 +488,52 @@ See User for booked_by and guest structure.
 - 404: Reservation not found
 
 ---
+
+## 👮 Auth
+
+These endpoints manage user authentication using Laravel Sanctum.
+
+> For protected routes, include your token in the request headers:  
+> `Authorization: Bearer <TOKEN>`
+
+### POST /api/login
+
+**Description:** Log in a user and receive an access token.
+
+**Auth required:** ❌ No
+
+**Body (JSON):**
+```json
+{
+  "email": "user@example.com",
+  "password": "password"
+}
+```
+
+**Success response (200):**
+
+```json
+{
+  "token": "1|XyzAbc123456..."
+}
+```
+
+**Errors:**
+- 401: Invalid credentials
+
+---
+
+### POST /api/logout
+
+**Description:** Log out the current user by revoking their API token.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Self
+
+**Success response (204):** No content
+
+**Errors:**
+- 401: Unauthenticated (if no valid token)
 
 ## 🛠️ More endpoints coming soon...
