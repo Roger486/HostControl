@@ -60,3 +60,6 @@ Route::middleware('auth:sanctum')
 
 // 📖 Public access
 Route::post('/login', [AuthController::class, 'login']);
+// ✅ Matching user (self)
+Route::middleware('auth:sanctum')
+    ->post('/logout', [AuthController::class, 'logout']);

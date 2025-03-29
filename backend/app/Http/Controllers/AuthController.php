@@ -22,4 +22,11 @@ class AuthController extends Controller
             'token' => $user->createToken('default')->plainTextToken
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->noContent();
+    }
 }

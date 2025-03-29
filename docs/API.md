@@ -478,4 +478,51 @@ See User for booked_by and guest structure.
 
 ---
 
+## 👮 Auth
+
+These endpoints manage user authentication using Laravel Sanctum.
+
+> For protected routes, include your token in the request headers:  
+> `Authorization: Bearer <TOKEN>`
+
+### POST /api/login
+
+**Description:** Log in a user and receive an access token.
+
+**Auth required:** ❌ No
+
+**Body (JSON):**
+```json
+{
+  "email": "user@example.com",
+  "password": "password"
+}
+```
+
+**Success response (200):**
+
+```json
+{
+  "token": "1|XyzAbc123456..."
+}
+```
+
+**Errors:**
+- 401: Invalid credentials
+
+---
+
+### POST /api/logout
+
+**Description:** Log out the current user by revoking their API token.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Self
+
+**Success response (204):** No content
+
+**Errors:**
+- 401: Unauthenticated (if no valid token)
+
 ## 🛠️ More endpoints coming soon...
