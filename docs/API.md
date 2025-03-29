@@ -11,7 +11,18 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 
 ---
 
+## Index
+
+### 👤 Users
+### 🏠 Accommodations
+### 🗓️ Reservations
+### 👮 Auth
+
+---
+---
+
 ## 👤 Users
+
 
 These endpoints allow you to manage users (create, list, update, delete).
 
