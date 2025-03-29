@@ -37,7 +37,9 @@ If you send something else, it may fail.
 
 **Description:** Get a paginated list of all users. Testing is recomended to see the different responses and understand it.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`viewAny` policy)
 
 **Success response (200):**
 ```json
@@ -82,7 +84,9 @@ If you send something else, it may fail.
 
 **Description:** Get data for a specific user.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins or the user themselves (`view` policy)
 
 **Success response (200):**
 ```json
@@ -145,7 +149,9 @@ If you send something else, it may fail.
 
 **Description:** Update a user.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins or the user themselves (`update` policy)
 
 **Body (same as POST):** Send only fields you want to update
 
@@ -161,7 +167,9 @@ If you send something else, it may fail.
 
 **Description:** Delete a user.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`delete` policy)
 
 **Success response (204):** No content
 
@@ -254,7 +262,9 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Description:** Create a new accommodation.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`create` policy)
 
 **Body (JSON):**
 ```json
@@ -284,7 +294,9 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Description:** Update general or type-specific fields of an accommodation.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy)
 
 **Body:** Same format as POST (you can send only fields to update)
 
@@ -300,7 +312,9 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Description:** Delete an accommodation and its type-specific record.
 
-**Auth required:** ❌ No
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`delete` policy)
 
 **Success response (204):** No content
 
@@ -449,13 +463,13 @@ See User for booked_by and guest structure.
 
 ### DELETE /api/reservations/{id}
 
-🔒 This endpoint is currently disabled.
+### 🔒 This endpoint is currently disabled.
 
 **Description:** Delete a reservation and its companions.
 
 **Auth required:** ✅ Yes
 
-**Authorization:** Admins only (`update` policy)
+**Authorization:** Admins only (`delete` policy)
 
 **Success response (204):** No content
 
