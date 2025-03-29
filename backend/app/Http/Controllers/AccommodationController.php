@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAccommodationRequest;
 use App\Http\Requests\UpdateAccommodationRequest;
 use App\Models\Accommodation\Accommodation;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class AccommodationController extends Controller
@@ -26,6 +25,7 @@ class AccommodationController extends Controller
     {
         // TODO: error control to avoid wrong or null type before creating Accommodation
 
+        $this->authorize('create', Accommodation::class);
         $accommodation = Accommodation::create($request->only([
             'accommodation_code',
             'section',
@@ -64,6 +64,8 @@ class AccommodationController extends Controller
      */
     public function update(UpdateAccommodationRequest $request, Accommodation $accommodation)
     {
+        $this->authorize('update', $accommodation);
+
         // TODO: error control on type to avoid any modification before updating anything
 
         $accommodation->update($request->only([
@@ -96,6 +98,8 @@ class AccommodationController extends Controller
      */
     public function destroy(Accommodation $accommodation)
     {
+        $this->authorize('delete', $accommodation);
+
         $accommodation->delete();
 
         return response()->noContent();

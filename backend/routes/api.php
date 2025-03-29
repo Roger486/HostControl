@@ -4,39 +4,59 @@ use App\Http\Controllers\AccommodationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// USERS
-Route::get('/users', [UserController::class, 'index']);
+// 👨‍🦰 USERS
+
+// 🛡️ Admin only
+Route::middleware('auth:sanctum')
+    ->get('/users', [UserController::class, 'index']);
+// 📖 Public access
 Route::post('/users', [UserController::class, 'store']);
-Route::get('/users/{user}', [UserController::class, 'show']);
-Route::put('/users/{user}', [UserController::class, 'update']);
-Route::delete('/users/{user}', [UserController::class, 'destroy']);
+// ✅ Admin or matching user (self)
+Route::middleware('auth:sanctum')
+    ->get('/users/{user}', [UserController::class, 'show']);
+// ✅ Admin or matching user (self)
+Route::middleware('auth:sanctum')
+    ->put('/users/{user}', [UserController::class, 'update']);
+// 🛡️ Admin only
+Route::middleware('auth:sanctum')
+    ->delete('/users/{user}', [UserController::class, 'destroy']);
 
-// ACCOMMODATIONS
+// 🏠 ACCOMMODATIONS
+
+// 📖 Public access
 Route::get('/accommodations', [AccommodationController::class, 'index']);
-Route::post('/accommodations', [AccommodationController::class, 'store']);
+// 🛡️ Admin only
+Route::middleware('auth:sanctum')
+    ->post('/accommodations', [AccommodationController::class, 'store']);
+// 📖 Public access
 Route::get('/accommodations/{accommodation}', [AccommodationController::class, 'show']);
-Route::put('/accommodations/{accommodation}', [AccommodationController::class, 'update']);
-Route::delete('/accommodations/{accommodation}', [AccommodationController::class, 'destroy']);
+// 🛡️ Admin only
+Route::middleware('auth:sanctum')
+    ->put('/accommodations/{accommodation}', [AccommodationController::class, 'update']);
+// 🛡️ Admin only
+Route::middleware('auth:sanctum')
+    ->delete('/accommodations/{accommodation}', [AccommodationController::class, 'destroy']);
 
-// RESERVATIONS
-// admin
+// 🗒️ RESERVATIONS
+
+// 🛡️ Admin only
 Route::middleware('auth:sanctum')
     ->get('/reservations', [ReservationController::class, 'index']);
-// any login
+// 🔐 Any logged-in user
 Route::middleware('auth:sanctum')
     ->post('/reservations', [ReservationController::class, 'store']);
- // admin or user that matches (guest_id | booked_by_id)
+// ✅ Admin or matching user (guest_id | booked_by_id)
 Route::middleware('auth:sanctum')
     ->get('/reservations/{reservation}', [ReservationController::class, 'show']);
-// admin
+// 🛡️ Admin only
 Route::middleware('auth:sanctum')
     ->put('/reservations/{reservation}', [ReservationController::class, 'update']);
+// 🛡️ Admin only
 //Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy']);
 
+// 👮 AUTH
 
+// 📖 Public access
 Route::post('/login', [AuthController::class, 'login']);
