@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateAccommodationRequest extends FormRequest
 {
@@ -22,7 +23,15 @@ class UpdateAccommodationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'accommodation_code' => ['sometimes', 'required', 'string', 'max:6',
+                Rule::unique('accommodations', 'accommodation_code')->ignore($this->accommodation->id)
+            ],
+            'section' => ['sometimes', 'required', 'string', 'max:50'],
+            'capacity' => ['sometimes', 'required', 'integer', 'min:1'],
+            'price_per_day' => ['sometimes', 'required', 'integer'], // in € cents
+            'is_available' => ['sometimes', 'boolean'],
+            'comments' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'type' => ['prohibited']
         ];
     }
 }

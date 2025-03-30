@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Accommodation\Accommodation;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreAccommodationRequest extends FormRequest
 {
@@ -22,7 +24,16 @@ class StoreAccommodationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'accommodation_code' => ['required', 'string', 'max:6', 'unique:accommodations,accommodation_code'],
+            'section' => ['required', 'string', 'max:50'],
+            'capacity' => ['required', 'integer', 'min:1'],
+            'price_per_day' => ['required', 'integer'], // in € cents
+            'is_available' => ['boolean'],
+            'comments' => ['nullable', 'string', 'max:255'],
+            'type' => [
+                'required',
+                Rule::in(Accommodation::TYPES)
+            ]
         ];
     }
 }

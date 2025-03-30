@@ -29,6 +29,20 @@ class Accommodation extends Model
         self::TYPE_ROOM
     ];
 
+    /**
+     * Base attributes shared across all accommodation types.
+     * Used to extract common fields during creation or updates.
+     */
+    public const BASE_ATTRIBUTES = [
+        'accommodation_code',
+        'section',
+        'capacity',
+        'price_per_day',
+        'is_available',
+        'comments',
+        'type'
+    ];
+
     protected $fillable = [
         'accommodation_code',
         'section',
