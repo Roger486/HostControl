@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -22,7 +24,35 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'first_name' => ['sometimes', 'required', 'string', 'max:100'],
+            'last_name_1' => ['sometimes', 'required', 'string', 'max:100'],
+            'last_name_2' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'email' => [
+                'sometimes', 'required', 'email', 'max:255',
+                Rule::unique('users', 'email')->ignore($this->user->id)
+            ],
+            'password' => ['sometimes', 'required', 'string', 'min:4', 'max:100'],
+            'birthdate' => ['sometimes', 'required', 'date', 'before:today'],
+            'address' => ['sometimes', 'required', 'string', 'min:10', 'max:255'],
+            // TODO: In withValidator() → if document_type changes, require document_number as well
+            // TODO: Validate document_number format depending on document_type (DNI, NIE, PASSPORT)
+            'document_type' => ['sometimes', 'required', Rule::in(User::DOCUMENT_TYPES)],
+            'document_number' => [
+                'sometimes', 'required', 'string', 'max:20',
+                Rule::unique('users', 'document_number')->ignore($this->user->id)
+            ],
+            'phone' => ['sometimes', 'required', 'regex:/^\+?[0-9\s\-]{7,20}$/'],
+            // TODO: role management handled via dedicated admin route/controller
+            //'role' => ['sometimes', 'nullable', Rule::in(User::ROLES)],
+            'comments' => ['sometimes', 'nullable', 'string', 'max:255']
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'phone.regex' => 'Phone number may start with +, must be 7 to 20 characters long and '
+                . 'can include digits(0-9), spaces( ), or hyphens(-).',
         ];
     }
 }

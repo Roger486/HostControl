@@ -152,7 +152,31 @@ If you send something else, it may fail.
 **Success response (201):** Returns created user (excluding hidden fields like password)
 
 **Errors:**
-- 422: Missing required fields or email/document already in use
+- 422: Missing required fields, wrong format or email/document already in use
+
+**Error Response example:**
+```json
+{
+  "message": "The first name field is required. (and 4 more errors)",
+  "errors": {
+    "first_name": [
+      "The first name field is required."
+    ],
+    "email": [
+      "The email has already been taken."
+    ],
+    "birthdate": [
+      "The birthdate field must be a valid date."
+    ],
+    "document_number": [
+      "The document number has already been taken."
+    ],
+    "phone": [
+      "Phone number can start with +, must be 7 to 20 characters long and can include digits(0-9), spaces( ), or hyphens(-)."
+    ]
+  }
+}
+```
 
 ---
 
@@ -172,6 +196,20 @@ If you send something else, it may fail.
 - 404: User not found
 - 422: Validation error
 
+**Error Response example:**
+```json
+{
+  "message": "The last name 1 field is required. (and 1 more error)",
+  "errors": {
+    "last_name_1": [
+      "The last name 1 field is required."
+    ],
+    "email": [
+      "The email field must be a valid email address."
+    ]
+  }
+}
+```
 ---
 
 ### DELETE /api/users/{id}
