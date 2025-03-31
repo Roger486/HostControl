@@ -335,7 +335,6 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Errors:**
 - 422: Missing or wrong fields
-- 500: Wrong type class (not yet validated in controller)
 
 ---
 
@@ -347,7 +346,7 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Authorization:** Admins only (`update` policy)
 
-**Body:** Same format as POST (you can send only fields to update)
+**Body:** Same format as POST (you can send only fields to update - type prohibited)
 
 **Success response (200):** Updated accommodation with details
 
