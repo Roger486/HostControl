@@ -8,6 +8,7 @@ use App\Models\Accommodation\Accommodation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class AccommodationController extends Controller
 {
@@ -28,15 +29,26 @@ class AccommodationController extends Controller
 
         $this->authorize('create', Accommodation::class);
 
+        // stores the validated Accomodation fields
         $validated = $request->validated();
 
+        // Transforms the type into UpperCamelCase to match the class format and stores the class as string
+        $accommodationTypeClass = 'App\\Models\\Accommodation\\' . Str::studly($validated['type']);
+
+        // Get subtype-specific validation rules via HasDynamicValidation interface
+        // Validator::make(...) creates a new validation instance
+        // ->validate() executes it and throws a ValidationException on failure
+        // Laravel automatically captures the exception and returns a 422 response with the error messages
+        $subClassValidator = Validator::make($request->all(), $accommodationTypeClass::rules());
+        $subClassValidator->validate();
+
+        // Add validated fields from the subclass
+        $validated = array_merge($validated, $subClassValidator->validated());
+
         // start a transaction in case the subclass creation fails
-        $accommodation = DB::transaction(function () use ($validated) {
+        $accommodation = DB::transaction(function () use ($validated, $accommodationTypeClass) {
             // Get only the base accommodation attributes that are validated and create an Accommodation
             $accommodation = Accommodation::create(Arr::only($validated, Accommodation::BASE_ATTRIBUTES));
-
-            // Transforms the type into UpperCamelCase to match the class format and stores the class as string
-            $accommodationTypeClass = 'App\\Models\\Accommodation\\' . Str::studly($validated['type']);
 
             // get subtype attributes
             $subclassData = Arr::except($validated, Accommodation::BASE_ATTRIBUTES);
@@ -65,15 +77,26 @@ class AccommodationController extends Controller
     {
         $this->authorize('update', $accommodation);
 
+        // stores the validated Accomodation fields
         $validated = $request->validated();
+
+        // Transforms the type into UpperCamelCase to match the class format and stores the class as string
+        $accommodationTypeClass = 'App\\Models\\Accommodation\\' . Str::studly($accommodation->type);
+
+        // Get subtype-specific validation rules via HasDynamicValidation interface
+        // Validator::make(...) creates a new validation instance
+        // ->validate() executes it and throws a ValidationException on failure
+        // Laravel automatically captures the exception and returns a 422 response with the error messages
+        $subClassValidator = Validator::make($request->all(), $accommodationTypeClass::rules('update'));
+        $subClassValidator->validate();
+
+        // Add validated fields from the subclass
+        $validated = array_merge($validated, $subClassValidator->validated());
 
         // start a transaction in case the subclass update fails
         $updated = DB::transaction(function () use ($validated, $accommodation) {
             // Get only the base accommodation attributes that are validated and update Accommodation
             $accommodation->update(Arr::only($validated, Accommodation::BASE_ATTRIBUTES));
-
-            // Transforms the type into UpperCamelCase to match the class format and stores the class as string
-            $accommodationTypeClass = 'App\\Models\\Accommodation\\' . Str::studly($accommodation->type);
 
             // get subtype attributes
             $subclassData = Arr::except($validated, Accommodation::BASE_ATTRIBUTES);
@@ -87,7 +110,7 @@ class AccommodationController extends Controller
             return $accommodation;
         });
 
-        return response()->json($accommodation->load(Accommodation::withAllRelations()), 200);
+        return response()->json($updated->load(Accommodation::withAllRelations()), 200);
     }
 
     /**
