@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 use App\Models\Reservation;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class ReservationController extends Controller
 {
@@ -26,14 +28,20 @@ class ReservationController extends Controller
     {
         $this->authorize('create', Reservation::class);
 
-        // TODO: change all() for validated() when activating validation rules
-        $reservation = Reservation::create($request->all());
+        $validated = $request->validated();
 
-        if ($request->has('companions') && is_array($request->companions)) {
-            foreach ($request->companions as $companionData) {
-                $reservation->companions()->create($companionData);
+        $reservation = DB::transaction(function () use ($validated) {
+
+            $reservation = Reservation::create(Arr::except($validated, ['companions']));
+
+            if (isset($validated['companions']) && is_array($validated['companions'])) {
+                foreach ($validated['companions'] as $companionData) {
+                    $reservation->companions()->create($companionData);
+                }
             }
-        }
+
+            return $reservation;
+        });
 
         return response()->json($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']), 201);
     }
