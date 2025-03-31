@@ -21,12 +21,12 @@ export const routes: Routes = [
             { path: 'reserva', component: ReservaComponent }, // Ruta a reserva
             { path: 'confirmacion', component: ConfirmacionReservaComponent }, // Ruta a confirmacion-reserva
             { path: 'reserva-confirmada', component: ReservaConfirmadaComponent }, // Ruta a reserva-confirmada  
-            {path: 'registro-confirmado', component: RegistroConfirmadoComponent} // Ruta a registro-confirmado
+            { path: 'registro-confirmado', component: RegistroConfirmadoComponent} // Ruta a registro-confirmado
             
         ]
         },
         {
-            path: '***',
+            path: '**',
             redirectTo: ''
         }
 
