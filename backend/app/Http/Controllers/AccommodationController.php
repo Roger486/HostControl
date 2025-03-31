@@ -8,6 +8,7 @@ use App\Models\Accommodation\Accommodation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class AccommodationController extends Controller
 {
@@ -29,14 +30,19 @@ class AccommodationController extends Controller
         $this->authorize('create', Accommodation::class);
 
         $validated = $request->validated();
+        // Transforms the type into UpperCamelCase to match the class format and stores the class as string
+        $accommodationTypeClass = 'App\\Models\\Accommodation\\' . Str::studly($validated['type']);
+
+        // $accommodationTypeClass::rules() is the method from the HasDynamicValidation interface
+        $subClassValidator = Validator::make($request->all(), $accommodationTypeClass::rules());
+        $subClassValidator->validate();
+        // Add validated fields from the subclass
+        $validated = array_merge($validated, $subClassValidator->validated());
 
         // start a transaction in case the subclass creation fails
-        $accommodation = DB::transaction(function () use ($validated) {
+        $accommodation = DB::transaction(function () use ($validated, $accommodationTypeClass) {
             // Get only the base accommodation attributes that are validated and create an Accommodation
             $accommodation = Accommodation::create(Arr::only($validated, Accommodation::BASE_ATTRIBUTES));
-
-            // Transforms the type into UpperCamelCase to match the class format and stores the class as string
-            $accommodationTypeClass = 'App\\Models\\Accommodation\\' . Str::studly($validated['type']);
 
             // get subtype attributes
             $subclassData = Arr::except($validated, Accommodation::BASE_ATTRIBUTES);
