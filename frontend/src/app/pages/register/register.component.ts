@@ -19,7 +19,7 @@ export class RegisterComponent {
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
       papellido: ['', Validators.required],
-      sapellido: ['',],
+      sapellido: [''],
       fecha_nacimiento: ['', Validators.required],
       documento: ['dni', Validators.required],
       num_documento: ['', Validators.required],
@@ -45,7 +45,7 @@ export class RegisterComponent {
       const datos = {
         first_name: form.name,
         last_name_1: form.papellido,
-        last_name_2: form.sapellido || null,
+        last_name_2: form.sapellido || '',
         email: form.email,
         password: form.password1,
         birthdate: form.fecha_nacimiento,
@@ -53,7 +53,7 @@ export class RegisterComponent {
         document_type: form.documento.toUpperCase(), // DNI, NIE, PASSPORT
         document_number: form.num_documento,
         phone: form.telefono,
-        comments: null // o algún campo si quieres
+        comments: null // Comentario opcional
       };
   
       this.auth.registrarUsuario(datos).subscribe({
