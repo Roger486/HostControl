@@ -21,6 +21,14 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/logout`, {});
+    // Obtenemos el token del usuario almacenado en el localStorage
+    const token = localStorage.getItem('authToken');
+    // Realizamos peticion POST a backend para cerrar sesion
+    // Enviamos el token en la cabecera 'Authorization' como pide Laravel Sanctum
+    return this.http.post(`${this.apiUrl}/logout`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}` // Token para identificar sesion activa
+      }
+    });
   }
 }

@@ -1,14 +1,16 @@
 <nav>
     <a routerLink="/">Inicio</a>
     <a routerLink="/reserva">Reserva</a>
-
-    <ng-container *ngIf="!usuarioLogueado">
-        <a routerLink="/login">Iniciar sesión</a>
-        <a routerLink="/register">Registrarse</a>
-    </ng-container>
-
-    <ng-container *ngIf="usuarioLogueado">
-        <span>Hola, {{ usuarioLogueado.name }}</span>
+    <!-- Si hay un usuario logueado -->
+    <ng-container *ngIf="usuarioLogueado; else noLogueado">
+        <!-- Muestra usuario logueado -->
+        <span>Bienvenido, {{ usuarioLogueado.email }}</span>
+        <!-- Botón logout -->
         <button (click)="logout()">Cerrar sesión</button>
     </ng-container>
+    <!-- Si no hay usuario logueado -->
+    <ng-template #noLogueado>
+        <a routerLink="/login">Login</a>
+        <a routerLink="/register">Registro</a>
+    </ng-template>
 </nav>
