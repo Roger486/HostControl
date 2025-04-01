@@ -23,7 +23,9 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->all()); // TODO: change all() for validated() when activating validation rules
+        // with validated(), only the fields that pass validation in StoreUserRequest are passed
+        // this avoid malicious users sending a json to create an admin role user creation
+        $user = User::create($request->validated());
 
         return response()->json($user, 201);
     }
@@ -62,7 +64,7 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $this->authorize('update', $user);
-        $user->update($request->all());
+        $user->update($request->validated());
         return response()->json($user, 200);
     }
 

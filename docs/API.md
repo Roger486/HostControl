@@ -152,7 +152,31 @@ If you send something else, it may fail.
 **Success response (201):** Returns created user (excluding hidden fields like password)
 
 **Errors:**
-- 422: Missing required fields or email/document already in use
+- 422: Missing required fields, wrong format or email/document already in use
+
+**Error Response example:**
+```json
+{
+  "message": "The first name field is required. (and 4 more errors)",
+  "errors": {
+    "first_name": [
+      "The first name field is required."
+    ],
+    "email": [
+      "The email has already been taken."
+    ],
+    "birthdate": [
+      "The birthdate field must be a valid date."
+    ],
+    "document_number": [
+      "The document number has already been taken."
+    ],
+    "phone": [
+      "Phone number can start with +, must be 7 to 20 characters long and can include digits(0-9), spaces( ), or hyphens(-)."
+    ]
+  }
+}
+```
 
 ---
 
@@ -172,6 +196,20 @@ If you send something else, it may fail.
 - 404: User not found
 - 422: Validation error
 
+**Error Response example:**
+```json
+{
+  "message": "The last name 1 field is required. (and 1 more error)",
+  "errors": {
+    "last_name_1": [
+      "The last name 1 field is required."
+    ],
+    "email": [
+      "The email field must be a valid email address."
+    ]
+  }
+}
+```
 ---
 
 ### DELETE /api/users/{id}
@@ -297,7 +335,6 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Errors:**
 - 422: Missing or wrong fields
-- 500: Wrong type class (not yet validated in controller)
 
 ---
 
@@ -309,7 +346,7 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Authorization:** Admins only (`update` policy)
 
-**Body:** Same format as POST (you can send only fields to update)
+**Body:** Same format as POST (you can send only fields to update - type prohibited)
 
 **Success response (200):** Updated accommodation with details
 
