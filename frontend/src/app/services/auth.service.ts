@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -9,14 +9,35 @@ import { environment } from '../../environments/environment';
 export class AuthService {
   private apiUrl = environment.apiUrl;
 
+  // BehaviorSubject almacena el estado del usuario
+  private usuarioLogueadoSubject = new BehaviorSubject<any>(this.getUsuarioActual());
+
+  // Observable que pueden escuchar otros componentes
+  usuarioLogueado$ = this.usuarioLogueadoSubject.asObservable();
+
   constructor(private http: HttpClient) { }
-    
+  
+  //obtener susuario desde Localstorage al iniciar
+  private getUsuarioActual() {
+    const data = localStorage.getItem('usuarioLogueado');
+    return data ? JSON.parse(data) : null;
+  }
+  
   registrarUsuario(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/users`, data);
   }
 
   login(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, data);
+    return this.http.post(`${this.apiUrl}/login`, data).pipe(
+      tap((res: any) => {
+        // Guardamos el token recibido y el usuario
+        localStorage.setItem('authToken', res.token);
+        localStorage.setItem('usuarioLogueado', JSON.stringify({ email: data.email }));
+  
+        // Notificamos al resto de la app que hay un usuario logueado
+        this.usuarioLogueadoSubject.next({ email: data.email });
+      })
+    );
 
   }
 
@@ -29,6 +50,14 @@ export class AuthService {
       headers: {
         Authorization: `Bearer ${token}` // Token para identificar sesion activa
       }
-    });
+    }).pipe(
+      tap(() => {
+        // Limpiamos el localstorage al finalizar sesion
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('usuarioLogueado');
+        // Emitimoos null para avisar que no hay usuario 
+        this.usuarioLogueadoSubject.next(null);
+      })
+    );
   }
 }

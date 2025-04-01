@@ -14,11 +14,11 @@ export class HeaderComponent {
   usuarioLogueado: any = null;
 
   constructor(private auth: AuthService, private router: Router) {
-    // Obtenemos el usuario logueado del localStorage al cargar el componente
-    const stored = localStorage.getItem('usuarioLogueado');
-    // Al cargar el componente comprobamos si hay usuario logueado
-    // Esto nos permite mostrar "cerrar sesion" y ocultar "login" en el header
-    this.usuarioLogueado = stored ? JSON.parse(stored) : null;
+    
+    // Nos suscribimos a los cambios del usuario logueado
+    this.auth.usuarioLogueado$.subscribe((usuario) => {
+      this.usuarioLogueado = usuario;
+    });
   }
   
   logout() {
