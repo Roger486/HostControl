@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Validation\DocumentValidator;
 use App\Validation\RegexRules;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -35,11 +37,9 @@ class UpdateUserRequest extends FormRequest
             'password' => ['sometimes', 'required', 'string', 'min:4', 'max:100'],
             'birthdate' => ['sometimes', 'required', 'date_format:Y-m-d', 'date', 'before:today'],
             'address' => ['sometimes', 'required', 'string', 'min:10', 'max:255'],
-            // TODO: In withValidator() → if document_type changes, require document_number as well
-            // TODO: Validate document_number format depending on document_type (DNI, NIE, PASSPORT)
             'document_type' => ['sometimes', 'required', Rule::in(User::DOCUMENT_TYPES)],
             'document_number' => [
-                'sometimes', 'required', 'string', 'max:20',
+                'sometimes', 'required_with:document_type', 'string', 'max:20',
                 Rule::unique('users', 'document_number')->ignore($this->user->id)
             ],
             'phone' => ['sometimes', 'required', 'regex:' . RegexRules::phone()],
@@ -47,5 +47,21 @@ class UpdateUserRequest extends FormRequest
             //'role' => ['sometimes', 'nullable', Rule::in(User::ROLES)],
             'comments' => ['sometimes', 'nullable', 'string', 'max:255']
         ];
+    }
+
+    public function withValidator(Validator $validator)
+    {
+        $validator->after(function (Validator $validator) {
+            $type = $this->input('document_type');
+            $documentNumber = $this->input('document_number');
+
+            if (!$type || !$documentNumber) {
+                return;
+            }
+
+            if ($errorMessage = DocumentValidator::validate($type, $documentNumber)) {
+                $validator->errors()->add('document_number', $errorMessage);
+            }
+        });
     }
 }
