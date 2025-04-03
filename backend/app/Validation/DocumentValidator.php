@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 class DocumentValidator
 {
     // TODO: include oficial document validation in the future
-    public static function validate(string $type, string $document): array
+    public static function validate(string $type, string $document): ?string
     {
 
         switch ($type) {
@@ -33,8 +33,8 @@ class DocumentValidator
             ['document' => $rules]
         );
 
-        return $validator->fails() ?
-            $validator->errors()->get('document')
-            : [];
+        return $validator->fails()
+            ? $validator->errors()->first('document')
+            : null;
     }
 }
