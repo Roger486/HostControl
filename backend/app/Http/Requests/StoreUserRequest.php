@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Validation\DocumentValidator;
 use App\Validation\RegexRules;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -40,5 +42,17 @@ class StoreUserRequest extends FormRequest
             //'role' => ['nullable', Rule::in(User::ROLES)],
             'comments' => ['nullable', 'string', 'max:255']
         ];
+    }
+
+    public function withValidator(Validator $validator)
+    {
+        $validator->after(function (Validator $validator) {
+            $type = $this->input('document_type');
+            $documentNumber = $this->input('document_number');
+
+            if ($errorMessage = DocumentValidator::validate($type, $documentNumber)) {
+                $validator->errors()->add('document_number', $errorMessage);
+            }
+        });
     }
 }
