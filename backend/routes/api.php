@@ -22,6 +22,9 @@ Route::middleware('auth:sanctum')
 // 🛡️ Admin only
 Route::middleware('auth:sanctum')
     ->delete('/users/{user}', [UserController::class, 'destroy']);
+// 🔐 Any logged-in user
+Route::middleware('auth:sanctum')
+    ->get('/user', [UserController::class, 'me']);
 
 // 🏠 ACCOMMODATIONS
 
