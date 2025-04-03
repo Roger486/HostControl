@@ -48,12 +48,4 @@ class UpdateUserRequest extends FormRequest
             'comments' => ['sometimes', 'nullable', 'string', 'max:255']
         ];
     }
-
-    public function messages(): array
-    {
-        return [
-            'phone.regex' => 'Phone number may start with +, must be 7 to 20 characters long and '
-                . 'can include digits(0-9), spaces( ), or hyphens(-).',
-        ];
-    }
 }
