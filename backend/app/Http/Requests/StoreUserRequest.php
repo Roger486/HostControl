@@ -29,7 +29,7 @@ class StoreUserRequest extends FormRequest
             'last_name_2' => ['nullable', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:4', 'max:100'],
-            'birthdate' => ['required', 'date', 'before:today'],
+            'birthdate' => ['required', 'date', 'date_format:Y-m-d', 'before:today'],
             'address' => ['required', 'string', 'min:10', 'max:255'],
             'document_type' => ['required', Rule::in(User::DOCUMENT_TYPES)],
             // TODO: document_number -> withValidator() -> depends on document_type
