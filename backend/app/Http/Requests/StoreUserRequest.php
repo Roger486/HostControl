@@ -35,7 +35,6 @@ class StoreUserRequest extends FormRequest
             'birthdate' => ['required', 'date', 'date_format:Y-m-d', 'before:today'],
             'address' => ['required', 'string', 'min:10', 'max:255'],
             'document_type' => ['required', Rule::in(User::DOCUMENT_TYPES)],
-            // TODO: document_number -> withValidator() -> depends on document_type
             'document_number' => ['required', 'string', 'max:20', 'unique:users,document_number'],
             'phone' => ['required', 'regex:' . RegexRules::phone()],
             // TODO: role management handled via dedicated admin route/controller
