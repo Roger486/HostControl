@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Validation\RegexRules;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -41,7 +42,7 @@ class UpdateUserRequest extends FormRequest
                 'sometimes', 'required', 'string', 'max:20',
                 Rule::unique('users', 'document_number')->ignore($this->user->id)
             ],
-            'phone' => ['sometimes', 'required', 'regex:/^\+?[0-9\s\-]{7,20}$/'],
+            'phone' => ['sometimes', 'required', 'regex:' . RegexRules::phone()],
             // TODO: role management handled via dedicated admin route/controller
             //'role' => ['sometimes', 'nullable', Rule::in(User::ROLES)],
             'comments' => ['sometimes', 'nullable', 'string', 'max:255']

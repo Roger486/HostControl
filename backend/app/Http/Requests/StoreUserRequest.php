@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Validation\RegexRules;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -34,7 +35,7 @@ class StoreUserRequest extends FormRequest
             'document_type' => ['required', Rule::in(User::DOCUMENT_TYPES)],
             // TODO: document_number -> withValidator() -> depends on document_type
             'document_number' => ['required', 'string', 'max:20', 'unique:users,document_number'],
-            'phone' => ['required', 'regex:/^\+?[0-9\s\-]{7,20}$/'],
+            'phone' => ['required', 'regex:' . RegexRules::phone()],
             // TODO: role management handled via dedicated admin route/controller
             //'role' => ['nullable', Rule::in(User::ROLES)],
             'comments' => ['nullable', 'string', 'max:255']

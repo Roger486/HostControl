@@ -13,6 +13,7 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 
 ## Index
 
+### 🆎 Important info
 ### 👤 Users
 ### 🏠 Accommodations
 ### 🗓️ Reservations
@@ -20,6 +21,19 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 
 ---
 ---
+
+## 🆎 Important info
+
+### 📌 Regular Expressions used in validation
+
+| Field      | Regex Pattern                                               | Description                          |
+|------------|-------------------------------------------------------------|--------------------------------------|
+| `DNI`      | `/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]$/`                    | 8 digits followed by a capital letter |
+| `NIE`      | `/^[XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKET]$/`               | Starts with X, Y, or Z + 7 digits + letter |
+| `Passport` | `/^[A-Z0-9]{5,20}$/`                                        | Alphanumeric, 5 to 20 characters      |
+| `Phone`    | `/^\+?[0-9\s\-]{7,20}$/`                                    | Digits, spaces or hyphens, optional `+` |
+
+> These are **api validation formats**. If frontend needs stricter pre-validation, use these as a base.
 
 ## 👤 Users
 
@@ -459,6 +473,7 @@ See User for booked_by and guest structure.
           "first_name": "Eva",
           "last_name_1": "Lopez",
           "document_type": "DNI",
+          "document_number": "12345678A",
           "birthdate": "1999-04-12"
         }
       ]
@@ -510,6 +525,7 @@ See User for booked_by and guest structure.
       "first_name": "Eva",
       "last_name_1": "Lopez",
       "document_type": "DNI",
+      "document_number": "12345678A",
       "birthdate": "1999-04-12"
     }
   ]
