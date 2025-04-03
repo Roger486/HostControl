@@ -227,6 +227,39 @@ If you send something else, it may fail.
 
 ---
 
+### GET /api/user
+
+**Description:** Update a user.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** The authenticated user only
+
+**Success response (200):** 
+```json
+{
+  "id": 1,
+  "first_name": "John",
+  "last_name_1": "Doe",
+  "last_name_2": "Smith",
+  "email": "john@example.com",
+  "email_verified_at": "2025-03-21T12:20:02.000000Z",
+  "birthdate": "1990-01-01",
+  "address": "123 Main St",
+  "document_type": "DNI",
+  "document_number": "12345678A",
+  "phone": "+34123456789",
+  "role": "user",
+  "comments": null,
+  "created_at": "2025-03-25T12:00:00.000000Z",
+  "updated_at": "2025-03-25T12:00:00.000000Z"
+}
+```
+
+**Errors:**
+- 401: Unauthenticated (if token is missing or invalid)
+---
+
 ## 🏠 Accommodations
 
 These endpoints allow you to manage all types of accommodations (houses, bungalows, rooms, camping spots).

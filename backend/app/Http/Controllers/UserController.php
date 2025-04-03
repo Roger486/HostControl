@@ -78,4 +78,9 @@ class UserController extends Controller
         return response()->noContent();
         // same as using response()->json([], 204);
     }
+
+    public function me(Request $request)
+    {
+        return response()->json($request->user(), 200);
+    }
 }

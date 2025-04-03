@@ -41,7 +41,7 @@ class StoreReservationRequest extends FormRequest
             'companions.*.first_name' => ['required', 'string', 'max:100'],
             'companions.*.last_name_1' => ['required', 'string', 'max:100'],
             'companions.*.last_name_2' => ['nullable', 'string', 'max:100'],
-            'companions.*.birthdate' => ['required', 'date', 'before:today']
+            'companions.*.birthdate' => ['required', 'date', 'date_format:Y-m-d', 'before:today']
         ];
     }
 }

@@ -32,7 +32,7 @@ class UpdateUserRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($this->user->id)
             ],
             'password' => ['sometimes', 'required', 'string', 'min:4', 'max:100'],
-            'birthdate' => ['sometimes', 'required', 'date', 'before:today'],
+            'birthdate' => ['sometimes', 'required', 'date_format:Y-m-d', 'date', 'before:today'],
             'address' => ['sometimes', 'required', 'string', 'min:10', 'max:255'],
             // TODO: In withValidator() → if document_type changes, require document_number as well
             // TODO: Validate document_number format depending on document_type (DNI, NIE, PASSPORT)
