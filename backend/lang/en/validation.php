@@ -175,8 +175,12 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'companions' => [
+            '*' => [
+                'document_number' => [
+                    'required_for_adults' => 'Document type and number are required for adults.',
+                ],
+            ],
         ],
     ],
 
