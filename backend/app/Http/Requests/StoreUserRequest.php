@@ -49,6 +49,10 @@ class StoreUserRequest extends FormRequest
             $type = $this->input('document_type');
             $documentNumber = $this->input('document_number');
 
+            if (!$type || !$documentNumber) {
+                return;
+            }
+
             if ($errorMessage = DocumentValidator::validate($type, $documentNumber)) {
                 $validator->errors()->add('document_number', $errorMessage);
             }

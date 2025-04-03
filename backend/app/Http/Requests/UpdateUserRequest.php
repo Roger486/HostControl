@@ -37,9 +37,9 @@ class UpdateUserRequest extends FormRequest
             'password' => ['sometimes', 'required', 'string', 'min:4', 'max:100'],
             'birthdate' => ['sometimes', 'required', 'date_format:Y-m-d', 'date', 'before:today'],
             'address' => ['sometimes', 'required', 'string', 'min:10', 'max:255'],
-            'document_type' => ['sometimes', 'required', Rule::in(User::DOCUMENT_TYPES)],
+            'document_type' => ['required_with:document_number', Rule::in(User::DOCUMENT_TYPES)],
             'document_number' => [
-                'sometimes', 'required_with:document_type', 'string', 'max:20',
+                'required_with:document_type', 'string', 'max:20',
                 Rule::unique('users', 'document_number')->ignore($this->user->id)
             ],
             'phone' => ['sometimes', 'required', 'regex:' . RegexRules::phone()],
