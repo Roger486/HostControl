@@ -3,6 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Models\Companion;
+use App\Models\User;
+use App\Validation\CompanionValidator;
+use App\Validation\DocumentValidator;
+use Carbon\Carbon;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -34,14 +39,31 @@ class StoreReservationRequest extends FormRequest
 
             // Companions validation rules
             'companions' => ['sometimes', 'array'],
-            'companions.*.document_type' => [Rule::in(Companion::DOCUMENT_TYPES)],
-            // TODO: document_number -> withValidator() -> depends on document_type
-            'companions.*.document_number' => ['string', 'max:20'],
-            // TODO: avoid repeated document_number on same reservation or like guest_id
+            'companions.*.document_type' => ['sometimes', 'required', Rule::in(Companion::DOCUMENT_TYPES)],
+            'companions.*.document_number' => ['sometimes', 'required','string', 'max:20'],
             'companions.*.first_name' => ['required', 'string', 'max:100'],
             'companions.*.last_name_1' => ['required', 'string', 'max:100'],
             'companions.*.last_name_2' => ['nullable', 'string', 'max:100'],
             'companions.*.birthdate' => ['required', 'date', 'date_format:Y-m-d', 'before:today']
         ];
+    }
+
+    public function withValidator(Validator $validator)
+    {
+        // Validations after rules
+        $validator->after(function (Validator $validator) {
+            // companions setup
+            $companions = $this->input('companions');
+            if (!is_array($companions)) {
+                return;
+            }
+            // guest id setup
+            $guestId = $this->input('guest_id');
+            if (!$guestId) {
+                return;
+            }
+
+            CompanionValidator::validate($companions, $guestId, $validator);
+        });
     }
 }

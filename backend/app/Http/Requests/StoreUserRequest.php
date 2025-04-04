@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Validation\DocumentValidator;
+use App\Validation\RegexRules;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -32,20 +35,27 @@ class StoreUserRequest extends FormRequest
             'birthdate' => ['required', 'date', 'date_format:Y-m-d', 'before:today'],
             'address' => ['required', 'string', 'min:10', 'max:255'],
             'document_type' => ['required', Rule::in(User::DOCUMENT_TYPES)],
-            // TODO: document_number -> withValidator() -> depends on document_type
             'document_number' => ['required', 'string', 'max:20', 'unique:users,document_number'],
-            'phone' => ['required', 'regex:/^\+?[0-9\s\-]{7,20}$/'],
+            'phone' => ['required', 'regex:' . RegexRules::phone()],
             // TODO: role management handled via dedicated admin route/controller
             //'role' => ['nullable', Rule::in(User::ROLES)],
             'comments' => ['nullable', 'string', 'max:255']
         ];
     }
 
-    public function messages(): array
+    public function withValidator(Validator $validator)
     {
-        return [
-            'phone.regex' => 'Phone number may start with +, must be 7 to 20 characters long and '
-                . 'can include digits(0-9), spaces( ), or hyphens(-).',
-        ];
+        $validator->after(function (Validator $validator) {
+            $type = $this->input('document_type');
+            $documentNumber = $this->input('document_number');
+
+            if (!$type || !$documentNumber) {
+                return;
+            }
+
+            if ($errorMessage = DocumentValidator::validate($type, $documentNumber)) {
+                $validator->errors()->add('document_number', $errorMessage);
+            }
+        });
     }
 }
