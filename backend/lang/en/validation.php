@@ -178,7 +178,12 @@ return [
         'companions' => [
             '*' => [
                 'document_number' => [
-                    'required_for_adults' => 'Document type and number are required for adults.',
+                    'required_for_adults' =>
+                        'Document type and number are required for adults.',
+                    'not_repeated' =>
+                        'Each companion must have a unique document number and not be the same as de guest',
+                    'both_or_none_for_minors' =>
+                        'For minors, document type and number must be both present or both omitted.',
                 ],
             ],
         ],
