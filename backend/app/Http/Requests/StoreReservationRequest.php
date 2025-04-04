@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Companion;
 use App\Models\User;
+use App\Validation\CompanionValidator;
 use App\Validation\DocumentValidator;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
@@ -56,58 +57,13 @@ class StoreReservationRequest extends FormRequest
             if (!is_array($companions)) {
                 return;
             }
-
-            // guest and seen document_numbers setup
+            // guest id setup
             $guestId = $this->input('guest_id');
-            $guest = User::find($guestId);
-            $seenDocuments = [];
-            if ($guest && $guest->document_number) {
-                $seenDocuments[] = strtoupper(trim($guest->document_number));
+            if (!$guestId) {
+                return;
             }
 
-            // Iterate through companions
-            foreach ($companions as $index => $companion) {
-                $birthdate = $companion['birthdate'] ?? null;
-                $age = Carbon::parse($birthdate)->age;
-
-                $type = $companion['document_type'] ?? null;
-                $documentNumber = $companion['document_number'] ?? null;
-
-                if ($age < 18) {
-                    // if companion is not adult and passed only one field (type or number)
-                    if (($type && !$documentNumber) || (!$type && $documentNumber)) {
-                        $validator->errors()->add(
-                            "companions.$index.document_number",
-                            __('validation.custom.companions.*.document_number.both_or_none_for_minors')
-                        );
-                    }
-                }
-
-                // if companion is adult, type and number are required
-                if ($age >= 18 && (!$type || !$documentNumber)) {
-                    $validator->errors()->add(
-                        "companions.$index.document_number",
-                        __('validation.custom.companions.*.document_number.required_for_adults')
-                    );
-                    continue;
-                }
-
-                // if type and number are present validate them
-                if ($type && $documentNumber) {
-                    if ($errorMessage = DocumentValidator::validate($type, $documentNumber)) {
-                        $validator->errors()->add("companions.$index.document_number", $errorMessage);
-                    }
-
-                    $normalizedDoc = strtoupper(trim($documentNumber));
-                    if (in_array($normalizedDoc, $seenDocuments)) {
-                        $validator->errors()->add(
-                            "companions.$index.document_number",
-                            __('validation.custom.companions.*.document_number.not_repeated')
-                        );
-                    }
-                    $seenDocuments[] = $normalizedDoc;
-                }
-            }
+            CompanionValidator::validate($companions, $guestId, $validator);
         });
     }
 }

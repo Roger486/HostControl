@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Companion;
 use App\Models\Reservation;
+use App\Validation\CompanionValidator;
 use App\Validation\DocumentValidator;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
@@ -51,37 +52,18 @@ class UpdateReservationRequest extends FormRequest
     {
         // Validations after rules
         $validator->after(function (Validator $validator) {
+            // companions setup
             $companions = $this->input('companions');
-
             if (!is_array($companions)) {
                 return;
             }
-
-            // Iterate through companions
-            foreach ($companions as $index => $companion) {
-                $birthdate = $companion['birthdate'] ?? null;
-                $age = Carbon::parse($birthdate)->age;
-
-                // If age is greater that 18
-                if ($age >= 18) {
-                    $type = $companion['document_type'] ?? null;
-                    $documentNumber = $companion['document_number'] ?? null;
-
-                    //document type and number are mandatory
-                    if (!$type || !$documentNumber) {
-                        $validator->errors()->add(
-                            "companions.$index.document_number",
-                            __('validation.custom.companions.*.document_number.required_for_adults')
-                        );
-                        continue;
-                    }
-
-                    // And should comply with validation
-                    if ($errorMessage = DocumentValidator::validate($type, $documentNumber)) {
-                        $validator->errors()->add("companions.$index.document_number", $errorMessage);
-                    }
-                }
+            // guest id setup
+            $guestId = $this->input('guest_id');
+            if (!$guestId) {
+                return;
             }
+
+            CompanionValidator::validate($companions, $guestId, $validator);
         });
     }
 }
