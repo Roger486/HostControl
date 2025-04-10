@@ -19,8 +19,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->role === User::ROLE_ADMIN
-            || $user->id === $model->id;
+        return $user->role === User::ROLE_ADMIN;
     }
 
     /**
@@ -36,8 +35,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->role === User::ROLE_ADMIN
-            || $user->id === $model->id;
+        return $user->role === User::ROLE_ADMIN;
     }
 
     /**

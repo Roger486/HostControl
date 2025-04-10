@@ -107,11 +107,11 @@ If you send something else, it may fail.
 
 ### GET /api/users/{id}
 
-**Description:** Get data for a specific user.
+**Description:** Get data for a specific user. This endpoint is intended for admin use.
 
 **Auth required:** ✅ Yes
 
-**Authorization:** Admins or the user themselves (`view` policy)
+**Authorization:** Admins (`view` policy)
 
 **Success response (200):**
 ```json
@@ -196,11 +196,11 @@ If you send something else, it may fail.
 
 ### PUT /api/users/{id}
 
-**Description:** Update a user.
+**Description:** Update a user. This endpoint is intended for admin use
 
 **Auth required:** ✅ Yes
 
-**Authorization:** Admins or the user themselves (`update` policy)
+**Authorization:** Admins (`update` policy)
 
 **Body (same as POST):** Send only fields you want to update
 
@@ -243,7 +243,7 @@ If you send something else, it may fail.
 
 ### GET /api/user
 
-**Description:** Update a user.
+**Description:** Get data for athenticated user.
 
 **Auth required:** ✅ Yes
 
@@ -272,6 +272,67 @@ If you send something else, it may fail.
 
 **Errors:**
 - 401: Unauthenticated (if token is missing or invalid)
+---
+
+### PUT /api/user
+
+**Description:** Update the authenticated user's profile.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** The authenticated user only
+
+**Body (same as POST):** Send only fields you want to update, such as:
+
+```json
+{
+  "first_name": "John",
+  "last_name_1": "Doe",
+  "last_name_2": "Smith",
+  "birthdate": "1990-01-01",
+  "address": "123 Main St",
+  "phone": "+34123456789",
+  "comments": "Some comments"
+}
+```
+
+**Success response (200):** 
+```json
+{
+  "id": 1,
+  "first_name": "John",
+  "last_name_1": "Doe",
+  "last_name_2": "Smith",
+  "email": "john@example.com",
+  "email_verified_at": "2025-03-21T12:20:02.000000Z",
+  "birthdate": "1990-01-01",
+  "address": "123 Main St",
+  "document_type": "DNI",
+  "document_number": "12345678A",
+  "phone": "+34123456789",
+  "role": "user",
+  "comments": null,
+  "created_at": "2025-03-25T12:00:00.000000Z",
+  "updated_at": "2025-03-25T12:00:00.000000Z"
+}
+```
+
+**Errors:**
+- 401: Unauthenticated (if token is missing or invalid)
+- 422: Validation error (if any of the fields are invalid or required fields are missing)
+
+**Error Response example:**
+```json
+{
+  "message": "The last name 1 field is required.",
+  "errors": {
+    "last_name_1": [
+      "The last name 1 field is required."
+    ]
+  }
+}
+```
+
 ---
 
 ## 🏠 Accommodations
