@@ -32,8 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::put('/users/{user}', [UserController::class, 'update']);
 
-    // 🔐 Get current authenticated user
+    // 🔐 Current authenticated user actions
     Route::get('/user', [UserController::class, 'me']);
+    Route::put('/user', [UserController::class, 'updateSelf']);
 });
 
 

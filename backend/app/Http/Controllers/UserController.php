@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateSelfRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -82,5 +83,12 @@ class UserController extends Controller
     public function me(Request $request)
     {
         return response()->json($request->user(), 200);
+    }
+
+    public function updateSelf(UpdateSelfRequest $request)
+    {
+        $user = $request->user();
+        $user->update($request->validated());
+        return response()->json($user, 200);
     }
 }

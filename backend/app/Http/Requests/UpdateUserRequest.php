@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use App\Models\User;
 use App\Validation\DocumentValidator;
 use App\Validation\RegexRules;
-use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -44,7 +43,7 @@ class UpdateUserRequest extends FormRequest
                 Rule::unique('users', 'document_number')->ignore($this->user->id)
             ],
             'phone' => ['sometimes', 'required', 'regex:' . RegexRules::phone()],
-            // TODO: role management handled via dedicated admin route/controller
+            // TODO: role management handled via dedicated route
             //'role' => ['sometimes', 'nullable', Rule::in(User::ROLES)],
             'comments' => ['sometimes', 'nullable', 'string', 'max:255']
         ];
