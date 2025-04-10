@@ -107,11 +107,11 @@ If you send something else, it may fail.
 
 ### GET /api/users/{id}
 
-**Description:** Get data for a specific user.
+**Description:** Get data for a specific user. This endpoint is intended for admin use.
 
 **Auth required:** ✅ Yes
 
-**Authorization:** Admins or the user themselves (`view` policy)
+**Authorization:** Admins (`view` policy)
 
 **Success response (200):**
 ```json
@@ -196,11 +196,11 @@ If you send something else, it may fail.
 
 ### PUT /api/users/{id}
 
-**Description:** Update a user.
+**Description:** Update a user. This endpoint is intended for admin use.
 
 **Auth required:** ✅ Yes
 
-**Authorization:** Admins or the user themselves (`update` policy)
+**Authorization:** Admins (`update` policy)
 
 **Body (same as POST):** Send only fields you want to update
 
@@ -243,7 +243,7 @@ If you send something else, it may fail.
 
 ### GET /api/user
 
-**Description:** Update a user.
+**Description:** Get data for athenticated user.
 
 **Auth required:** ✅ Yes
 
