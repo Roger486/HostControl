@@ -594,39 +594,58 @@ See User for booked_by and guest structure.
 
 **Authorization:** Admins only (`viewAny` policy)
 
-**Success response (200):**
+**Success response (200):** Testing recomended for full comprehension
 ```json
 {
-  "current_page": 1,
   "data": [
     {
       "id": 1,
-      "booked_by_id": 5,
-      "guest_id": 7,
-      "accommodation_id": 3,
-      "check_in_date": "2025-08-01",
-      "check_out_date": "2025-08-05",
-      "status": "pending",
+      "booked_by_id": 17,
+      "guest_id": 38,
+      "accommodation_id": 29,
+      "check_in_date": "2025-06-15T00:00:00.000000Z",
+      "check_out_date": "2025-12-07T00:00:00.000000Z",
+      "status": "confirmed",
       "comments": null,
-      "created_at": "2025-03-28T14:00:00.000000Z",
-      "updated_at": "2025-03-28T14:00:00.000000Z",
-      "booked_by": { "id": 5, "first_name": "Alice", "...": "..." },
-      "guest": { "id": 7, "first_name": "Bob", "...": "..." },
-      "accommodation": { "id": 3, "type": "bungalow", "...": "..." },
+      "booked_by": {
+        "id": 17,
+        "first_name": "Monte",
+        "last_name_1": "Batz",
+        "email": "ruecker.margaretta@example.com"
+      },
+      "guest": {
+        "id": 38,
+        "first_name": "Jasper",
+        "last_name_1": "Rodriguez",
+        "email": "ggreen@example.net"
+      },
+      "accommodation": {
+        "id": 29,
+        "accommodation_code": "ml34",
+        "capacity": 3,
+        "price_per_day": 25791,
+        "type": "camping_spot"
+      },
       "companions": [
         {
-          "first_name": "Eva",
-          "last_name_1": "Lopez",
-          "document_type": "DNI",
-          "document_number": "12345678A",
-          "birthdate": "1999-04-12"
+          "id": 1,
+          "first_name": "Waylon",
+          "last_name_1": "Wiza",
+          "birthdate": "1993-10-03T00:00:00.000000Z"
         }
       ]
     }
   ],
-  "per_page": 10,
-  "total": 25,
-  "last_page": 3
+  "links": {
+    "first": "http://localhost:8000/api/reservations?page=1",
+    "last": "http://localhost:8000/api/reservations?page=3",
+    "next": "http://localhost:8000/api/reservations?page=2"
+  },
+  "meta": {
+    "current_page": 1,
+    "last_page": 3,
+    "total": 25
+  }
 }
 ```
 
@@ -658,22 +677,24 @@ See User for booked_by and guest structure.
 **Body (JSON):**
 ```json
 {
-  "booked_by_id": 5,
-  "guest_id": 7,
-  "accommodation_id": 3,
-  "check_in_date": "2025-08-01",
-  "check_out_date": "2025-08-05",
-  "status": "pending",
-  "comments": "Window side request",
-  "companions": [
-    {
-      "first_name": "Eva",
-      "last_name_1": "Lopez",
-      "document_type": "DNI",
-      "document_number": "12345678A",
-      "birthdate": "1999-04-12"
-    }
-  ]
+  "data" {
+    "booked_by_id": 5,
+    "guest_id": 7,
+    "accommodation_id": 3,
+    "check_in_date": "2025-08-01",
+    "check_out_date": "2025-08-05",
+    "status": "pending",
+    "comments": "Window side request",
+    "companions": [
+      {
+        "first_name": "Eva",
+        "last_name_1": "Lopez",
+        "document_type": "DNI",
+        "document_number": "12345678A",
+        "birthdate": "1999-04-12"
+      }
+    ]
+  }
 }
 ```
 

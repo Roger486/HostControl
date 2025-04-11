@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
+use App\Http\Resources\ReservarionResource;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -19,7 +20,7 @@ class ReservationController extends Controller
         $this->authorize('viewAny', Reservation::class);
 
         $reservations = Reservation::with('bookedBy', 'guest', 'accommodation', 'companions')->paginate(10);
-        return response()->json($reservations, 200);
+        return ReservarionResource::collection($reservations);
     }
 
     /**
@@ -44,7 +45,8 @@ class ReservationController extends Controller
             return $reservation;
         });
 
-        return response()->json($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']), 201);
+        return (new ReservarionResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions'])))
+            ->response()->setStatusCode(201);
     }
 
     /**
@@ -54,7 +56,7 @@ class ReservationController extends Controller
     {
         $this->authorize('view', $reservation);
 
-        return response()->json($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']), 200);
+        return new ReservarionResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']));
     }
 
     /**
@@ -82,7 +84,7 @@ class ReservationController extends Controller
             }
             return $reservation;
         });
-        return response()->json($updated->load(['bookedBy', 'guest', 'accommodation', 'companions']), 200);
+        return new ReservarionResource($updated->load(['bookedBy', 'guest', 'accommodation', 'companions']));
     }
 
     /**
@@ -99,34 +101,8 @@ class ReservationController extends Controller
     public function ownReservations(Request $request)
     {
         $user = $request->user();
-        $reservations = $user->guestReservations;
-
-        $filteredReservations = $reservations->map(function ($reservation) {
-            return [
-                'id' => $reservation->id,
-                'accommodation_id' => $reservation->accommodation_id,
-                'check_in_date' => $reservation->check_in_date,
-                'check_out_date' => $reservation->check_out_date,
-                'status' => $reservation->status,
-                'comments' => $reservation->comments,
-                'companions' => $reservation->companions->map(function ($companion) {
-                    return [
-                        'id' => $companion->id,
-                        'document_number' => $companion->document_number,
-                        'document_type' => $companion->document_type,
-                        'first_name' => $companion->first_name,
-                        'last_name_1' => $companion->last_name_1,
-                        'last_name_2' => $companion->last_name_2,
-                        'birthdate' => $companion->birthdate,
-                        'comments' => $companion->comments
-                    ];
-                })
-            ];
-        });
-
-        return response()->json([
-            'data' => $filteredReservations,
-            'status' => 'ok'
-        ], 200);
+        $reservations = $user->guestReservations()
+            ->with('bookedBy', 'guest', 'accommodation', 'companions')->get();
+        return ReservarionResource::collection($reservations);
     }
 }
