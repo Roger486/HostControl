@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAccommodationRequest;
 use App\Http\Requests\UpdateAccommodationRequest;
+use App\Http\Resources\AccommodationResource;
 use App\Models\Accommodation\Accommodation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class AccommodationController extends Controller
     public function index()
     {
         $accommodations = Accommodation::with(Accommodation::withAllRelations())->paginate(10);
-        return response()->json($accommodations);
+        return AccommodationResource::collection($accommodations);
     }
 
     /**
@@ -59,7 +60,8 @@ class AccommodationController extends Controller
             return $accommodation;
         });
 
-        return response()->json($accommodation->load(Accommodation::withAllRelations()), 201);
+        return (new AccommodationResource($accommodation->load(Accommodation::withAllRelations())))
+            ->response()->setStatusCode(201);
     }
 
     /**
@@ -67,7 +69,7 @@ class AccommodationController extends Controller
      */
     public function show(Accommodation $accommodation)
     {
-        return response()->json($accommodation->load(Accommodation::withAllRelations()), 200);
+        return new AccommodationResource($accommodation->load(Accommodation::withAllRelations()));
     }
 
     /**
@@ -110,7 +112,7 @@ class AccommodationController extends Controller
             return $accommodation;
         });
 
-        return response()->json($updated->load(Accommodation::withAllRelations()), 200);
+        return new AccommodationResource($accommodation->load(Accommodation::withAllRelations()));
     }
 
     /**

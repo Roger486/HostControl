@@ -384,7 +384,6 @@ These fields are required when creating or updating an accommodation of that typ
 **Success response (200):**
 ```json
 {
-  "current_page": 1,
   "data": [
     {
       "id": 1,
@@ -407,16 +406,53 @@ These fields are required when creating or updating an accommodation of that typ
       "room": null
     }
   ],
-  "first_page_url": "http://localhost/api/accommodations?page=1",
-  "from": 1,
-  "last_page": 4,
-  "last_page_url": "http://localhost/api/accommodations?page=4",
-  "next_page_url": "http://localhost/api/accommodations?page=2",
-  "path": "http://localhost/api/accommodations",
-  "per_page": 10,
-  "prev_page_url": null,
-  "to": 1,
-  "total": 40
+  "links": {
+    "first": "http://localhost/api/accommodations?page=1",
+    "last": "http://localhost/api/accommodations?page=4",
+    "prev": null,
+    "next": "http://localhost/api/accommodations?page=2"
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 4,
+    "links": [
+      {
+        "url": null,
+        "label": "&laquo; Previous",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=1",
+        "label": "1",
+        "active": true
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=2",
+        "label": "2",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=3",
+        "label": "3",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=4",
+        "label": "4",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=2",
+        "label": "Next &raquo;",
+        "active": false
+      }
+    ],
+    "path": "http://localhost/api/accommodations",
+    "per_page": 10,
+    "to": 10,
+    "total": 40
+  }
 }
 ```
 
@@ -428,7 +464,35 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Auth required:** ❌ No
 
-**Success response (200):** Same format as GET all.
+**Success response (200):**
+```json
+{
+  "data": {
+    "accommodation_code": "AC-296",
+    "section": "D",
+    "capacity": 2,
+    "price_per_day": 180,
+    "is_available": true,
+    "comments": "Casa de lujo con vista al mar",
+    "type": "bungalow",
+    "updated_at": "2025-04-11T15:50:49.000000Z",
+    "created_at": "2025-04-11T15:50:49.000000Z",
+    "id": 43,
+    "house": null,
+    "bungalow": {
+      "id": 13,
+      "accommodation_id": 43,
+      "bed_amount": 0,
+      "has_air_conditioning": true,
+      "has_kitchen": false,
+      "created_at": "2025-04-11T15:50:49.000000Z",
+      "updated_at": "2025-04-11T15:50:49.000000Z"
+    },
+    "camping_spot": null,
+    "room": null
+  }
+}
+```
 
 **Errors:**
 - 404: Accommodation not found
