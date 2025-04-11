@@ -69,7 +69,6 @@ If you send something else, it may fail.
 **Success response (200):**
 ```json
 {
-  "current_page": 1,
   "data": [
     {
       "id": 1,
@@ -89,18 +88,34 @@ If you send something else, it may fail.
       "updated_at": "2025-03-25T12:00:00.000000Z"
     }
   ],
-  "first_page_url": "http://localhost/api/users?page=1",
-  "from": 1,
-  "last_page": 1,
-  "last_page_url": "http://localhost/api/users?page=1",
-  "next_page_url": null,
-  "path": "http://localhost/api/users",
-  "per_page": 10,
-  "prev_page_url": null,
-  "to": 1,
-  "total": 1
+  "links": {
+    "first": "http://localhost/api/users?page=1",
+    "last": "http://localhost/api/users?page=1",
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "links": [
+      {
+        "url": null,
+        "label": "&laquo; Previous",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/users?page=1",
+        "label": "1",
+        "active": true
+      }
+    ],
+    "path": "http://localhost/api/users",
+    "per_page": 10,
+    "to": 1,
+    "total": 1
+  }
 }
-
 ```
 
 ---
@@ -116,21 +131,23 @@ If you send something else, it may fail.
 **Success response (200):**
 ```json
 {
-  "id": 1,
-  "first_name": "John",
-  "last_name_1": "Doe",
-  "last_name_2": "Smith",
-  "email": "john@example.com",
-  "email_verified_at": "2025-03-21T12:20:02.000000Z",
-  "birthdate": "1990-01-01",
-  "address": "123 Main St",
-  "document_type": "DNI",
-  "document_number": "12345678A",
-  "phone": "+34123456789",
-  "role": "user",
-  "comments": null,
-  "created_at": "2025-03-25T12:00:00.000000Z",
-  "updated_at": "2025-03-25T12:00:00.000000Z"
+  "data": {
+    "id": 17,
+    "first_name": "Monte",
+    "last_name_1": "Batz",
+    "last_name_2": "Marks",
+    "email": "ruecker.margaretta@example.com",
+    "email_verified_at": "2025-04-10T15:15:52.000000Z",
+    "birthdate": "1981-06-17T00:00:00.000000Z",
+    "address": "8846 Kling Ramp Apt. 979\nNakiachester, DE 61157",
+    "document_type": "Passport",
+    "document_number": "67801875ll",
+    "phone": "+1-470-475-0669",
+    "role": "user",
+    "comments": "Id rerum ullam tempora fugit. Illo eos delectus dolorem magni numquam fuga. Non magni odit qui.",
+    "created_at": "2025-04-10T15:16:01.000000Z",
+    "updated_at": "2025-04-10T15:16:01.000000Z"
+  }
 }
 ```
 
@@ -158,7 +175,6 @@ If you send something else, it may fail.
   "document_type": "DNI",
   "document_number": "12345678A",
   "phone": "+34123456789",
-  "role": "user", // optional, default: "user"
   "comments": "Optional note" // optional
 }
 ```
@@ -252,21 +268,23 @@ If you send something else, it may fail.
 **Success response (200):** 
 ```json
 {
-  "id": 1,
-  "first_name": "John",
-  "last_name_1": "Doe",
-  "last_name_2": "Smith",
-  "email": "john@example.com",
-  "email_verified_at": "2025-03-21T12:20:02.000000Z",
-  "birthdate": "1990-01-01",
-  "address": "123 Main St",
-  "document_type": "DNI",
-  "document_number": "12345678A",
-  "phone": "+34123456789",
-  "role": "user",
-  "comments": null,
-  "created_at": "2025-03-25T12:00:00.000000Z",
-  "updated_at": "2025-03-25T12:00:00.000000Z"
+  "data": {
+    "id": 1,
+    "first_name": "John",
+    "last_name_1": "Doe",
+    "last_name_2": "Smith",
+    "email": "john@example.com",
+    "email_verified_at": "2025-03-21T12:20:02.000000Z",
+    "birthdate": "1990-01-01",
+    "address": "123 Main St",
+    "document_type": "DNI",
+    "document_number": "12345678A",
+    "phone": "+34123456789",
+    "role": "user",
+    "comments": null,
+    "created_at": "2025-03-25T12:00:00.000000Z",
+    "updated_at": "2025-03-25T12:00:00.000000Z"
+  }
 }
 ```
 
