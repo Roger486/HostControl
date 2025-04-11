@@ -20,9 +20,7 @@ class ReservationPolicy
      */
     public function view(User $user, Reservation $reservation): bool
     {
-        return $user->role === User::ROLE_ADMIN
-            || $user->id === $reservation->booked_by_id
-            || $user->id === $reservation->guest_id;
+        return $user->role === User::ROLE_ADMIN;
     }
 
     /**
