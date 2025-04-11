@@ -30,7 +30,9 @@ class UserController extends Controller
         // this avoid malicious users sending a json to create an admin role user creation
         $user = User::create($request->validated());
 
-        return response()->json(new UserResource($user), 201);
+        return (new UserResource($user))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function show(User $user)
