@@ -60,15 +60,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    // 🛡️ Admin only
+    // 🛡️ Admin only (authorization handled via policies)
     Route::get('/reservations', [ReservationController::class, 'index']);
     Route::put('/reservations/{reservation}', [ReservationController::class, 'update']);
-    // Optional delete route:
+    Route::get('/reservations/{reservation}', [ReservationController::class, 'show']);
+    // TODO: implement soft delete somehow
     // Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy']);
 
-    // ✅ Admin or related user (guest_id or booked_by_id)
-    Route::get('/reservations/{reservation}', [ReservationController::class, 'show']);
-
-    // 🔐 Any authenticated user can create a reservation
+    // 🔐 Current authenticated user actions
     Route::post('/reservations', [ReservationController::class, 'store']);
+    Route::get('/user/reservations', [ReservationController::class, 'ownReservations']);
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 use App\Models\Reservation;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
@@ -93,5 +94,39 @@ class ReservationController extends Controller
 
         $reservation->delete();
         return response()->noContent();
+    }
+
+    public function ownReservations(Request $request)
+    {
+        $user = $request->user();
+        $reservations = $user->guestReservations;
+
+        $filteredReservations = $reservations->map(function ($reservation) {
+            return [
+                'id' => $reservation->id,
+                'accommodation_id' => $reservation->accommodation_id,
+                'check_in_date' => $reservation->check_in_date,
+                'check_out_date' => $reservation->check_out_date,
+                'status' => $reservation->status,
+                'comments' => $reservation->comments,
+                'companions' => $reservation->companions->map(function ($companion) {
+                    return [
+                        'id' => $companion->id,
+                        'document_number' => $companion->document_number,
+                        'document_type' => $companion->document_type,
+                        'first_name' => $companion->first_name,
+                        'last_name_1' => $companion->last_name_1,
+                        'last_name_2' => $companion->last_name_2,
+                        'birthdate' => $companion->birthdate,
+                        'comments' => $companion->comments
+                    ];
+                })
+            ];
+        });
+
+        return response()->json([
+            'data' => $filteredReservations,
+            'status' => 'ok'
+        ], 200);
     }
 }

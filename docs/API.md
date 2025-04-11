@@ -554,7 +554,7 @@ See User for booked_by and guest structure.
 
 **Auth required:** ✅ Yes
 
-**Authorization:** Admins, or users who are `booked_by` or `guest` of the reservation (`view` policy)
+**Authorization:** Admins only (`viewAny` policy)
 
 **Success response (200):** Same structure as GET all
 
@@ -633,6 +633,66 @@ See User for booked_by and guest structure.
 
 **Errors:**
 - 404: Reservation not found
+
+---
+
+### GET /api/user/reservations
+
+**Description:** Retrieve all reservations for the authenticated user where they are the guest.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** The authenticated user only
+
+**Success response (200):** 
+```json
+{
+  "data": [
+    {
+      "id": 9,
+      "accommodation_id": 13,
+      "check_in_date": "2025-12-24",
+      "check_out_date": "2025-06-06",
+      "status": "pending",
+      "comments": null,
+      "companions": [
+        {
+          "id": 11,
+          "document_number": null,
+          "document_type": "Passport",
+          "first_name": "Beryl",
+          "last_name_1": "Sporer",
+          "last_name_2": null,
+          "birthdate": "1979-10-02",
+          "comments": "Aut sunt voluptates et. Aliquid ut molestiae quia cumque ea ea. Vel cupiditate neque commodi vel."
+        },
+        {
+          "id": 12,
+          "document_number": null,
+          "document_type": "NIE",
+          "first_name": "Mozell",
+          "last_name_1": "Bosco",
+          "last_name_2": "Heathcote",
+          "birthdate": "1987-02-05",
+          "comments": "Possimus culpa earum accusamus qui dolores. Quas impedit veniam unde inventore."
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Errors:**
+- 401: Unauthenticated (if token is missing or invalid)
+- 422: Validation error (if data is invalid, e.g., missing parameters)
+
+**Error Response example:**
+```json
+{
+  "message": "Unauthorized",
+  "error": "You must be logged in to view your reservations."
+}
+```
 
 ---
 
