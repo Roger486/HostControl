@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateSelfRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,8 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('viewAny', User::class);
-        return response()->json(User::paginate(10), 200);
+        $users = User::paginate(10);
+        return UserResource::collection($users);
     }
 
     /**
@@ -28,35 +30,13 @@ class UserController extends Controller
         // this avoid malicious users sending a json to create an admin role user creation
         $user = User::create($request->validated());
 
-        return response()->json($user, 201);
+        return response()->json(new UserResource($user), 201);
     }
 
-    /**
-     * Show the specified user.
-     *
-     * This method uses Route Model Binding, so we get the user automatically
-     * without calling User::find($id).
-     *
-     * If the user does not exist, Laravel will return a 404 error automatically.
-     *
-     * This works because in api.php we use:
-     * Route::apiResource('users', UserController::class);
-     *
-     * Alternative traditional method:
-     *
-     * public function show(string $id)
-     * {
-     *     $user = User::find($id);
-     *     if (!$user) {
-     *         return response()->json(['message' => 'User not found'], 404);
-     *     }
-     *     return response()->json($user, 200);
-     * }
-     */
     public function show(User $user)
     {
         $this->authorize('view', $user);
-        return response()->json($user, 200);
+        return new UserResource($user);
     }
 
     /**
@@ -66,7 +46,7 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
         $user->update($request->validated());
-        return response()->json($user, 200);
+        return new UserResource($user);
     }
 
     /**
@@ -74,7 +54,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $this->authorize('viewAny', $user);
+        $this->authorize('delete', $user);
         $user->delete();
         return response()->noContent();
         // same as using response()->json([], 204);
@@ -82,13 +62,14 @@ class UserController extends Controller
 
     public function me(Request $request)
     {
-        return response()->json($request->user(), 200);
+        $user = $request->user();
+        return new UserResource($user);
     }
 
     public function updateSelf(UpdateSelfRequest $request)
     {
         $user = $request->user();
         $user->update($request->validated());
-        return response()->json($user, 200);
+        return new UserResource($user);
     }
 }
