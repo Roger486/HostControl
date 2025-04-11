@@ -124,6 +124,9 @@ class ReservationController extends Controller
             ];
         });
 
-        return response()->json($filteredReservations, 200);
+        return response()->json([
+            'data' => $filteredReservations,
+            'status' => 'ok'
+        ], 200);
     }
 }
