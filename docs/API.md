@@ -69,7 +69,6 @@ If you send something else, it may fail.
 **Success response (200):**
 ```json
 {
-  "current_page": 1,
   "data": [
     {
       "id": 1,
@@ -89,18 +88,34 @@ If you send something else, it may fail.
       "updated_at": "2025-03-25T12:00:00.000000Z"
     }
   ],
-  "first_page_url": "http://localhost/api/users?page=1",
-  "from": 1,
-  "last_page": 1,
-  "last_page_url": "http://localhost/api/users?page=1",
-  "next_page_url": null,
-  "path": "http://localhost/api/users",
-  "per_page": 10,
-  "prev_page_url": null,
-  "to": 1,
-  "total": 1
+  "links": {
+    "first": "http://localhost/api/users?page=1",
+    "last": "http://localhost/api/users?page=1",
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "links": [
+      {
+        "url": null,
+        "label": "&laquo; Previous",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/users?page=1",
+        "label": "1",
+        "active": true
+      }
+    ],
+    "path": "http://localhost/api/users",
+    "per_page": 10,
+    "to": 1,
+    "total": 1
+  }
 }
-
 ```
 
 ---
@@ -116,21 +131,23 @@ If you send something else, it may fail.
 **Success response (200):**
 ```json
 {
-  "id": 1,
-  "first_name": "John",
-  "last_name_1": "Doe",
-  "last_name_2": "Smith",
-  "email": "john@example.com",
-  "email_verified_at": "2025-03-21T12:20:02.000000Z",
-  "birthdate": "1990-01-01",
-  "address": "123 Main St",
-  "document_type": "DNI",
-  "document_number": "12345678A",
-  "phone": "+34123456789",
-  "role": "user",
-  "comments": null,
-  "created_at": "2025-03-25T12:00:00.000000Z",
-  "updated_at": "2025-03-25T12:00:00.000000Z"
+  "data": {
+    "id": 17,
+    "first_name": "Monte",
+    "last_name_1": "Batz",
+    "last_name_2": "Marks",
+    "email": "ruecker.margaretta@example.com",
+    "email_verified_at": "2025-04-10T15:15:52.000000Z",
+    "birthdate": "1981-06-17T00:00:00.000000Z",
+    "address": "8846 Kling Ramp Apt. 979\nNakiachester, DE 61157",
+    "document_type": "Passport",
+    "document_number": "67801875ll",
+    "phone": "+1-470-475-0669",
+    "role": "user",
+    "comments": "Id rerum ullam tempora fugit. Illo eos delectus dolorem magni numquam fuga. Non magni odit qui.",
+    "created_at": "2025-04-10T15:16:01.000000Z",
+    "updated_at": "2025-04-10T15:16:01.000000Z"
+  }
 }
 ```
 
@@ -158,7 +175,6 @@ If you send something else, it may fail.
   "document_type": "DNI",
   "document_number": "12345678A",
   "phone": "+34123456789",
-  "role": "user", // optional, default: "user"
   "comments": "Optional note" // optional
 }
 ```
@@ -252,21 +268,23 @@ If you send something else, it may fail.
 **Success response (200):** 
 ```json
 {
-  "id": 1,
-  "first_name": "John",
-  "last_name_1": "Doe",
-  "last_name_2": "Smith",
-  "email": "john@example.com",
-  "email_verified_at": "2025-03-21T12:20:02.000000Z",
-  "birthdate": "1990-01-01",
-  "address": "123 Main St",
-  "document_type": "DNI",
-  "document_number": "12345678A",
-  "phone": "+34123456789",
-  "role": "user",
-  "comments": null,
-  "created_at": "2025-03-25T12:00:00.000000Z",
-  "updated_at": "2025-03-25T12:00:00.000000Z"
+  "data": {
+    "id": 1,
+    "first_name": "John",
+    "last_name_1": "Doe",
+    "last_name_2": "Smith",
+    "email": "john@example.com",
+    "email_verified_at": "2025-03-21T12:20:02.000000Z",
+    "birthdate": "1990-01-01",
+    "address": "123 Main St",
+    "document_type": "DNI",
+    "document_number": "12345678A",
+    "phone": "+34123456789",
+    "role": "user",
+    "comments": null,
+    "created_at": "2025-03-25T12:00:00.000000Z",
+    "updated_at": "2025-03-25T12:00:00.000000Z"
+  }
 }
 ```
 
@@ -299,21 +317,23 @@ If you send something else, it may fail.
 **Success response (200):** 
 ```json
 {
-  "id": 1,
-  "first_name": "John",
-  "last_name_1": "Doe",
-  "last_name_2": "Smith",
-  "email": "john@example.com",
-  "email_verified_at": "2025-03-21T12:20:02.000000Z",
-  "birthdate": "1990-01-01",
-  "address": "123 Main St",
-  "document_type": "DNI",
-  "document_number": "12345678A",
-  "phone": "+34123456789",
-  "role": "user",
-  "comments": null,
-  "created_at": "2025-03-25T12:00:00.000000Z",
-  "updated_at": "2025-03-25T12:00:00.000000Z"
+  "data": {
+    "id": 1,
+    "first_name": "John",
+    "last_name_1": "Doe",
+    "last_name_2": "Smith",
+    "email": "john@example.com",
+    "email_verified_at": "2025-03-21T12:20:02.000000Z",
+    "birthdate": "1990-01-01",
+    "address": "123 Main St",
+    "document_type": "DNI",
+    "document_number": "12345678A",
+    "phone": "+34123456789",
+    "role": "user",
+    "comments": null,
+    "created_at": "2025-03-25T12:00:00.000000Z",
+    "updated_at": "2025-03-25T12:00:00.000000Z"
+  }
 }
 ```
 
@@ -364,7 +384,6 @@ These fields are required when creating or updating an accommodation of that typ
 **Success response (200):**
 ```json
 {
-  "current_page": 1,
   "data": [
     {
       "id": 1,
@@ -387,16 +406,53 @@ These fields are required when creating or updating an accommodation of that typ
       "room": null
     }
   ],
-  "first_page_url": "http://localhost/api/accommodations?page=1",
-  "from": 1,
-  "last_page": 4,
-  "last_page_url": "http://localhost/api/accommodations?page=4",
-  "next_page_url": "http://localhost/api/accommodations?page=2",
-  "path": "http://localhost/api/accommodations",
-  "per_page": 10,
-  "prev_page_url": null,
-  "to": 1,
-  "total": 40
+  "links": {
+    "first": "http://localhost/api/accommodations?page=1",
+    "last": "http://localhost/api/accommodations?page=4",
+    "prev": null,
+    "next": "http://localhost/api/accommodations?page=2"
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 4,
+    "links": [
+      {
+        "url": null,
+        "label": "&laquo; Previous",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=1",
+        "label": "1",
+        "active": true
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=2",
+        "label": "2",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=3",
+        "label": "3",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=4",
+        "label": "4",
+        "active": false
+      },
+      {
+        "url": "http://localhost/api/accommodations?page=2",
+        "label": "Next &raquo;",
+        "active": false
+      }
+    ],
+    "path": "http://localhost/api/accommodations",
+    "per_page": 10,
+    "to": 10,
+    "total": 40
+  }
 }
 ```
 
@@ -408,7 +464,35 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Auth required:** ❌ No
 
-**Success response (200):** Same format as GET all.
+**Success response (200):**
+```json
+{
+  "data": {
+    "accommodation_code": "AC-296",
+    "section": "D",
+    "capacity": 2,
+    "price_per_day": 180,
+    "is_available": true,
+    "comments": "Casa de lujo con vista al mar",
+    "type": "bungalow",
+    "updated_at": "2025-04-11T15:50:49.000000Z",
+    "created_at": "2025-04-11T15:50:49.000000Z",
+    "id": 43,
+    "house": null,
+    "bungalow": {
+      "id": 13,
+      "accommodation_id": 43,
+      "bed_amount": 0,
+      "has_air_conditioning": true,
+      "has_kitchen": false,
+      "created_at": "2025-04-11T15:50:49.000000Z",
+      "updated_at": "2025-04-11T15:50:49.000000Z"
+    },
+    "camping_spot": null,
+    "room": null
+  }
+}
+```
 
 **Errors:**
 - 404: Accommodation not found
@@ -510,39 +594,58 @@ See User for booked_by and guest structure.
 
 **Authorization:** Admins only (`viewAny` policy)
 
-**Success response (200):**
+**Success response (200):** Testing recomended for full comprehension
 ```json
 {
-  "current_page": 1,
   "data": [
     {
       "id": 1,
-      "booked_by_id": 5,
-      "guest_id": 7,
-      "accommodation_id": 3,
-      "check_in_date": "2025-08-01",
-      "check_out_date": "2025-08-05",
-      "status": "pending",
+      "booked_by_id": 17,
+      "guest_id": 38,
+      "accommodation_id": 29,
+      "check_in_date": "2025-06-15T00:00:00.000000Z",
+      "check_out_date": "2025-12-07T00:00:00.000000Z",
+      "status": "confirmed",
       "comments": null,
-      "created_at": "2025-03-28T14:00:00.000000Z",
-      "updated_at": "2025-03-28T14:00:00.000000Z",
-      "booked_by": { "id": 5, "first_name": "Alice", "...": "..." },
-      "guest": { "id": 7, "first_name": "Bob", "...": "..." },
-      "accommodation": { "id": 3, "type": "bungalow", "...": "..." },
+      "booked_by": {
+        "id": 17,
+        "first_name": "Monte",
+        "last_name_1": "Batz",
+        "email": "ruecker.margaretta@example.com"
+      },
+      "guest": {
+        "id": 38,
+        "first_name": "Jasper",
+        "last_name_1": "Rodriguez",
+        "email": "ggreen@example.net"
+      },
+      "accommodation": {
+        "id": 29,
+        "accommodation_code": "ml34",
+        "capacity": 3,
+        "price_per_day": 25791,
+        "type": "camping_spot"
+      },
       "companions": [
         {
-          "first_name": "Eva",
-          "last_name_1": "Lopez",
-          "document_type": "DNI",
-          "document_number": "12345678A",
-          "birthdate": "1999-04-12"
+          "id": 1,
+          "first_name": "Waylon",
+          "last_name_1": "Wiza",
+          "birthdate": "1993-10-03T00:00:00.000000Z"
         }
       ]
     }
   ],
-  "per_page": 10,
-  "total": 25,
-  "last_page": 3
+  "links": {
+    "first": "http://localhost:8000/api/reservations?page=1",
+    "last": "http://localhost:8000/api/reservations?page=3",
+    "next": "http://localhost:8000/api/reservations?page=2"
+  },
+  "meta": {
+    "current_page": 1,
+    "last_page": 3,
+    "total": 25
+  }
 }
 ```
 
@@ -574,22 +677,24 @@ See User for booked_by and guest structure.
 **Body (JSON):**
 ```json
 {
-  "booked_by_id": 5,
-  "guest_id": 7,
-  "accommodation_id": 3,
-  "check_in_date": "2025-08-01",
-  "check_out_date": "2025-08-05",
-  "status": "pending",
-  "comments": "Window side request",
-  "companions": [
-    {
-      "first_name": "Eva",
-      "last_name_1": "Lopez",
-      "document_type": "DNI",
-      "document_number": "12345678A",
-      "birthdate": "1999-04-12"
-    }
-  ]
+  "data" {
+    "booked_by_id": 5,
+    "guest_id": 7,
+    "accommodation_id": 3,
+    "check_in_date": "2025-08-01",
+    "check_out_date": "2025-08-05",
+    "status": "pending",
+    "comments": "Window side request",
+    "companions": [
+      {
+        "first_name": "Eva",
+        "last_name_1": "Lopez",
+        "document_type": "DNI",
+        "document_number": "12345678A",
+        "birthdate": "1999-04-12"
+      }
+    ]
+  }
 }
 ```
 
