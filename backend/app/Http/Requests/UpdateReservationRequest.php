@@ -58,7 +58,8 @@ class UpdateReservationRequest extends FormRequest
                 return;
             }
             // guest id setup
-            $guestId = $this->input('guest_id');
+            // take guest_id from the request or from the reservation if none is passed
+            $guestId = $this->input('guest_id') ?? $this->route('reservation')->guest_id;
             if (!$guestId) {
                 return;
             }

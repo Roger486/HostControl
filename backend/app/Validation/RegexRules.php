@@ -24,7 +24,7 @@ class RegexRules
     /**
      * @var string Passport format: 5 to 20 alphanumeric uppercase characters
      */
-    private static $passport = '/^[A-Z0-9]{5,20}$/';
+    private static $passport = '/^[A-Za-z0-9]{5,20}$/';
 
     /**
      * Get the regex for validating phone numbers.
