@@ -594,7 +594,7 @@ See User for booked_by and guest structure.
 
 **Authorization:** Admins only (`viewAny` policy)
 
-**Success response (200):** Testing recomended for full comprehension
+**Success response (200):** Testing recomended for full comprehension.
 ```json
 {
   "data": [
@@ -677,24 +677,22 @@ See User for booked_by and guest structure.
 **Body (JSON):**
 ```json
 {
-  "data" {
-    "booked_by_id": 5,
-    "guest_id": 7,
-    "accommodation_id": 3,
-    "check_in_date": "2025-08-01",
-    "check_out_date": "2025-08-05",
-    "status": "pending",
-    "comments": "Window side request",
-    "companions": [
-      {
-        "first_name": "Eva",
-        "last_name_1": "Lopez",
-        "document_type": "DNI",
-        "document_number": "12345678A",
-        "birthdate": "1999-04-12"
-      }
-    ]
-  }
+  "booked_by_id": 5,
+  "guest_id": 7,
+  "accommodation_id": 3,
+  "check_in_date": "2025-08-01",
+  "check_out_date": "2025-08-05",
+  "status": "pending",
+  "comments": "Window side request",
+  "companions": [
+    {
+      "first_name": "Eva",
+      "last_name_1": "Lopez",
+      "document_type": "DNI",
+      "document_number": "12345678A",
+      "birthdate": "1999-04-12"
+    }
+  ]
 }
 ```
 
