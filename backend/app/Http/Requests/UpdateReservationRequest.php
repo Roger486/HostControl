@@ -40,7 +40,6 @@ class UpdateReservationRequest extends FormRequest
             'companions' => ['sometimes', 'array'],
             'companions.*.document_type' => ['sometimes', 'required', Rule::in(Companion::DOCUMENT_TYPES)],
             'companions.*.document_number' => ['sometimes', 'required', 'string', 'max:20'],
-            // TODO: avoid repeated document_number on same reservation or like guest_id
             'companions.*.first_name' => ['required', 'string', 'max:100'],
             'companions.*.last_name_1' => ['required', 'string', 'max:100'],
             'companions.*.last_name_2' => ['nullable', 'string', 'max:100'],
