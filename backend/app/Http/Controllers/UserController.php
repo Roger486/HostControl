@@ -21,6 +21,25 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
+    public function search(Request $request)
+    {
+        $this->authorize('viewAny', User::class);
+        $request->validate([
+            'email' => ['email', 'max:255'],
+            'document_number' => ['string', 'max:20']
+        ]);
+
+        $email = $request->email;
+        $document_number = $request->document_number;
+        if ($email) {
+            $user = User::where('email', $email)->firstOrFail();
+        } elseif ($document_number) {
+            $user = User::where('document_number', $document_number)->firstOrFail();
+        }
+
+        return new UserResource($user);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

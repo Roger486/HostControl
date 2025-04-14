@@ -28,10 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // 🛡️ Admin only (authorization handled in policies)
     Route::get('/users', [UserController::class, 'index']);
-    Route::delete('/users/{user}', [UserController::class, 'destroy']);
+    Route::get('/users/search', [UserController::class, 'search']);
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::put('/users/{user}', [UserController::class, 'update']);
-
+    Route::delete('/users/{user}', [UserController::class, 'destroy']);
     // 🔐 Current authenticated user actions
     Route::get('/user', [UserController::class, 'me']);
     Route::put('/user', [UserController::class, 'updateSelf']);
