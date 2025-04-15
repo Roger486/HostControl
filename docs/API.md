@@ -120,6 +120,75 @@ If you send something else, it may fail.
 
 ---
 
+### GET /api/users/search
+
+**Description:** Search a user by **email** or **document number**.  
+Returns the first match, with an optional warning if multiple results are found (should not happen if DB is consistent).
+
+**Auth required:** ✅ Yes  
+**Authorization:** Admins only (`viewAny` policy)
+
+**Query Parameters:**
+
+- `email` (string) – optional, required if `document_number` is not present  
+- `document_number` (string) – optional, required if `email` is not present  
+
+> You must provide **either** `email` or `document_number`.
+
+---
+
+#### ✅ Success response (200)
+
+```json
+{
+  "data": {
+    "id": 12,
+    "first_name": "Elena",
+    "last_name_1": "Gomez",
+    "email": "elena@example.com",
+    "document_type": "DNI",
+    "document_number": "12345678Z"
+  },
+  "meta": {
+    "warning": "This search returned multiple results. Please contact the administrator."
+  }
+}
+```
+
+> The "meta.warning" field appears only if more than one user was found (which indicates a data integrity issue).
+
+**❌ Errors responses**
+
+**422 – No parameter provided or both empty:**
+
+```json
+{
+  "message": "The email field is required when document number is not present. (and 1 more error)",
+  "errors": {
+    "email": [
+      "The email field is required when document number is not present."
+    ],
+    "document_number": [
+      "The document number field is required when email is not present."
+    ]
+  }
+}
+```
+**422 – No results found:**
+
+```json
+{
+  "message": "No results for this search.",
+  "errors": {
+    "search": [
+      "No results for this search."
+    ]
+  }
+}
+```
+
+---
+
 ### GET /api/users/{id}
 
 **Description:** Get data for a specific user. This endpoint is intended for admin use.
