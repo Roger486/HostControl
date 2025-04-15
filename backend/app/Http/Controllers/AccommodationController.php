@@ -6,20 +6,62 @@ use App\Http\Requests\StoreAccommodationRequest;
 use App\Http\Requests\UpdateAccommodationRequest;
 use App\Http\Resources\AccommodationResource;
 use App\Models\Accommodation\Accommodation;
+use App\Models\Reservation;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AccommodationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $accommodations = Accommodation::with(Accommodation::withAllRelations())->paginate(10);
-        return AccommodationResource::collection($accommodations);
+        $query = Accommodation::query();
+
+        // Validations
+        $request->validate([
+            'type' => [Rule::in(Accommodation::TYPES)],
+            'min_capacity' => ['integer', 'min:1', 'lte:max_capacity'],
+            'max_capacity' => ['integer', 'gte:min_capacity'],
+            'check_in_date' => ['date_format:Y-m-d', 'date', 'after:today', 'required_with:check_out_date'],
+            'check_out_date' => ['date_format:Y-m-d', 'date', 'after:check_in_date', 'required_with:check_in_date'],
+        ]);
+
+        // Filters
+        // TODO: work on scopes on the model or even a whole new class for index filters
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('min_capacity')) {
+            $query->where('capacity', '>=', $request->min_capacity);
+        }
+
+        if ($request->filled('max_capacity')) {
+            $query->where('capacity', '<=', $request->max_capacity);
+        }
+
+        if ($request->filled('check_in_date') && $request->filled('check_out_date')) {
+            $checkInDate = Carbon::parse($request->check_in_date);
+            $checkOutDate = Carbon::parse($request->check_out_date);
+
+            $query->whereDoesntHave('reservations', function ($query) use ($checkInDate, $checkOutDate) {
+                $query->where('check_in_date', '<', $checkOutDate)
+                    ->where('check_out_date', '>', $checkInDate)
+                    ->whereNot('status', Reservation::STATUS_CANCELLED);
+            });
+        }
+
+        // Add relations
+        $query->with(Accommodation::withAllRelations());
+
+        return AccommodationResource::collection($query->paginate(10));
     }
 
     /**
