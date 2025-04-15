@@ -187,6 +187,10 @@ return [
                 ],
             ],
         ],
+        'search' => [
+            'multiple_results' => 'This search returned multiple results. Please contact the adminsitrator.',
+            'no_results' => 'No results for this search.',
+        ],
     ],
 
     /*

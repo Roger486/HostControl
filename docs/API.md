@@ -14,10 +14,36 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 ## Index
 
 ### 🆎 Important info
+- [📌 Regular Expressions used in validation](#-regular-expressions-used-in-validation)
+
 ### 👤 Users
+- [GET /api/users](#get-apiusers)
+- [GET /api/users/search](#get-apiuserssearch)
+- [GET /api/users/{id}](#get-apiusersid)
+- [POST /api/users](#post-apiusers)
+- [PUT /api/users/{id}](#put-apiusersid)
+- [DELETE /api/users/{id}](#delete-apiusersid)
+- [GET /api/user](#get-apiuser)
+- [PUT /api/user](#put-apiuser)
+
 ### 🏠 Accommodations
+- [GET /api/accommodations](#get-apiaccommodations)
+- [GET /api/accommodations/{id}](#get-apiaccommodationsid)
+- [POST /api/accommodations](#post-apiaccommodations)
+- [PUT /api/accommodations/{id}](#put-apiaccommodationsid)
+- [DELETE /api/accommodations/{id}](#delete-apiaccommodationsid)
+
 ### 🗓️ Reservations
+- [GET /api/reservations](#get-apireservations)
+- [GET /api/reservations/{id}](#get-apireservationsid)
+- [POST /api/reservations](#post-apireservations)
+- [PUT /api/reservations/{id}](#put-apireservationsid)
+- [DELETE /api/reservations/{id}](#delete-apireservationsid)
+- [GET /api/user/reservations](#get-apiuserreservations)
+
 ### 👮 Auth
+- [POST /api/login](#post-apilogin)
+- [POST /api/logout](#post-apilogout)
 
 ---
 ---
@@ -30,7 +56,7 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 |------------|-------------------------------------------------------------|--------------------------------------|
 | `DNI`      | `/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]$/`                    | 8 digits followed by a capital letter |
 | `NIE`      | `/^[XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKET]$/`               | Starts with X, Y, or Z + 7 digits + letter |
-| `Passport` | `/^[A-Z0-9]{5,20}$/`                                        | Alphanumeric, 5 to 20 characters      |
+| `Passport` | `/^[A-Za-z0-9]{5,20}$/`                                        | Alphanumeric, 5 to 20 characters      |
 | `Phone`    | `/^\+?[0-9\s\-]{7,20}$/`                                    | Digits, spaces or hyphens, optional `+` |
 
 > These are **api validation formats**. If frontend needs stricter pre-validation, use these as a base.
@@ -114,6 +140,75 @@ If you send something else, it may fail.
     "per_page": 10,
     "to": 1,
     "total": 1
+  }
+}
+```
+
+---
+
+### GET /api/users/search
+
+**Description:** Search a user by **email** or **document number**.  
+Returns the first match, with an optional warning if multiple results are found (should not happen if DB is consistent).
+
+**Auth required:** ✅ Yes  
+**Authorization:** Admins only (`viewAny` policy)
+
+**Query Parameters:**
+
+- `email` (string) – optional, required if `document_number` is not present  
+- `document_number` (string) – optional, required if `email` is not present  
+
+> You must provide **either** `email` or `document_number`.
+
+---
+
+#### ✅ Success response (200)
+
+```json
+{
+  "data": {
+    "id": 12,
+    "first_name": "Elena",
+    "last_name_1": "Gomez",
+    "email": "elena@example.com",
+    "document_type": "DNI",
+    "document_number": "12345678Z"
+  },
+  "meta": {
+    "warning": "This search returned multiple results. Please contact the administrator."
+  }
+}
+```
+
+> The "meta.warning" field appears only if more than one user was found (which indicates a data integrity issue).
+
+**❌ Errors responses**
+
+**422 – No parameter provided or both empty:**
+
+```json
+{
+  "message": "The email field is required when document number is not present. (and 1 more error)",
+  "errors": {
+    "email": [
+      "The email field is required when document number is not present."
+    ],
+    "document_number": [
+      "The document number field is required when email is not present."
+    ]
+  }
+}
+```
+**422 – No results found:**
+
+```json
+{
+  "message": "No results for this search.",
+  "errors": {
+    "search": [
+      "No results for this search."
+    ]
   }
 }
 ```

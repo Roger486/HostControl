@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -19,6 +20,42 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
         $users = User::paginate(10);
         return UserResource::collection($users);
+    }
+
+    public function search(Request $request)
+    {
+        $this->authorize('viewAny', User::class);
+        $request->validate([
+            'email' => ['email', 'max:255', 'required_without:document_number'],
+            'document_number' => ['string', 'max:20', 'required_without:email']
+        ]);
+
+        $email = $request->email;
+        $document_number = $request->document_number;
+        if ($email) {
+            $users = User::where('email', $email)->get();
+        } elseif ($document_number) {
+            $users = User::where('document_number', $document_number)->get();
+        }
+
+        // Use of validation exception so the output is like the Laravel default
+        if ($users->isEmpty()) {
+            throw ValidationException::withMessages([
+                'search' => [__('validation.custom.search.no_results')],
+            ]);
+        }
+
+        $response = [
+            'data' => new UserResource($users->first()),
+        ];
+
+        // Both email and document_number are unique in the DB
+        // This is an extra security measure to protect data integrity
+        if ($users->count() > 1) {
+            $response['meta'] = ['warning' => __('validation.custom.search.multiple_results')];
+        }
+
+        return response()->json($response);
     }
 
     /**
