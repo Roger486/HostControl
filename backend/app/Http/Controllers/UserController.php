@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -25,19 +26,35 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
         $request->validate([
-            'email' => ['email', 'max:255'],
-            'document_number' => ['string', 'max:20']
+            'email' => ['email', 'max:255', 'required_without:document_number'],
+            'document_number' => ['string', 'max:20', 'required_without:email']
         ]);
 
         $email = $request->email;
         $document_number = $request->document_number;
         if ($email) {
-            $user = User::where('email', $email)->firstOrFail();
+            $users = User::where('email', $email)->get();
         } elseif ($document_number) {
-            $user = User::where('document_number', $document_number)->firstOrFail();
+            $users = User::where('document_number', $document_number)->get();
         }
 
-        return new UserResource($user);
+        if ($users->isEmpty()) {
+            throw ValidationException::withMessages([
+                'search' => [__('validation.custom.search.no_results')],
+            ]);
+        }
+
+        $response = [
+            'data' => new UserResource($users->first()),
+        ];
+
+        // Both email and document_number are unique in the DB
+        // This is an extra security measure to protect data integrity
+        if ($users->count() > 1) {
+            $response['meta'] = ['warning' => __('validation.custom.search.multiple_results')];
+        }
+
+        return response()->json($response);
     }
 
     /**
