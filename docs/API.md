@@ -30,7 +30,7 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 |------------|-------------------------------------------------------------|--------------------------------------|
 | `DNI`      | `/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]$/`                    | 8 digits followed by a capital letter |
 | `NIE`      | `/^[XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKET]$/`               | Starts with X, Y, or Z + 7 digits + letter |
-| `Passport` | `/^[A-Z0-9]{5,20}$/`                                        | Alphanumeric, 5 to 20 characters      |
+| `Passport` | `/^[A-Za-z0-9]{5,20}$/`                                        | Alphanumeric, 5 to 20 characters      |
 | `Phone`    | `/^\+?[0-9\s\-]{7,20}$/`                                    | Digits, spaces or hyphens, optional `+` |
 
 > These are **api validation formats**. If frontend needs stricter pre-validation, use these as a base.
