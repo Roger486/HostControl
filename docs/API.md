@@ -14,10 +14,36 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 ## Index
 
 ### 🆎 Important info
+- [📌 Regular Expressions used in validation](#-regular-expressions-used-in-validation)
+
 ### 👤 Users
+- [GET /api/users](#get-apiusers)
+- [GET /api/users/search](#get-apiuserssearch)
+- [GET /api/users/{id}](#get-apiusersid)
+- [POST /api/users](#post-apiusers)
+- [PUT /api/users/{id}](#put-apiusersid)
+- [DELETE /api/users/{id}](#delete-apiusersid)
+- [GET /api/user](#get-apiuser)
+- [PUT /api/user](#put-apiuser)
+
 ### 🏠 Accommodations
+- [GET /api/accommodations](#get-apiaccommodations)
+- [GET /api/accommodations/{id}](#get-apiaccommodationsid)
+- [POST /api/accommodations](#post-apiaccommodations)
+- [PUT /api/accommodations/{id}](#put-apiaccommodationsid)
+- [DELETE /api/accommodations/{id}](#delete-apiaccommodationsid)
+
 ### 🗓️ Reservations
+- [GET /api/reservations](#get-apireservations)
+- [GET /api/reservations/{id}](#get-apireservationsid)
+- [POST /api/reservations](#post-apireservations)
+- [PUT /api/reservations/{id}](#put-apireservationsid)
+- [DELETE /api/reservations/{id}](#delete-apireservationsid)
+- [GET /api/user/reservations](#get-apiuserreservations)
+
 ### 👮 Auth
+- [POST /api/login](#post-apilogin)
+- [POST /api/logout](#post-apilogout)
 
 ---
 ---
