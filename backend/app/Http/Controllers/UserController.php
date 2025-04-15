@@ -38,6 +38,7 @@ class UserController extends Controller
             $users = User::where('document_number', $document_number)->get();
         }
 
+        // Use of validation exception so the output is like the Laravel default
         if ($users->isEmpty()) {
             throw ValidationException::withMessages([
                 'search' => [__('validation.custom.search.no_results')],
