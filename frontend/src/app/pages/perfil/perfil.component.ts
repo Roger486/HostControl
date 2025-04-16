@@ -31,17 +31,6 @@ export class PerfilComponent implements OnInit{
         next: (res) => {
           // Si la respuesta es correctaa guardamos los datos en la variable usuario
           this.usuario = res.data;
-
-          /* Formulario para modificar perfil de usuario desde usuario
-          this.perfilForm = this.fb.group({
-            first_name: [this.usuario.first_name, Validators.required],
-            last_name_1: [this.usuario.last_name_1, Validators.required],
-            last_name_2: [this.usuario.last_name_2],
-            birthdate: [this.usuario.birthdate, Validators.required],
-            address: [this.usuario.address, Validators.required],
-            phone: [this.usuario.phone, Validators.required]
-          });
-          */
         },
         error: (err) => {
           // Si hay error se muestra por consola
@@ -58,26 +47,5 @@ export class PerfilComponent implements OnInit{
   irAEditarPerfil() {
     this.router.navigate(['/perfil/editar']);
   }
-
-  /*
-  // Pop up de confirmacion al modificar datos
-  mostrarVerificacion(){
-    this.verificacionForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
-    });
-    this.mostrarPopup = true;
-  }
-  // Si el usuario finalmente no quiere modificar
-  cerrarPopup() {
-    this.mostrarPopup = false;
-    this.router.navigate(['/']);
-  }
-
-  confirmarCambios() {
-    // TODO validacion email y contraseña
-    console.log('Confirmar cambios');
-  }
-  */
 
 }
