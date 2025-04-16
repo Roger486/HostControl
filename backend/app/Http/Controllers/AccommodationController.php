@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAccommodationRequest;
-use App\Http\Requests\UpdateAccommodationRequest;
+use App\Http\Requests\Accommodation\StoreAccommodationRequest;
+use App\Http\Requests\Accommodation\UpdateAccommodationRequest;
 use App\Http\Resources\AccommodationResource;
 use App\Models\Accommodation\Accommodation;
 use App\Models\Reservation;

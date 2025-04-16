@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Reservation;
 
 use App\Models\Companion;
-use App\Models\User;
 use App\Validation\CompanionValidator;
-use App\Validation\DocumentValidator;
-use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
