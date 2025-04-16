@@ -2,24 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAccommodationRequest;
-use App\Http\Requests\UpdateAccommodationRequest;
+use App\Http\Requests\Accommodation\IndexAccommodationRequest;
+use App\Http\Requests\Accommodation\StoreAccommodationRequest;
+use App\Http\Requests\Accommodation\UpdateAccommodationRequest;
 use App\Http\Resources\AccommodationResource;
 use App\Models\Accommodation\Accommodation;
+use App\Models\Reservation;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AccommodationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexAccommodationRequest $request)
     {
-        $accommodations = Accommodation::with(Accommodation::withAllRelations())->paginate(10);
-        return AccommodationResource::collection($accommodations);
+        // Validations
+        $validated = $request->validated();
+
+        // Query and filters
+        $query = Accommodation::query();
+        Accommodation::applyFilters($query, $validated);
+
+        // Add relations
+        $query->with(Accommodation::withAllRelations());
+
+        return AccommodationResource::collection($query->paginate(10));
     }
 
     /**
