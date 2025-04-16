@@ -472,9 +472,27 @@ These fields are required when creating or updating an accommodation of that typ
 
 ### GET /api/accommodations
 
-**Description:** Returns a paginated list of accommodationswith their type-specific details included. Use ?page=N to navigate pages.
+**Description:** Returns a paginated list of accommodationswith their type-specific details included. Use ?page=N to navigate pages. Supports advanced filters via query parameters.
 
 **Auth required:** ❌ No
+
+**Query Parameters (optional):**
+
+| Parameter         | Type    | Description                                                                 |
+|------------------|---------|-----------------------------------------------------------------------------|
+| `type`           | string  | Filter by accommodation type (`house`, `bungalow`, `room`, `camping_spot`) |
+| `min_capacity`   | integer | Minimum capacity (e.g. `min_capacity=4`)                                    |
+| `max_capacity`   | integer | Maximum capacity                                                            |
+| `check_in_date`  | date    | Desired check-in date (`YYYY-MM-DD`)                                       |
+| `check_out_date` | date    | Desired check-out date (`YYYY-MM-DD`)                                      |
+| `page`           | integer | Page number for pagination                                                 |
+
+**Behavior Notes:**
+
+- Only accommodations where `is_available` is `true` are returned.
+- If `check_in_date` and `check_out_date` are provided, accommodations with overlapping reservations will be excluded (unless the reservation is cancelled).
+- Both `check_in_date` and `check_out_date` must be used together.
+- Filtering by `type` will only match known types (as defined in the backend constant `TYPES`).
 
 **Success response (200):**
 ```json
@@ -550,6 +568,12 @@ These fields are required when creating or updating an accommodation of that typ
   }
 }
 ```
+
+**Possible Responses:**
+
+- `200 OK`: Request successful (may return an empty list).
+- `422 Unprocessable Content`: Invalid or missing filter parameters.
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
 
 ---
 
