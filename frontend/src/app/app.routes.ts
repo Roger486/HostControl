@@ -7,7 +7,8 @@ import { ReservaComponent } from './pages/reserva/reserva.component';
 import { ConfirmacionReservaComponent } from './pages/confirmacion-reserva/confirmacion-reserva.component';
 import { ReservaConfirmadaComponent } from './pages/reserva-confirmada/reserva-confirmada.component';
 import { RegistroConfirmadoComponent } from './pages/registro-confirmado/registro-confirmado.component';
-
+import { PerfilComponent } from './pages/perfil/perfil.component';
+import { ModificarPerfilComponent } from './pages/modificar-perfil/modificar-perfil.component';
 
 export const routes: Routes = [
     {
@@ -21,8 +22,9 @@ export const routes: Routes = [
             { path: 'reserva', component: ReservaComponent }, // Ruta a reserva
             { path: 'confirmacion', component: ConfirmacionReservaComponent }, // Ruta a confirmacion-reserva
             { path: 'reserva-confirmada', component: ReservaConfirmadaComponent }, // Ruta a reserva-confirmada  
-            { path: 'registro-confirmado', component: RegistroConfirmadoComponent} // Ruta a registro-confirmado
-            
+            { path: 'registro-confirmado', component: RegistroConfirmadoComponent}, // Ruta a registro-confirmado
+            { path: 'perfil', component: PerfilComponent }, // Ruta a perfil de cliente
+            { path: 'perfil/editar', component: ModificarPerfilComponent } // Ruta a modificar perfil de cliente
         ]
         },
         {

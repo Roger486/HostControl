@@ -1,0 +1,16 @@
+<h2>Verificación de identidad</h2>
+
+<form [formGroup]="verificacionForm" (ngSubmit)="onSubmit()">
+  <label>Email:</label>
+  <input type="email" formControlName="email"><br>
+
+  <label>Contraseña:</label>
+  <input type="password" formControlName="password"><br>
+
+  <div *ngIf="errorVerificacion" style="color: red; margin-top: 8px;">
+    Email o contraseña incorrectos.
+  </div>
+
+  <button type="submit" [disabled]="verificacionForm.invalid">Confirmar</button>
+  <button type="button" (click)="cancelar()">Cancelar</button>
+</form>
