@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Accommodation\IndexAccommodationRequest;
 use App\Http\Requests\Accommodation\StoreAccommodationRequest;
 use App\Http\Requests\Accommodation\UpdateAccommodationRequest;
 use App\Http\Resources\AccommodationResource;
@@ -20,34 +21,28 @@ class AccommodationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(IndexAccommodationRequest $request)
     {
         $query = Accommodation::query();
 
         // Validations
-        $request->validate([
-            'type' => [Rule::in(Accommodation::TYPES)],
-            'min_capacity' => ['integer', 'min:1', 'lte:max_capacity'],
-            'max_capacity' => ['integer', 'gte:min_capacity'],
-            'check_in_date' => ['date_format:Y-m-d', 'date', 'after:today', 'required_with:check_out_date'],
-            'check_out_date' => ['date_format:Y-m-d', 'date', 'after:check_in_date', 'required_with:check_in_date'],
-        ]);
+        $validated = $request->validated();
 
         // Filters
         // TODO: work on scopes on the model or even a whole new class for index filters
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
+        if (!empty($validated['type'])) {
+            $query->where('type', $validated['type']);
         }
 
-        if ($request->filled('min_capacity')) {
-            $query->where('capacity', '>=', $request->min_capacity);
+        if (!empty($validated['min_capacity'])) {
+            $query->where('capacity', '>=', $validated['min_capacity']);
         }
 
-        if ($request->filled('max_capacity')) {
-            $query->where('capacity', '<=', $request->max_capacity);
+        if (!empty($validated['max_capacity'])) {
+            $query->where('capacity', '<=', $validated['max_capacity']);
         }
 
-        if ($request->filled('check_in_date') && $request->filled('check_out_date')) {
+        if (!empty($validated['check_in_date']) && !empty($validated['check_out_date'])) {
             $checkInDate = Carbon::parse($request->check_in_date);
             $checkOutDate = Carbon::parse($request->check_out_date);
 
