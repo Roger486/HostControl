@@ -3,6 +3,8 @@
 namespace App\Models\Accommodation;
 
 use App\Models\Reservation;
+use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -125,18 +127,78 @@ class Accommodation extends Model
     }
 
     /**
-     * Sets the `type` attribute automatically when creating an accommodation.
+     * Scope to filter accommodations that are available (i.e., not reserved)
+     * between two given dates.
      *
-     * The `type` field is an ENUM that stores the class name as a value.
-     * This makes creating accommodations slightly slower, but searching by type much faster.
+     * This scope excludes accommodations that have at least one reservation
+     * overlapping with the given check-in and check-out dates.
+     *
+     * Optionally, it can ignore reservations with the status "cancelled".
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query The current query builder instance.
+     * @param \Carbon\Carbon $checkInDate The desired check-in date.
+     * @param \Carbon\Carbon $checkOutDate The desired check-out date.
+     * @param bool $ignoreCancelled Whether to exclude cancelled reservations (default: true).
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    // protected static function boot()
-    // {
-    //     // Calls Laravel's default boot() to keep important Eloquent features working.
-    //     parent::boot();
+    public function scopeAvailableBetweenDates(
+        Builder $query,
+        Carbon $checkInDate,
+        Carbon $checkOutDate,
+        bool $ignoreCancelled = true
+    ) {
+        return $query->whereDoesntHave(
+            'reservations',
+            function ($subQuery) use ($checkInDate, $checkOutDate, $ignoreCancelled) {
+                $subQuery->where('check_in_date', '<', $checkOutDate)
+                    ->where('check_out_date', '>', $checkInDate);
 
-    //     static::creating(function ($accommodation) {
-    //         $accommodation->type = class_basename($accommodation);
-    //     });
-    // }
+                if ($ignoreCancelled) {
+                    $subQuery->whereNot('status', Reservation::STATUS_CANCELLED);
+                }
+            }
+        );
+    }
+
+    /**
+     * Applies a set of filters to the Accommodation query.
+     *
+     * Supported filters:
+     * - is_available: boolean
+     * - type: string (must match one of the defined types)
+     * - min_capacity: integer (minimum number of guests)
+     * - max_capacity: integer (maximum number of guests)
+     * - check_in_date and check_out_date: used together to filter by availability
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query The query to apply filters on.
+     * @param array $filters The validated input filters from the request.
+     *
+     * @return void
+     */
+    public static function applyFilters(Builder $query, array $filters)
+    {
+        if (array_key_exists('is_available', $filters)) {
+            $query->where('is_available', $filters['is_available']);
+        }
+
+        if (isset($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+
+        if (isset($filters['min_capacity'])) {
+            $query->where('capacity', '>=', $filters['min_capacity']);
+        }
+
+        if (isset($filters['max_capacity'])) {
+            $query->where('capacity', '<=', $filters['max_capacity']);
+        }
+
+        if (isset($filters['check_in_date']) && isset($filters['check_out_date'])) {
+            $checkInDate = Carbon::parse($filters['check_in_date']);
+            $checkOutDate = Carbon::parse($filters['check_out_date']);
+
+            $query->availableBetweenDates($checkInDate, $checkOutDate);
+        }
+    }
 }

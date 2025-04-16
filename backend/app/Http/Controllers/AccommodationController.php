@@ -23,35 +23,12 @@ class AccommodationController extends Controller
      */
     public function index(IndexAccommodationRequest $request)
     {
-        $query = Accommodation::query();
-
         // Validations
         $validated = $request->validated();
 
-        // Filters
-        // TODO: work on scopes on the model or even a whole new class for index filters
-        if (!empty($validated['type'])) {
-            $query->where('type', $validated['type']);
-        }
-
-        if (!empty($validated['min_capacity'])) {
-            $query->where('capacity', '>=', $validated['min_capacity']);
-        }
-
-        if (!empty($validated['max_capacity'])) {
-            $query->where('capacity', '<=', $validated['max_capacity']);
-        }
-
-        if (!empty($validated['check_in_date']) && !empty($validated['check_out_date'])) {
-            $checkInDate = Carbon::parse($request->check_in_date);
-            $checkOutDate = Carbon::parse($request->check_out_date);
-
-            $query->whereDoesntHave('reservations', function ($query) use ($checkInDate, $checkOutDate) {
-                $query->where('check_in_date', '<', $checkOutDate)
-                    ->where('check_out_date', '>', $checkInDate)
-                    ->whereNot('status', Reservation::STATUS_CANCELLED);
-            });
-        }
+        // Query and filters
+        $query = Accommodation::query();
+        Accommodation::applyFilters($query, $validated);
 
         // Add relations
         $query->with(Accommodation::withAllRelations());

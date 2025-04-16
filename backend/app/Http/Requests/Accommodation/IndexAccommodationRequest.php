@@ -25,8 +25,8 @@ class IndexAccommodationRequest extends FormRequest
     {
         return [
             'type' => [Rule::in(Accommodation::TYPES)],
-            'min_capacity' => ['integer', 'min:1', 'lte:max_capacity'],
-            'max_capacity' => ['integer', 'gte:min_capacity'],
+            'min_capacity' => ['integer', 'min:1', 'lte:max_capacity', 'required_with:max_capacity'],
+            'max_capacity' => ['integer', 'gte:min_capacity', 'required_with:min_capacity'],
             'check_in_date' => ['date_format:Y-m-d', 'date', 'after:today', 'required_with:check_out_date'],
             'check_out_date' => ['date_format:Y-m-d', 'date', 'after:check_in_date', 'required_with:check_in_date'],
         ];
