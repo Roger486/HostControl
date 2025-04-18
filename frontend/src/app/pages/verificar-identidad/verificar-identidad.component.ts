@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'app/services/auth.service';
+import { PerfilTemporalService } from 'app/services/perfil-temporal.service';
 
 @Component({
   selector: 'app-verificar-identidad',
@@ -14,10 +15,15 @@ import { AuthService } from 'app/services/auth.service';
 export class VerificarIdentidadComponent {
   verificacionForm!: FormGroup;
   errorVerificacion: boolean = false;
+  errorActualizacion: boolean = false;
 
-  constructor(private fb: FormBuilder, private auth: AuthService, public router: Router
+  constructor(
+    private fb: FormBuilder, 
+    private auth: AuthService, 
+    private router: Router,
+    private perfilTemporal: PerfilTemporalService
   ) {
-    // 🧱 Creamos el formulario
+    // Creamos el formulario
     this.verificacionForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -33,8 +39,21 @@ export class VerificarIdentidadComponent {
         next: () => {
           this.errorVerificacion = false;
 
-          //Redirigimos a la pantalla de confirmación o acción final
-          this.router.navigate(['/perfil/modificado']);
+          //Obtenemos los datos pendientes de modificar del servicio temporal
+          const datosActualizados = this.perfilTemporal.getDatos();
+
+          //Llamamos al backend para modificar el perfil
+          this.auth.actualizarPerfil(datosActualizados).subscribe({
+            next: () => {
+              this.perfilTemporal.setIdentidadVerificada(true); // Guardamos el estado de verificacion
+              this.perfilTemporal.clearDatos(); // Limpiamos los datos temporales
+              this.router.navigate(['/perfil/modificado']); // Redirigimos a la pantalla confirmacion de modificacion
+            },
+            error: () => {
+              console.error('Error al actualizar el perfil');
+              this.errorActualizacion = true; // Mostramos mensaje de error
+            }
+          })
         },
         error: () => {
           //Si hay error, mostramos mensaje

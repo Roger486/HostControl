@@ -76,4 +76,14 @@ export class AuthService {
       }
     });
   }
+
+  //Enviamos los datos del usuario al backend para actualizar el perfil
+  actualizarPerfil(datos: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    return this.http.put(`${this.apiUrl}/user`, datos, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 }

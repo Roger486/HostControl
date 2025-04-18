@@ -1,7 +1,7 @@
 
 <h2>Modificar datos personales</h2>
 
-<form [formGroup]="modificarForm" (ngSubmit)="onSubmit()">
+<form *ngIf="modificarForm" [formGroup]="modificarForm" (ngSubmit)="onSubmit()">
   <label>Nombre:</label>
   <input type="text" formControlName="first_name"><br>
 
