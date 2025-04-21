@@ -191,6 +191,9 @@ return [
             'multiple_results' => 'This search returned multiple results. Please contact the adminsitrator.',
             'no_results' => 'No results for this search.',
         ],
+        'reservation' => [
+            'not_free_by_date' => 'This accommodation is already booked between the specified dates'
+        ]
     ],
 
     /*
