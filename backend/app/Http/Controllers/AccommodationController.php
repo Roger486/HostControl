@@ -7,14 +7,10 @@ use App\Http\Requests\Accommodation\StoreAccommodationRequest;
 use App\Http\Requests\Accommodation\UpdateAccommodationRequest;
 use App\Http\Resources\AccommodationResource;
 use App\Models\Accommodation\Accommodation;
-use App\Models\Reservation;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class AccommodationController extends Controller
 {
