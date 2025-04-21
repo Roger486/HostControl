@@ -162,6 +162,33 @@ class Accommodation extends Model
     }
 
     /**
+     * Checks if the accommodation is available between two given dates.
+     *
+     * Optionally, a reservation ID can be excluded from the check (e.g., during update).
+     *
+     * @param \Carbon\Carbon $checkInDate     The desired check-in date
+     * @param \Carbon\Carbon $checkOutDate    The desired check-out date
+     * @param int|null       $excludeReservationId  Optional reservation ID to ignore (e.g. current one on update)
+     * @return bool          True if available, false if overlapping reservation found
+     */
+    public function isAvailableBetweenDates(
+        Carbon $checkInDate,
+        Carbon $checkOutDate,
+        ?int $excludeReservationId = null
+    ): bool {
+        $query = $this->reservations()
+            ->where('check_in_date', '<', $checkOutDate)
+            ->where('check_out_date', '>', $checkInDate)
+            ->where('status', '!=', Reservation::STATUS_CANCELLED);
+
+        if ($excludeReservationId) {
+            $query->where('id', '!=', $excludeReservationId);
+        }
+
+        return !$query->exists();
+    }
+
+    /**
      * Applies a set of filters to the Accommodation query.
      *
      * Supported filters:

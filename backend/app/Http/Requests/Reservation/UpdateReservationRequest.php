@@ -28,9 +28,9 @@ class UpdateReservationRequest extends FormRequest
     {
         return [
             'guest_id' => ['sometimes', 'required', 'exists:users,id'],
-            'accommodation_id' => ['sometimes', 'required', 'exists:accommodations,id'],
-            'check_in_date' => ['sometimes', 'required', 'date', 'after_or_equal:today'],
-            'check_out_date' => ['sometimes', 'required', 'date', 'after:check_in_date'],
+            'accommodation_id' => ['prohibited'],
+            'check_in_date' => ['required_with:check_out_date', 'date', 'after_or_equal:today'],
+            'check_out_date' => ['required_with:check_in_date', 'date', 'after:check_in_date'],
             'status' => ['sometimes', Rule::in(Reservation::STATUSES)],
             'comments' => ['nullable', 'string', 'max:255'],
 
