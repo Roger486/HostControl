@@ -176,13 +176,13 @@ class Accommodation extends Model
         Carbon $checkOutDate,
         ?int $excludeReservationId = null
     ): bool {
-        $query = self::where('id', $this->id)
-            ->availableBetweenDates($checkInDate, $checkOutDate);
+        $query = $this->reservations()
+            ->where('check_in_date', '<', $checkOutDate)
+            ->where('check_out_date', '>', $checkInDate)
+            ->where('status', '!=', Reservation::STATUS_CANCELLED);
 
         if ($excludeReservationId) {
-            $query->whereDoesntHave('reservations', function ($subQuery) use ($excludeReservationId) {
-                $subQuery->where('id', '!=', $excludeReservationId);
-            });
+            $query->where('id', '!=', $excludeReservationId);
         }
 
         return !$query->exists();
