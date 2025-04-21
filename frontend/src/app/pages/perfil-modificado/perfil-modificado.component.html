@@ -1,0 +1,15 @@
+<h2>Resultado de la modificación</h2>
+
+
+<p [style.color]="error ? 'red' : 'green'" style="font-weight: bold;">
+  {{ mensaje }}
+</p>
+
+<div *ngIf="!error">
+  <button (click)="volverInicio()">Volver al inicio</button>
+  <button (click)="cerrarSesion()">Cerrar sesión</button>
+</div>
+
+<div *ngIf="error">
+  <button (click)="volverInicio()">Volver</button>
+</div>

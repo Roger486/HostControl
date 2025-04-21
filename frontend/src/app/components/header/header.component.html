@@ -5,6 +5,8 @@
     <ng-container *ngIf="usuarioLogueado; else noLogueado">
         <!-- Muestra usuario logueado -->
         <span>Bienvenido, {{ usuarioLogueado.email }}</span>
+        <!-- Botón para ir a la página de perfil -->
+        <a routerLink="/perfil">Perfil</a>
         <!-- Botón logout -->
         <button (click)="logout()">Cerrar sesión</button>
     </ng-container>

@@ -17,7 +17,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
   
-  //obtener susuario desde Localstorage al iniciar
+  //obtener usuario desde Localstorage al iniciar
   private getUsuarioActual() {
     const data = localStorage.getItem('usuarioLogueado');
     return data ? JSON.parse(data) : null;
@@ -27,6 +27,8 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/users`, data);
   }
 
+
+// Iniciar sesion del usuario
   login(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, data).pipe(
       tap((res: any) => {
@@ -41,6 +43,7 @@ export class AuthService {
 
   }
 
+  // Cerrar sesion del usuario
   logout(): Observable<any> {
     // Obtenemos el token del usuario almacenado en el localStorage
     const token = localStorage.getItem('authToken');
@@ -59,5 +62,28 @@ export class AuthService {
         this.usuarioLogueadoSubject.next(null);
       })
     );
+  }
+
+  // Obtenemos el perfil del usuario logueado
+  getPerfil(): Observable<any> {
+    // Obtenemos el token del usuario almacenado en el localStorage
+    const token = localStorage.getItem('authToken');
+    // Realizamos peticion GET al bakend (endpoint /api/user) para obtener el perfil del usuario
+    // Enviamos el token en la cabecera 'Authorization' para autentificacion
+    return this.http.get(`${this.apiUrl}/user`, {
+      headers: {
+        Authorization: `Bearer ${token}` // Token para identificar sesion activa
+      }
+    });
+  }
+
+  //Enviamos los datos del usuario al backend para actualizar el perfil
+  actualizarPerfil(datos: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    return this.http.put(`${this.apiUrl}/user`, datos, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 }
