@@ -787,13 +787,14 @@ See User for booked_by and guest structure.
 
 ### POST /api/reservations
 
-**Description:** Create a new reservation. You must include `companions` if there are any.
+**Description:** Create a new reservation for a given accommodation between two dates.
+If the reservation includes companions (other people staying), they must be included in the `companions` array.
 
 **Auth required:** ✅ Yes
 
 **Authorization:** Any authenticated user
 
-**Body (JSON):**
+**Request Body (JSON):**
 ```json
 {
   "booked_by_id": 5,
@@ -801,7 +802,6 @@ See User for booked_by and guest structure.
   "accommodation_id": 3,
   "check_in_date": "2025-08-01",
   "check_out_date": "2025-08-05",
-  "status": "pending",
   "comments": "Window side request",
   "companions": [
     {
@@ -813,7 +813,16 @@ See User for booked_by and guest structure.
     }
   ]
 }
+
 ```
+---
+
+**Notes:**
+- `accommodation_id`, `check_in_date`, and `check_out_date` are required and must define a valid, available slot.
+- `status` is managed internally and will be ignored if sent.
+- If any adult companion is added, their document information is required.
+
+---
 
 **Success response (201):** Reservation with all relationships
 
