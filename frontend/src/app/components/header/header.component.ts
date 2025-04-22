@@ -12,12 +12,19 @@ import { AuthService } from 'app/services/auth.service';
 })
 export class HeaderComponent {
   usuarioLogueado: any = null;
+  rolUsuario: string = '';
 
   constructor(private auth: AuthService, private router: Router) {
     
     // Nos suscribimos a los cambios del usuario logueado
     this.auth.usuarioLogueado$.subscribe((usuario) => {
+      
+      console.log('Usuario logueado recibido en header:', usuario); // Para depurar el usuario logueado
       this.usuarioLogueado = usuario;
+
+      if (usuario) {
+        this.rolUsuario = JSON.parse(localStorage.getItem('usuarioRol') || '""');
+      }
     });
   }
   
