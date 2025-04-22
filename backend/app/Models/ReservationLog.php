@@ -17,7 +17,7 @@ class ReservationLog extends Model
     public const ACTION_CHECK_IN = 'check_in';
     public const ACTION_CHECK_OUT = 'check_out';
     public const ACTION_CONFIRM = 'confirm';
-    public const ACTION_TO_PENDING = 'unconfirm';
+    public const ACTION_TO_PENDING = 'to_pending';
 
     public const ACTIONS = [
         self::ACTION_CREATE,
