@@ -41,6 +41,9 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [DELETE /api/reservations/{id}](#delete-apireservationsid)
 - [GET /api/user/reservations](#get-apiuserreservations)
 
+### 🗒️ Reservation Logs
+- [GET /api/reservation_logs/{reservation}](#get-apireservation_logsreservation_id)
+
 ### 👮 Auth
 - [POST /api/login](#post-apilogin)
 - [POST /api/logout](#post-apilogout)
@@ -960,6 +963,78 @@ If the reservation includes companions (other people staying), they must be incl
   "error": "You must be logged in to view your reservations."
 }
 ```
+
+---
+
+## 🗒️ Reservation Logs
+
+These endpoints give access to the logs made in the reservations.
+
+### GET /api/reservation_logs/{reservation_id}
+
+**Description:** Get a paginated list of all logs for a specific reservation, including user details for each action performed.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`viewAny` policy on reservations since it depends on their access)
+
+**Success response example (200):**
+
+```json
+{
+  "data": [
+    {
+      "id": 18,
+      "user_id": 1,
+      "reservation_id": 1,
+      "action_type": "check_out",
+      "log_detail": "Autem et quaerat eligendi. Quo eius iste qui nihil reiciendis beatae voluptatem.",
+      "created_at": "2025-04-22T11:38:40.000000Z",
+      "updated_at": "2025-04-22T11:38:40.000000Z",
+      "user": {
+        "id": 1,
+        "first_name": "Hunter",
+        "last_name_1": "Hudson",
+        "last_name_2": "Kovacek",
+        "email": "parisian.jayme@example.net",
+        "email_verified_at": "2025-04-22T11:38:24.000000Z",
+        "birthdate": "1975-03-12T00:00:00.000000Z",
+        "address": "51120 Doyle Loop\nWittingland, WI 88212",
+        "document_type": "DNI",
+        "document_number": "79792835ms",
+        "phone": "1-351-993-8914",
+        "role": "admin",
+        "comments": "Eaque placeat aliquid sunt sapiente occaecati. Optio et nobis harum.",
+        "created_at": "2025-04-22T11:38:25.000000Z",
+        "updated_at": "2025-04-22T11:38:25.000000Z"
+      }
+    }
+  ],
+  "links": {
+    "first": "http://localhost/api/reservation_logs/1?page=1",
+    "last": "http://localhost/api/reservation_logs/1?page=1",
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "path": "http://localhost/api/reservation_logs/1",
+    "per_page": 10,
+    "to": 1,
+    "total": 1
+  }
+}
+```
+
+**Errors:**
+
+- **404**: Reservation not found.
+
+- **403**: Unauthorized to view reservation logs.
+
+- **401**: Unauthenticated (missing or invalid token).
 
 ---
 
