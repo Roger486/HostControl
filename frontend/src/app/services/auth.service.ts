@@ -98,4 +98,16 @@ export class AuthService {
       }
     });
   }
+
+  // Desde admin obtenemos datos de un cliente
+  buscarCliente(filtros: { email?: string, document_number?: string }): Observable<any> {
+    const token = localStorage.getItem('authToken');
+  
+    return this.http.get(`${this.apiUrl}/users/search`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: filtros
+    });
+  }
 }

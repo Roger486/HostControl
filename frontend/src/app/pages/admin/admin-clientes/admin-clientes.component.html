@@ -1,0 +1,41 @@
+<h2>Gestión de clientes</h2>
+
+<!-- Formulario de búsqueda -->
+<form [formGroup]="busquedaForm" (ngSubmit)="buscarCliente()">
+
+  <label for="email">Email:</label>
+  <input id="email" type="email" formControlName="email" />
+  <div *ngIf="busquedaForm.get('email')?.invalid && busquedaForm.get('email')?.touched" style="color: red;">
+    Email obligatorio y con formato válido.
+  </div>
+
+  <label for="document">Número de documento:</label>
+  <input id="document" type="text" formControlName="document_number" />
+  <div *ngIf="busquedaForm.get('document_number')?.invalid && busquedaForm.get('document_number')?.touched" style="color: red;">
+    Número de documento obligatorio.
+  </div>
+
+  <button type="submit">Buscar</button>
+</form>
+
+<hr />
+
+<!-- Resultado encontrado -->
+<div *ngIf="cliente">
+  <h3>Datos del cliente</h3>
+  <p><strong>Nombre:</strong> {{ cliente.first_name }}</p>
+  <p><strong>Primer apellido:</strong> {{ cliente.last_name_1 }}</p>
+  <p><strong>Segundo apellido:</strong> {{ cliente.last_name_2 }}</p>
+  <p><strong>Email:</strong> {{ cliente.email }}</p>
+  <p><strong>Fecha de nacimiento:</strong> {{ cliente.birthdate }}</p>
+  <p><strong>Dirección:</strong> {{ cliente.address }}</p>
+  <p><strong>Tipo de documento:</strong> {{ cliente.document_type }}</p>
+  <p><strong>Número de documento:</strong> {{ cliente.document_number }}</p>
+  <p><strong>Teléfono:</strong> {{ cliente.phone }}</p>
+  <p><strong>Rol:</strong> {{ cliente.role }}</p>
+</div>
+
+<!-- Mensaje si no hay resultados -->
+<div *ngIf="cliente === null && busquedaRealizada">
+  <p style="color: red;">No se han encontrado coincidencias.</p>
+</div>

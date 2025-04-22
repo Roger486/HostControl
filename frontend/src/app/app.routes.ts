@@ -12,6 +12,7 @@ import { ModificarPerfilComponent } from './pages/modificar-perfil/modificar-per
 import { VerificarIdentidadComponent } from './pages/verificar-identidad/verificar-identidad.component';
 import { PerfilModificadoComponent } from './pages/perfil-modificado/perfil-modificado.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { AdminClientesComponent } from './pages/admin/admin-clientes/admin-clientes.component';
 
 
 export const routes: Routes = [
@@ -31,7 +32,8 @@ export const routes: Routes = [
             { path: 'perfil/editar', component: ModificarPerfilComponent }, // Ruta a modificar perfil de cliente
             { path: 'verificar', component: VerificarIdentidadComponent }, // Ruta a verificar identidad
             { path: 'perfil/modificado', component: PerfilModificadoComponent }, // Ruta a perfil modificado
-            { path: 'admin', component: AdminComponent } // Ruta a panel administrador
+            { path: 'admin', component: AdminComponent }, // Ruta a panel administrador
+            { path: 'admin/clientes', component: AdminClientesComponent }, // Ruta a gestion de clientes
         ]
         },
         {
