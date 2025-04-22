@@ -834,13 +834,49 @@ If the reservation includes companions (other people staying), they must be incl
 
 ### PUT /api/reservations/{id}
 
-**Description:** Update a reservation and its companions.
+**Description:** Update a reservation and its companions. Logs the action performed (update, cancel, check-in, etc.).
 
 **Auth required:** ✅ Yes
 
 **Authorization:** Admins only (`update` policy)
 
 **Body (JSON):** Same as POST. Sending companions will replace all existing ones.
+- `guest_id` (optional): ID of the guest user.
+- `check_in_date` (optional): Date, required with `check_out_date`.
+- `check_out_date` (optional): Date, required with `check_in_date`.
+- `status` (optional): One of: `pending`, `confirmed`, `cancelled`, `checked_in`, `checked_out`.
+- `comments` (optional): String, max 255 characters.
+- `log_detail` (**required**): String, custom comment for the reservation log.
+- `companions` (optional): Array of companion objects. Sending companions replaces all existing ones.
+
+*Example:*
+
+```json
+{
+  "log_detail": "Testing the update logs",
+  "guest_id": 12,
+  "status": "confirmed",
+  "comments": "Actualizamos la reserva",
+  "check_in_date": "2025-10-04",
+  "check_out_date": "2025-10-05",
+  "companions": [
+    {
+      "first_name": "Nuevo",
+      "last_name_1": "Acompañante",
+      "document_type": "Passport",
+      "document_number": "85796063nw",
+      "birthdate": "2000-05-01"
+    },
+    {
+      "first_name": "Nuevo",
+      "last_name_1": "Acompañante",
+      "document_type": "DNI",
+      "document_number": "12345678A",
+      "birthdate": "2000-05-01"
+    }
+  ]
+}
+```
 
 **Success response (200):** Updated reservation with details
 
