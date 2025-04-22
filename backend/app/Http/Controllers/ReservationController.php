@@ -67,7 +67,7 @@ class ReservationController extends Controller
         event(new ReservationActionPerformed(
             $reservation,
             Auth::user(), // from Illuminate\Support\Facades\Auth, returns the authenticated user
-            ReservationLog::ACTION_CREATED
+            ReservationLog::ACTION_CREATE
         ));
 
         return (new ReservarionResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions'])))
@@ -124,11 +124,26 @@ class ReservationController extends Controller
             return $reservation;
         });
 
-        // Trigger event to register a new ReservationLog after creating a new Reservation
+        // Determine the specific log action based on status change
+        $logAction = ReservationLog::ACTION_UPDATE;
+
+        $statusToActionMap = [
+            Reservation::STATUS_CANCELLED => ReservationLog::ACTION_CANCEL,
+            Reservation::STATUS_CHECKED_IN => ReservationLog::ACTION_CHECK_IN,
+            Reservation::STATUS_CHECKED_OUT => ReservationLog::ACTION_CHECK_OUT,
+            Reservation::STATUS_CONFIRMED => ReservationLog::ACTION_CONFIRM,
+            Reservation::STATUS_PENDING => ReservationLog::ACTION_TO_PENDING
+        ];
+
+        if (isset($validated['status']) && $validated['status'] !== $reservation->status) {
+            $logAction = $statusToActionMap[$validated['status']] ?? ReservationLog::ACTION_UPDATE;
+        }
+
+        // Trigger event to register the ReservationLog
         event(new ReservationActionPerformed(
             $reservation,
             Auth::user(), // from Illuminate\Support\Facades\Auth, returns the authenticated user
-            ReservationLog::ACTION_UPDATED,
+            $logAction,
             $validated['log_detail']
         ));
 

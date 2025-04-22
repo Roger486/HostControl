@@ -11,18 +11,22 @@ class ReservationLog extends Model
     use HasFactory;
 
     // Reservation Log Actions
-    public const ACTION_CREATED = 'created';
-    public const ACTION_UPDATED = 'updated';
-    public const ACTION_CANCELLED = 'cancelled';
-    public const ACTION_CHECKED_IN = 'checked_in';
-    public const ACTION_CHECKED_OUT = 'checked_out';
+    public const ACTION_CREATE = 'create';
+    public const ACTION_UPDATE = 'update';
+    public const ACTION_CANCEL = 'cancel';
+    public const ACTION_CHECK_IN = 'check_in';
+    public const ACTION_CHECK_OUT = 'check_out';
+    public const ACTION_CONFIRM = 'confirm';
+    public const ACTION_TO_PENDING = 'unconfirm';
 
     public const ACTIONS = [
-        self::ACTION_CREATED,
-        self::ACTION_UPDATED,
-        self::ACTION_CANCELLED,
-        self::ACTION_CHECKED_IN,
-        self::ACTION_CHECKED_OUT
+        self::ACTION_CREATE,
+        self::ACTION_UPDATE,
+        self::ACTION_CANCEL,
+        self::ACTION_CHECK_IN,
+        self::ACTION_CHECK_OUT,
+        self::ACTION_CONFIRM,
+        self::ACTION_TO_PENDING
     ];
 
     protected $fillable = [
