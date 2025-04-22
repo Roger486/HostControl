@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReservationActionPerformed;
 use App\Http\Requests\Reservation\StoreReservationRequest;
 use App\Http\Requests\Reservation\UpdateReservationRequest;
 use App\Http\Resources\ReservarionResource;
 use App\Models\Accommodation\Accommodation;
 use App\Models\Reservation;
+use App\Models\ReservationLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -59,6 +62,13 @@ class ReservationController extends Controller
 
             return $reservation;
         });
+
+        // Trigger event to register a new ReservationLog after creating a new Reservation
+        event(new ReservationActionPerformed(
+            $reservation,
+            Auth::user(), // from Illuminate\Support\Facades\Auth, returns the authenticated user
+            ReservationLog::ACTION_CREATED
+        ));
 
         return (new ReservarionResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions'])))
             ->response()->setStatusCode(201);
