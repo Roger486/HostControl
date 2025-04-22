@@ -123,6 +123,15 @@ class ReservationController extends Controller
             }
             return $reservation;
         });
+
+        // Trigger event to register a new ReservationLog after creating a new Reservation
+        event(new ReservationActionPerformed(
+            $reservation,
+            Auth::user(), // from Illuminate\Support\Facades\Auth, returns the authenticated user
+            ReservationLog::ACTION_UPDATED,
+            $validated['log_detail']
+        ));
+
         return new ReservarionResource($updated->load(['bookedBy', 'guest', 'accommodation', 'companions']));
     }
 
