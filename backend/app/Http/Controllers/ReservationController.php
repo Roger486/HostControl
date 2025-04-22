@@ -109,11 +109,14 @@ class ReservationController extends Controller
             }
         }
 
+        $previousStatus = $reservation->status;
+
         $updated = DB::transaction(function () use ($validated, $reservation) {
 
+            // Update main reservation fields
+            $reservation->update(Arr::except($validated, ['companions']));
+
             if (isset($validated['companions']) && is_array($validated['companions'])) {
-                // Update main reservation fields
-                $reservation->update(Arr::except($validated, ['companions']));
                 // If companions provided, replace them
                 $reservation->companions()->delete();
 
@@ -135,11 +138,11 @@ class ReservationController extends Controller
             Reservation::STATUS_PENDING => ReservationLog::ACTION_TO_PENDING
         ];
 
-        if (isset($validated['status']) && $validated['status'] !== $reservation->status) {
+        if (isset($validated['status']) && $validated['status'] !== $previousStatus) {
             $logAction = $statusToActionMap[$validated['status']] ?? ReservationLog::ACTION_UPDATE;
         }
 
-        // Trigger event to register the ReservationLog
+        // Trigger event to register the ReservationLog based on action
         event(new ReservationActionPerformed(
             $reservation,
             Auth::user(), // from Illuminate\Support\Facades\Auth, returns the authenticated user
