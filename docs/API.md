@@ -33,6 +33,7 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [POST /api/accommodations/{id}/images](#post-apiaccommodationsidimages)
 - [PUT /api/accommodations/{id}](#put-apiaccommodationsid)
 - [DELETE /api/accommodations/{id}](#delete-apiaccommodationsid)
+- [DELETE /api/accommodations/images/{image}](#delete-apiaccommodationsimagesimage)
 
 ### 🗓️ Reservations
 - [GET /api/reservations](#get-apireservations)
@@ -727,8 +728,45 @@ curl -X POST http://localhost/api/accommodations/1/images \
 
 **Success response (204):** No content
 
-**Errors:**
+**Errors Responses:**
 - 404: Accommodation not found
+- 403 Forbidden: Unauthorized.
+- 401 Unauthenticated: Missing or invalid token.
+
+---
+
+### DELETE /api/accommodations/images/{image}
+
+**Description:** Delete an image associated with an accommodation. This removes both the file from storage and the database record.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`delete` policy on the accommodation)
+
+---
+
+**Path Parameters:**
+- `image` (integer, required): The ID of the image to delete.
+
+---
+
+**Example Request (cURL):**
+
+```bash
+curl -X DELETE http://localhost/api/accommodations/images/3 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+**Success response (204):** No content
+
+**Error Responses:**
+- 403 Forbidden: Unauthorized to delete the image.
+- 404 Not Found: Image does not exist.
+- 401 Unauthenticated: Missing or invalid token.
+
+**Notes:**
+- The image is physically removed from `storage/app/public/accommodations/`.
+- After deletion, the associated URL will no longer be accessible.
 
 ---
 

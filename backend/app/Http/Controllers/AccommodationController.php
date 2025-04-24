@@ -7,9 +7,11 @@ use App\Http\Requests\Accommodation\StoreAccommodationRequest;
 use App\Http\Requests\Accommodation\UpdateAccommodationRequest;
 use App\Http\Resources\AccommodationResource;
 use App\Models\Accommodation\Accommodation;
+use App\Models\Accommodation\AccommodationImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
@@ -161,5 +163,16 @@ class AccommodationController extends Controller
                 'image_path' => $path
             ]
         ]);
+    }
+
+    public function deleteImage(AccommodationImage $image)
+    {
+        $this->authorize('delete', $image->accommodation);
+
+        Storage::disk('public')->delete($image->image_path);
+
+        $image->delete();
+
+        return response()->noContent();
     }
 }
