@@ -50,8 +50,10 @@ Route::get('/accommodations/{accommodation}', [AccommodationController::class, '
 Route::middleware('auth:sanctum')->group(function () {
     // 🛡️ Admin only (authorization handled via policies)
     Route::post('/accommodations', [AccommodationController::class, 'store']);
+    Route::post('/accommodations/{accommodation}/images', [AccommodationController::class, 'uploadImage']);
     Route::put('/accommodations/{accommodation}', [AccommodationController::class, 'update']);
     Route::delete('/accommodations/{accommodation}', [AccommodationController::class, 'destroy']);
+    Route::delete('/accommodations/images/{image}', [AccommodationController::class, 'deleteImage']);
 });
 
 

@@ -7,8 +7,11 @@ use App\Http\Requests\Accommodation\StoreAccommodationRequest;
 use App\Http\Requests\Accommodation\UpdateAccommodationRequest;
 use App\Http\Resources\AccommodationResource;
 use App\Models\Accommodation\Accommodation;
+use App\Models\Accommodation\AccommodationImage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
@@ -133,6 +136,42 @@ class AccommodationController extends Controller
         $this->authorize('delete', $accommodation);
 
         $accommodation->delete();
+
+        return response()->noContent();
+    }
+
+    /**
+     * Upload an image and associate it with the Accommodation specified by id
+     */
+    public function uploadImage(Request $request, Accommodation $accommodation)
+    {
+        $this->authorize('update', $accommodation);
+
+        $request->validate([
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048']
+        ]);
+
+        $path = $request->file('image')->store('accommodations', 'public');
+
+        $accommodation->images()->create([
+            'image_path' => $path
+        ]);
+
+        return response()->json([
+            'data' => [
+                'url' => asset('storage/' . $path),
+                'image_path' => $path
+            ]
+        ]);
+    }
+
+    public function deleteImage(AccommodationImage $image)
+    {
+        $this->authorize('delete', $image->accommodation);
+
+        Storage::disk('public')->delete($image->image_path);
+
+        $image->delete();
 
         return response()->noContent();
     }

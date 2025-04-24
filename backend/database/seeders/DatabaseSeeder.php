@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             BungalowSeeder::class,
             RoomSeeder::class,
             HouseSeeder::class,
+            // Accommodation images
+            AccommodationImageSeeder::class,
             // With users and accommodations we can create reservations
             ReservationSeeder::class,
             // With reservations we can create companions

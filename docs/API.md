@@ -30,8 +30,10 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [GET /api/accommodations](#get-apiaccommodations)
 - [GET /api/accommodations/{id}](#get-apiaccommodationsid)
 - [POST /api/accommodations](#post-apiaccommodations)
+- [POST /api/accommodations/{id}/images](#post-apiaccommodationsidimages)
 - [PUT /api/accommodations/{id}](#put-apiaccommodationsid)
 - [DELETE /api/accommodations/{id}](#delete-apiaccommodationsid)
+- [DELETE /api/accommodations/images/{image}](#delete-apiaccommodationsimagesimage)
 
 ### 🗓️ Reservations
 - [GET /api/reservations](#get-apireservations)
@@ -652,6 +654,52 @@ These fields are required when creating or updating an accommodation of that typ
 
 ---
 
+### POST /api/accommodations/{id}/images
+
+**Description:** Upload an image and associate it with the specified accommodation.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy on the accommodation)
+
+**Path Parameters:**
+- `id` (integer, required): The ID of the accommodation.
+
+**Body Parameters (Form Data):**
+- `image` (file, required): The image file to upload. Accepted formats: JPEG, PNG, JPG, GIF. Max size: 2MB.
+
+---
+
+**Example Request (Postman or cURL):**
+
+```bash
+curl -X POST http://localhost/api/accommodations/1/images \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "image=@/path/to/image.jpg"
+```
+
+**Success response (200):**
+
+```json
+{
+  "data": {
+      "url": "http://localhost:8000/storage/accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png",
+      "image_path": "accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png"
+  }
+}
+```
+
+**Errors:**
+- 404: Accommodation not found.
+- 422: Image field is missing or invalid.
+- 403: Unauthorized (user lacks permissions to upload images).
+
+**Notes:**
+- Uploaded images are accessible via `/storage/accommodations/{filename}`.
+- The URL is generated automatically and returned for immediate use in frontend applications.
+
+---
+
 ### PUT /api/accommodations/{id}
 
 **Description:** Update general or type-specific fields of an accommodation.
@@ -680,8 +728,45 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Success response (204):** No content
 
-**Errors:**
+**Errors Responses:**
 - 404: Accommodation not found
+- 403 Forbidden: Unauthorized.
+- 401 Unauthenticated: Missing or invalid token.
+
+---
+
+### DELETE /api/accommodations/images/{image}
+
+**Description:** Delete an image associated with an accommodation. This removes both the file from storage and the database record.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`delete` policy on the accommodation)
+
+---
+
+**Path Parameters:**
+- `image` (integer, required): The ID of the image to delete.
+
+---
+
+**Example Request (cURL):**
+
+```bash
+curl -X DELETE http://localhost/api/accommodations/images/3 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+**Success response (204):** No content
+
+**Error Responses:**
+- 403 Forbidden: Unauthorized to delete the image.
+- 404 Not Found: Image does not exist.
+- 401 Unauthenticated: Missing or invalid token.
+
+**Notes:**
+- The image is physically removed from `storage/app/public/accommodations/`.
+- After deletion, the associated URL will no longer be accessible.
 
 ---
 
