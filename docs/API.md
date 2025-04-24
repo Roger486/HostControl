@@ -30,6 +30,7 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [GET /api/accommodations](#get-apiaccommodations)
 - [GET /api/accommodations/{id}](#get-apiaccommodationsid)
 - [POST /api/accommodations](#post-apiaccommodations)
+- [POST /api/accommodations/{id}/images](#post-apiaccommodationsidimages)
 - [PUT /api/accommodations/{id}](#put-apiaccommodationsid)
 - [DELETE /api/accommodations/{id}](#delete-apiaccommodationsid)
 
@@ -649,6 +650,52 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Errors:**
 - 422: Missing or wrong fields
+
+---
+
+### POST /api/accommodations/{id}/images
+
+**Description:** Upload an image and associate it with the specified accommodation.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy on the accommodation)
+
+**Path Parameters:**
+- `id` (integer, required): The ID of the accommodation.
+
+**Body Parameters (Form Data):**
+- `image` (file, required): The image file to upload. Accepted formats: JPEG, PNG, JPG, GIF. Max size: 2MB.
+
+---
+
+**Example Request (Postman or cURL):**
+
+```bash
+curl -X POST http://localhost/api/accommodations/1/images \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "image=@/path/to/image.jpg"
+```
+
+**Success response (200):**
+
+```json
+{
+  "data": {
+      "url": "http://localhost:8000/storage/accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png",
+      "image_path": "accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png"
+  }
+}
+```
+
+**Errors:**
+- 404: Accommodation not found.
+- 422: Image field is missing or invalid.
+- 403: Unauthorized (user lacks permissions to upload images).
+
+**Notes:**
+- Uploaded images are accessible via `/storage/accommodations/{filename}`.
+- The URL is generated automatically and returned for immediate use in frontend applications.
 
 ---
 
