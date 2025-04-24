@@ -129,7 +129,7 @@ class Accommodation extends Model
      */
     public static function withAllRelations()
     {
-        return array_map([Str::class, 'camel'], self::TYPES);
+        return array_merge(['images'], array_map([Str::class, 'camel'], self::TYPES));
         /*
         This sintax is also valid, but requires manual import of Str
         array_map('Str::camel', Accommodation::TYPES)

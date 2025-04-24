@@ -12,6 +12,13 @@ class AccommodationImage extends Model
         'image_path'
     ];
 
+    protected $appends = ['url'];
+
+    public function getUrlAttribute()
+    {
+        return asset('storage/' . $this->image_path);
+    }
+
     /**
      * Get the main accommodation details for this image.
      *

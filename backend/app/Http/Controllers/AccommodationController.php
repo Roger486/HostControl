@@ -7,6 +7,7 @@ use App\Http\Requests\Accommodation\StoreAccommodationRequest;
 use App\Http\Requests\Accommodation\UpdateAccommodationRequest;
 use App\Http\Resources\AccommodationResource;
 use App\Models\Accommodation\Accommodation;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -135,5 +136,30 @@ class AccommodationController extends Controller
         $accommodation->delete();
 
         return response()->noContent();
+    }
+
+    /**
+     * Upload an image and associate it with the Accommodation specified by id
+     */
+    public function uploadImage(Request $request, Accommodation $accommodation)
+    {
+        $this->authorize('update', $accommodation);
+
+        $request->validate([
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048']
+        ]);
+
+        $path = $request->file('image')->store('accommodations', 'public');
+
+        $accommodation->images()->create([
+            'image_path' => $path
+        ]);
+
+        return response()->json([
+            'data' => [
+                'url' => asset('storage/' . $path),
+                'image_path' => $path
+            ]
+        ]);
     }
 }
