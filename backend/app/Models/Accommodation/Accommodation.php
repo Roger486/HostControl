@@ -113,6 +113,16 @@ class Accommodation extends Model
     }
 
     /**
+     * Get the images associated with this Accommodation.
+     *
+     * One Accommodation can have many images.
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(AccommodationImage::class, 'accommodation_id');
+    }
+
+    /**
      * Return an array with the name of all relations with the correct lowerCamelCase format.
      * Since the array TYPES must be written in lower_snake_case,
      * we apply Str::camel to TYPES through array_map to make the conversion.
