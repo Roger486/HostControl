@@ -110,4 +110,15 @@ export class AuthService {
       params: filtros
     });
   }
+
+  // Actualizar datos de un cliente desde admin
+  actualizarCliente(id: number, datos: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+  
+    return this.http.put(`${this.apiUrl}/users/${id}`, datos, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 }
