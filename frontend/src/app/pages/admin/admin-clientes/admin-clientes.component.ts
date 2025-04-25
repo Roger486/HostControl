@@ -118,6 +118,7 @@ confirmarCambios() {
 cancelarEdicion() {
   // Simplemente reseteamos el formulario con los datos originales
   if (confirm('¿Cancelar la edición de datos?')) {
+    this.mostrarEdicion = false;
     this.edicionForm.patchValue({
       first_name: this.cliente.first_name,
       last_name_1: this.cliente.last_name_1,
