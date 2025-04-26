@@ -129,5 +129,28 @@ cancelarEdicion() {
     });
   }
 }
+
+confirmarEliminacion() {
+  if (confirm('¿Seguro que quieres eliminar este cliente? Esta acción no se puede deshacer.')) {
+    this.auth.eliminarCliente(this.cliente.id).subscribe({
+      next: () => {
+        alert('Cliente eliminado correctamente.');
+        // Limpiamos pantalla
+        this.mostrarEdicion = false;
+        this.cliente = null;
+        this.busquedaRealizada = false;
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          alert('El usuario no existe o ya fue eliminado.');
+        } else if (err.status === 403) {
+          alert('No tienes permisos para eliminar este usuario.');
+        } else {
+          alert('Ocurrió un error inesperado al eliminar el usuario.');
+        }
+      }
+    });
+  }
+}
 }
 

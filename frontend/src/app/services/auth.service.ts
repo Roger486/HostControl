@@ -121,4 +121,15 @@ export class AuthService {
       }
     });
   }
+
+  // Damos de baja a un cliente desde admin
+  eliminarCliente(id: number): Observable<any> {
+    const token = localStorage.getItem('authToken');
+  
+    return this.http.delete(`${this.apiUrl}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 }
