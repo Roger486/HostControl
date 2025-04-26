@@ -1,0 +1,55 @@
+<h2>Gestión de reservas</h2>
+
+<form [formGroup]="busquedaForm" (ngSubmit)="buscarReservas()">
+  <label for="email">Email:</label>
+  <input id="email" type="email" formControlName="email" />
+
+  <label for="checkin">Fecha de check-in:</label>
+  <input id="checkin" type="date" formControlName="fecha_checkin" />
+
+  <label for="checkout">Fecha de check-out:</label>
+  <input id="checkout" type="date" formControlName="fecha_checkout" />
+
+  <button type="submit">Buscar</button>
+</form>
+
+<hr />
+
+<!-- Mostrar resultados en tabla -->
+<div *ngIf="reservas.length > 0">
+  <h3>Resultados encontrados:</h3>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+      <tr>
+        <th>ID Reserva</th>
+        <th>Cliente</th>
+        <th>Email</th>
+        <th>Check-in</th>
+        <th>Check-out</th>
+        <th>Código alojamiento</th>
+        <th>Tipo de alojamiento</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let reserva of reservas">
+        <td>{{ reserva.id }}</td>
+        <td>{{ reserva.booked_by?.first_name }} {{ reserva.booked_by?.last_name_1 }}</td>
+        <td>{{ reserva.booked_by?.email }}</td>
+        <td>{{ reserva.check_in_date?.substring(0, 10) }}</td>
+        <td>{{ reserva.check_out_date?.substring(0, 10) }}</td>
+        <td>{{ reserva.accommodation?.accommodation_code }}</td>
+        <td>{{ reserva.accommodation?.type }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Mensaje si no hay resultados -->
+<div *ngIf="reservas.length === 0 && busquedaRealizada">
+  <p style="color: red;">No se han encontrado reservas.</p>
+</div>
+
+<hr />
+
+<!-- Botón volver -->
+<button (click)="volverAdmin()">Volver a administración</button>

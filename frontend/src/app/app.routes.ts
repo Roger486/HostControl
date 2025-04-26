@@ -13,7 +13,7 @@ import { VerificarIdentidadComponent } from './pages/verificar-identidad/verific
 import { PerfilModificadoComponent } from './pages/perfil-modificado/perfil-modificado.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { AdminClientesComponent } from './pages/admin/admin-clientes/admin-clientes.component';
-
+import { AdminReservasComponent } from './pages/admin/admin-reservas/admin-reservas.component';
 
 export const routes: Routes = [
     {
@@ -34,6 +34,7 @@ export const routes: Routes = [
             { path: 'perfil/modificado', component: PerfilModificadoComponent }, // Ruta a perfil modificado
             { path: 'admin', component: AdminComponent }, // Ruta a panel administrador
             { path: 'admin/clientes', component: AdminClientesComponent }, // Ruta a gestion de clientes
+            { path: 'admin/reservas', component: AdminReservasComponent }, // Ruta a gestion de reservas
         ]
         },
         {
