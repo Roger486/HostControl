@@ -15,6 +15,7 @@ export class AdminReservasComponent {
   busquedaForm: FormGroup;
   reservas: any[] = [];
   busquedaRealizada: boolean = false;
+  reservaSeleccionada: any = null; // Variable para guardar la reserva a mostrar
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.busquedaForm = this.fb.group({
@@ -58,6 +59,14 @@ export class AdminReservasComponent {
         console.error('Error al buscar reservas:', err);
       }
     });
+  }
+
+  verDetalles(reserva: any) {
+    this.reservaSeleccionada = reserva;
+  }
+
+  cerrarDetalles() {
+    this.reservaSeleccionada = null;
   }
 
   volverAdmin() {

@@ -39,9 +39,42 @@
         <td>{{ reserva.check_out_date?.substring(0, 10) }}</td>
         <td>{{ reserva.accommodation?.accommodation_code }}</td>
         <td>{{ reserva.accommodation?.type }}</td>
+        <td>
+          <button type="button" (click)="verDetalles(reserva)">Ver detalles</button>
+        </td>
       </tr>
     </tbody>
   </table>
+</div>
+
+<!-- Muestra los datos de la reserva seleccionada -->
+<div *ngIf="reservaSeleccionada">
+  <h3>Detalles de la reserva</h3>
+  
+  <p><strong>ID Reserva:</strong> {{ reservaSeleccionada.id }}</p>
+  <p><strong>Cliente:</strong> {{ reservaSeleccionada.booked_by?.first_name }} {{ reservaSeleccionada.booked_by?.last_name_1 }}</p>
+  <p><strong>Email:</strong> {{ reservaSeleccionada.booked_by?.email }}</p>
+  <p><strong>Check-in:</strong> {{ reservaSeleccionada.check_in_date?.substring(0,10) }}</p>
+  <p><strong>Check-out:</strong> {{ reservaSeleccionada.check_out_date?.substring(0,10) }}</p>
+
+  <h4>Alojamiento:</h4>
+  <p><strong>Código:</strong> {{ reservaSeleccionada.accommodation?.accommodation_code }}</p>
+  <p><strong>Tipo:</strong> {{ reservaSeleccionada.accommodation?.type }}</p>
+
+  <h4>Huésped principal:</h4>
+  <p><strong>Nombre:</strong> {{ reservaSeleccionada.guest?.first_name }} {{ reservaSeleccionada.guest?.last_name_1 }}</p>
+  <p><strong>Email:</strong> {{ reservaSeleccionada.guest?.email }}</p>
+
+  <h4>Acompañantes:</h4>
+  <ul>
+    <li *ngFor="let comp of reservaSeleccionada.companions">
+      {{ comp.first_name }} {{ comp.last_name_1 }} ({{ comp.birthdate?.substring(0,10) }})
+    </li>
+  </ul>
+
+  <p><strong>Comentarios:</strong> {{ reservaSeleccionada.comments || 'Sin comentarios' }}</p>
+
+  <button type="button" (click)="cerrarDetalles()">Cerrar detalles</button>
 </div>
 
 <!-- Mensaje si no hay resultados -->
