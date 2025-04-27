@@ -12,17 +12,14 @@ export class AdminComponent {
   constructor(private router: Router) {}
 
   irAClientes() {
-    // TODO ruta a la gestion de clientes
     this.router.navigate(['/admin/clientes']);
   }
 
   irAReservas() {
-    // TODO ruta a gestion de reservas
     this.router.navigate(['/admin/reservas']);
   }
 
   irAInmuebles() {
-    // TODO ruta a gestion de inmuebles
     this.router.navigate(['/admin/inmuebles']);
   }
 

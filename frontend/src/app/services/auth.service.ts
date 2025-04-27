@@ -133,7 +133,7 @@ export class AuthService {
     });
   }
 
-  // Llamamos al backend para obtener todas as reservas
+  // Llamamos al backend para obtener todas las reservas
   getReservas(): Observable<any> {
     const token = localStorage.getItem('authToken');
   

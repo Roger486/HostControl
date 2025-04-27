@@ -36,6 +36,7 @@ export class AdminReservasComponent {
   buscarReservas() {
     const filtros = this.busquedaForm.value;
 
+    // TODO get user id by email -> get reservas by guest_user id
     this.auth.getReservas().subscribe({
       next: (res) => {
         console.log('Reservas obtenidas:', res.data); // Para depurar las reservas obtenidas
@@ -87,7 +88,7 @@ export class AdminReservasComponent {
     const datosActualizados = {
       check_in_date: cambios.nuevoCheckin,
       check_out_date: cambios.nuevoCheckout,
-      comments: cambios.comentarios
+      log_detail: cambios.comentarios
     };
   
     if (confirm('¿Confirmas los cambios en la reserva?')) {
