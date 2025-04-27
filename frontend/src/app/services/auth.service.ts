@@ -143,4 +143,15 @@ export class AuthService {
       }
     });
   }
+
+  // Llamamos al backend para modificar una reserva
+  modificarReserva(id: number, datos: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+  
+    return this.http.put(`${this.apiUrl}/reservations/${id}`, datos, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 }

@@ -15,7 +15,9 @@ export class AdminReservasComponent {
   busquedaForm: FormGroup;
   reservas: any[] = [];
   busquedaRealizada: boolean = false;
-  reservaSeleccionada: any = null; // Variable para guardar la reserva a mostrar
+  reservaSeleccionada: any = null; // guardar la reserva a mostrar
+  reservaAModificar: any = null; // guardar la reserva en edición
+  modificarForm!: FormGroup;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.busquedaForm = this.fb.group({
@@ -23,8 +25,14 @@ export class AdminReservasComponent {
       fecha_checkin: [''],
       fecha_checkout: ['']
     });
+    this.modificarForm = this.fb.group({
+      nuevoCheckin: [''],
+      nuevoCheckout: [''],
+      comentarios: ['']
+    });
+    
   }
-
+  // Método para inicializar el formulario de búsqueda
   buscarReservas() {
     const filtros = this.busquedaForm.value;
 
@@ -61,6 +69,46 @@ export class AdminReservasComponent {
     });
   }
 
+  // Método para inicializar el formulario de modificación
+  guardarCambiosReserva() {
+    const cambios = this.modificarForm.value;
+  
+    // Validación: check-in debe ser anterior a check-out
+    if (!cambios.nuevoCheckin || !cambios.nuevoCheckout) {
+      alert('Debes introducir ambas fechas.');
+      return;
+    }
+  
+    if (cambios.nuevoCheckin >= cambios.nuevoCheckout) {
+      alert('La fecha de entrada debe ser anterior a la fecha de salida y no pueden ser el mismo día.');
+      return;
+    }
+  
+    const datosActualizados = {
+      check_in_date: cambios.nuevoCheckin,
+      check_out_date: cambios.nuevoCheckout,
+      comments: cambios.comentarios
+    };
+  
+    if (confirm('¿Confirmas los cambios en la reserva?')) {
+      this.auth.modificarReserva(this.reservaAModificar.id, datosActualizados).subscribe({
+        next: () => {
+          alert('Reserva modificada correctamente.');
+          this.reservaAModificar = null;
+          this.buscarReservas(); // Recargar reservas
+        },
+        error: (err) => {
+          if (err.status === 422) {
+            alert('Las fechas seleccionadas no están disponibles o hay un error en la modificación.');
+          } else {
+            console.error('Error al modificar reserva:', err);
+            alert('Error inesperado al modificar la reserva.');
+          }
+        }
+      });
+    }
+  }
+
   verDetalles(reserva: any) {
     this.reservaSeleccionada = reserva;
   }
@@ -69,9 +117,17 @@ export class AdminReservasComponent {
     this.reservaSeleccionada = null;
   }
 
+  modificarReserva(reserva: any) {
+    this.reservaAModificar = reserva;
+  }
+
   volverAdmin() {
     this.router.navigate(['/admin']);
   }
 
+  cancelarModificacion() {
+    this.reservaAModificar = null;
+    this.modificarForm.reset();
+  }
 
 }

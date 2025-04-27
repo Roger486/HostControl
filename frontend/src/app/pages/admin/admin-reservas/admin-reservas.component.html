@@ -28,6 +28,7 @@
         <th>Check-out</th>
         <th>Código alojamiento</th>
         <th>Tipo de alojamiento</th>
+        <th>Estado</th>
       </tr>
     </thead>
     <tbody>
@@ -39,8 +40,10 @@
         <td>{{ reserva.check_out_date?.substring(0, 10) }}</td>
         <td>{{ reserva.accommodation?.accommodation_code }}</td>
         <td>{{ reserva.accommodation?.type }}</td>
+        <td>{{ reserva.status }}</td>
         <td>
           <button type="button" (click)="verDetalles(reserva)">Ver detalles</button>
+          <button type="button" (click)="modificarReserva(reserva)">Modificar reserva</button>
         </td>
       </tr>
     </tbody>
@@ -75,6 +78,26 @@
   <p><strong>Comentarios:</strong> {{ reservaSeleccionada.comments || 'Sin comentarios' }}</p>
 
   <button type="button" (click)="cerrarDetalles()">Cerrar detalles</button>
+</div>
+
+<!-- Modificamos la reserva -->
+<div *ngIf="reservaAModificar">
+  <h3>Modificar Reserva ID: {{ reservaAModificar.id }}</h3>
+
+  <form [formGroup]="modificarForm" (ngSubmit)="guardarCambiosReserva()">
+    <label for="nuevoCheckin">Nuevo check-in:</label>
+    <input id="nuevoCheckin" type="date" formControlName="nuevoCheckin" />
+
+    <label for="nuevoCheckout">Nuevo check-out:</label>
+    <input id="nuevoCheckout" type="date" formControlName="nuevoCheckout" />
+
+    <label for="comentarios">Comentarios de la modificación:</label>
+    <textarea id="comentarios" formControlName="comentarios"></textarea>
+
+    <br><br>
+    <button type="submit">Guardar cambios</button>
+    <button type="button" (click)="cancelarModificacion()">Cancelar</button>
+  </form>
 </div>
 
 <!-- Mensaje si no hay resultados -->
