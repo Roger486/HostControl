@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Accommodation extends Model
@@ -113,13 +114,47 @@ class Accommodation extends Model
     }
 
     /**
+     * Get the images associated with this Accommodation.
+     *
+     * One Accommodation can have many images.
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(AccommodationImage::class, 'accommodation_id');
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * This method sets up an Eloquent model event listener that listens for the
+     * deletion of an Accommodation. When an Accommodation is being deleted,
+     * it automatically iterates through all related images and deletes
+     * the corresponding files from the storage disk.
+     *
+     * Note:
+     * - The database records for images are removed automatically due to
+     *   the ON DELETE CASCADE rule defined in the foreign key constraint.
+     * - This method ensures that no orphaned files remain in storage.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::deleting(function ($accommodation) {
+            foreach ($accommodation->images as $image) {
+                Storage::disk('public')->delete($image->image_path);
+            }
+        });
+    }
+
+    /**
      * Return an array with the name of all relations with the correct lowerCamelCase format.
      * Since the array TYPES must be written in lower_snake_case,
      * we apply Str::camel to TYPES through array_map to make the conversion.
      */
     public static function withAllRelations()
     {
-        return array_map([Str::class, 'camel'], self::TYPES);
+        return array_merge(['images'], array_map([Str::class, 'camel'], self::TYPES));
         /*
         This sintax is also valid, but requires manual import of Str
         array_map('Str::camel', Accommodation::TYPES)

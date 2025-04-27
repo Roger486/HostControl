@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccommodationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ReservationLogController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,8 +50,10 @@ Route::get('/accommodations/{accommodation}', [AccommodationController::class, '
 Route::middleware('auth:sanctum')->group(function () {
     // 🛡️ Admin only (authorization handled via policies)
     Route::post('/accommodations', [AccommodationController::class, 'store']);
+    Route::post('/accommodations/{accommodation}/images', [AccommodationController::class, 'uploadImage']);
     Route::put('/accommodations/{accommodation}', [AccommodationController::class, 'update']);
     Route::delete('/accommodations/{accommodation}', [AccommodationController::class, 'destroy']);
+    Route::delete('/accommodations/images/{image}', [AccommodationController::class, 'deleteImage']);
 });
 
 
@@ -70,4 +73,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // 🔐 Current authenticated user actions
     Route::post('/reservations', [ReservationController::class, 'store']);
     Route::get('/user/reservations', [ReservationController::class, 'ownReservations']);
+});
+
+// =========================
+// 🗒️ RESERVATION LOGS
+// =========================
+
+Route::middleware('auth:sanctum')->group(function () {
+    // 🛡️ Admin only (authorization handled via policies)
+    Route::get('reservation_logs/{reservation}', [ReservationLogController::class, 'index']);
 });

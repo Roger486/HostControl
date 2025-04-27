@@ -34,6 +34,9 @@ class UpdateReservationRequest extends FormRequest
             'status' => ['sometimes', Rule::in(Reservation::STATUSES)],
             'comments' => ['nullable', 'string', 'max:255'],
 
+            // Log detail for the reservation log
+            'log_detail' => ['required', 'string', 'min:4', 'max:255'],
+
             // Companions validation rules
             'companions' => ['sometimes', 'array'],
             'companions.*.document_type' => ['sometimes', 'required', Rule::in(Companion::DOCUMENT_TYPES)],

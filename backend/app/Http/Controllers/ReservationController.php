@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReservationActionPerformed;
 use App\Http\Requests\Reservation\StoreReservationRequest;
 use App\Http\Requests\Reservation\UpdateReservationRequest;
 use App\Http\Resources\ReservarionResource;
 use App\Models\Accommodation\Accommodation;
 use App\Models\Reservation;
+use App\Models\ReservationLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -60,6 +63,13 @@ class ReservationController extends Controller
             return $reservation;
         });
 
+        // Trigger event to register a new ReservationLog after creating a new Reservation
+        event(new ReservationActionPerformed(
+            $reservation,
+            Auth::user(), // from Illuminate\Support\Facades\Auth, returns the authenticated user
+            ReservationLog::ACTION_CREATE
+        ));
+
         return (new ReservarionResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions'])))
             ->response()->setStatusCode(201);
     }
@@ -99,11 +109,14 @@ class ReservationController extends Controller
             }
         }
 
+        $previousStatus = $reservation->status;
+
         $updated = DB::transaction(function () use ($validated, $reservation) {
 
+            // Update main reservation fields
+            $reservation->update(Arr::except($validated, ['companions']));
+
             if (isset($validated['companions']) && is_array($validated['companions'])) {
-                // Update main reservation fields
-                $reservation->update(Arr::except($validated, ['companions']));
                 // If companions provided, replace them
                 $reservation->companions()->delete();
 
@@ -113,6 +126,30 @@ class ReservationController extends Controller
             }
             return $reservation;
         });
+
+        // Determine the specific log action based on status change
+        $logAction = ReservationLog::ACTION_UPDATE;
+
+        $statusToActionMap = [
+            Reservation::STATUS_CANCELLED => ReservationLog::ACTION_CANCEL,
+            Reservation::STATUS_CHECKED_IN => ReservationLog::ACTION_CHECK_IN,
+            Reservation::STATUS_CHECKED_OUT => ReservationLog::ACTION_CHECK_OUT,
+            Reservation::STATUS_CONFIRMED => ReservationLog::ACTION_CONFIRM,
+            Reservation::STATUS_PENDING => ReservationLog::ACTION_TO_PENDING
+        ];
+
+        if (isset($validated['status']) && $validated['status'] !== $previousStatus) {
+            $logAction = $statusToActionMap[$validated['status']] ?? ReservationLog::ACTION_UPDATE;
+        }
+
+        // Trigger event to register the ReservationLog based on action
+        event(new ReservationActionPerformed(
+            $reservation,
+            Auth::user(), // from Illuminate\Support\Facades\Auth, returns the authenticated user
+            $logAction,
+            $validated['log_detail']
+        ));
+
         return new ReservarionResource($updated->load(['bookedBy', 'guest', 'accommodation', 'companions']));
     }
 

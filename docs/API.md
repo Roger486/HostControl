@@ -30,8 +30,10 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [GET /api/accommodations](#get-apiaccommodations)
 - [GET /api/accommodations/{id}](#get-apiaccommodationsid)
 - [POST /api/accommodations](#post-apiaccommodations)
+- [POST /api/accommodations/{id}/images](#post-apiaccommodationsidimages)
 - [PUT /api/accommodations/{id}](#put-apiaccommodationsid)
 - [DELETE /api/accommodations/{id}](#delete-apiaccommodationsid)
+- [DELETE /api/accommodations/images/{image}](#delete-apiaccommodationsimagesimage)
 
 ### 🗓️ Reservations
 - [GET /api/reservations](#get-apireservations)
@@ -40,6 +42,9 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [PUT /api/reservations/{id}](#put-apireservationsid)
 - [DELETE /api/reservations/{id}](#delete-apireservationsid)
 - [GET /api/user/reservations](#get-apiuserreservations)
+
+### 🗒️ Reservation Logs
+- [GET /api/reservation_logs/{reservation}](#get-apireservation_logsreservation_id)
 
 ### 👮 Auth
 - [POST /api/login](#post-apilogin)
@@ -649,6 +654,52 @@ These fields are required when creating or updating an accommodation of that typ
 
 ---
 
+### POST /api/accommodations/{id}/images
+
+**Description:** Upload an image and associate it with the specified accommodation.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy on the accommodation)
+
+**Path Parameters:**
+- `id` (integer, required): The ID of the accommodation.
+
+**Body Parameters (Form Data):**
+- `image` (file, required): The image file to upload. Accepted formats: JPEG, PNG, JPG, GIF. Max size: 2MB.
+
+---
+
+**Example Request (Postman or cURL):**
+
+```bash
+curl -X POST http://localhost/api/accommodations/1/images \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "image=@/path/to/image.jpg"
+```
+
+**Success response (200):**
+
+```json
+{
+  "data": {
+      "url": "http://localhost:8000/storage/accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png",
+      "image_path": "accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png"
+  }
+}
+```
+
+**Errors:**
+- 404: Accommodation not found.
+- 422: Image field is missing or invalid.
+- 403: Unauthorized (user lacks permissions to upload images).
+
+**Notes:**
+- Uploaded images are accessible via `/storage/accommodations/{filename}`.
+- The URL is generated automatically and returned for immediate use in frontend applications.
+
+---
+
 ### PUT /api/accommodations/{id}
 
 **Description:** Update general or type-specific fields of an accommodation.
@@ -677,8 +728,45 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Success response (204):** No content
 
-**Errors:**
+**Errors Responses:**
 - 404: Accommodation not found
+- 403 Forbidden: Unauthorized.
+- 401 Unauthenticated: Missing or invalid token.
+
+---
+
+### DELETE /api/accommodations/images/{image}
+
+**Description:** Delete an image associated with an accommodation. This removes both the file from storage and the database record.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`delete` policy on the accommodation)
+
+---
+
+**Path Parameters:**
+- `image` (integer, required): The ID of the image to delete.
+
+---
+
+**Example Request (cURL):**
+
+```bash
+curl -X DELETE http://localhost/api/accommodations/images/3 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+**Success response (204):** No content
+
+**Error Responses:**
+- 403 Forbidden: Unauthorized to delete the image.
+- 404 Not Found: Image does not exist.
+- 401 Unauthenticated: Missing or invalid token.
+
+**Notes:**
+- The image is physically removed from `storage/app/public/accommodations/`.
+- After deletion, the associated URL will no longer be accessible.
 
 ---
 
@@ -834,13 +922,49 @@ If the reservation includes companions (other people staying), they must be incl
 
 ### PUT /api/reservations/{id}
 
-**Description:** Update a reservation and its companions.
+**Description:** Update a reservation and its companions. Logs the action performed (update, cancel, check-in, etc.).
 
 **Auth required:** ✅ Yes
 
 **Authorization:** Admins only (`update` policy)
 
 **Body (JSON):** Same as POST. Sending companions will replace all existing ones.
+- `guest_id` (optional): ID of the guest user.
+- `check_in_date` (optional): Date, required with `check_out_date`.
+- `check_out_date` (optional): Date, required with `check_in_date`.
+- `status` (optional): One of: `pending`, `confirmed`, `cancelled`, `checked_in`, `checked_out`.
+- `comments` (optional): String, max 255 characters.
+- `log_detail` (**required**): String, custom comment for the reservation log.
+- `companions` (optional): Array of companion objects. Sending companions replaces all existing ones.
+
+*Example:*
+
+```json
+{
+  "log_detail": "Testing the update logs",
+  "guest_id": 12,
+  "status": "confirmed",
+  "comments": "Actualizamos la reserva",
+  "check_in_date": "2025-10-04",
+  "check_out_date": "2025-10-05",
+  "companions": [
+    {
+      "first_name": "Nuevo",
+      "last_name_1": "Acompañante",
+      "document_type": "Passport",
+      "document_number": "85796063nw",
+      "birthdate": "2000-05-01"
+    },
+    {
+      "first_name": "Nuevo",
+      "last_name_1": "Acompañante",
+      "document_type": "DNI",
+      "document_number": "12345678A",
+      "birthdate": "2000-05-01"
+    }
+  ]
+}
+```
 
 **Success response (200):** Updated reservation with details
 
@@ -924,6 +1048,78 @@ If the reservation includes companions (other people staying), they must be incl
   "error": "You must be logged in to view your reservations."
 }
 ```
+
+---
+
+## 🗒️ Reservation Logs
+
+These endpoints give access to the logs made in the reservations.
+
+### GET /api/reservation_logs/{reservation_id}
+
+**Description:** Get a paginated list of all logs for a specific reservation, including user details for each action performed.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`viewAny` policy on reservations since it depends on their access)
+
+**Success response example (200):**
+
+```json
+{
+  "data": [
+    {
+      "id": 18,
+      "user_id": 1,
+      "reservation_id": 1,
+      "action_type": "check_out",
+      "log_detail": "Autem et quaerat eligendi. Quo eius iste qui nihil reiciendis beatae voluptatem.",
+      "created_at": "2025-04-22T11:38:40.000000Z",
+      "updated_at": "2025-04-22T11:38:40.000000Z",
+      "user": {
+        "id": 1,
+        "first_name": "Hunter",
+        "last_name_1": "Hudson",
+        "last_name_2": "Kovacek",
+        "email": "parisian.jayme@example.net",
+        "email_verified_at": "2025-04-22T11:38:24.000000Z",
+        "birthdate": "1975-03-12T00:00:00.000000Z",
+        "address": "51120 Doyle Loop\nWittingland, WI 88212",
+        "document_type": "DNI",
+        "document_number": "79792835ms",
+        "phone": "1-351-993-8914",
+        "role": "admin",
+        "comments": "Eaque placeat aliquid sunt sapiente occaecati. Optio et nobis harum.",
+        "created_at": "2025-04-22T11:38:25.000000Z",
+        "updated_at": "2025-04-22T11:38:25.000000Z"
+      }
+    }
+  ],
+  "links": {
+    "first": "http://localhost/api/reservation_logs/1?page=1",
+    "last": "http://localhost/api/reservation_logs/1?page=1",
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "path": "http://localhost/api/reservation_logs/1",
+    "per_page": 10,
+    "to": 1,
+    "total": 1
+  }
+}
+```
+
+**Errors:**
+
+- **404**: Reservation not found.
+
+- **403**: Unauthorized to view reservation logs.
+
+- **401**: Unauthenticated (missing or invalid token).
 
 ---
 
