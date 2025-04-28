@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Events\ReservationActionPerformed;
 use App\Http\Requests\Reservation\StoreReservationRequest;
 use App\Http\Requests\Reservation\UpdateReservationRequest;
-use App\Http\Resources\ReservarionResource;
+use App\Http\Resources\ReservationResource;
 use App\Models\Accommodation\Accommodation;
 use App\Models\Reservation;
 use App\Models\ReservationLog;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -26,7 +27,7 @@ class ReservationController extends Controller
         $this->authorize('viewAny', Reservation::class);
 
         $reservations = Reservation::with('bookedBy', 'guest', 'accommodation', 'companions')->paginate(10);
-        return ReservarionResource::collection($reservations);
+        return ReservationResource::collection($reservations);
     }
 
     /**
@@ -70,7 +71,7 @@ class ReservationController extends Controller
             ReservationLog::ACTION_CREATE
         ));
 
-        return (new ReservarionResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions'])))
+        return (new ReservationResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions'])))
             ->response()->setStatusCode(201);
     }
 
@@ -81,7 +82,7 @@ class ReservationController extends Controller
     {
         $this->authorize('view', $reservation);
 
-        return new ReservarionResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']));
+        return new ReservationResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']));
     }
 
     /**
@@ -150,7 +151,7 @@ class ReservationController extends Controller
             $validated['log_detail']
         ));
 
-        return new ReservarionResource($updated->load(['bookedBy', 'guest', 'accommodation', 'companions']));
+        return new ReservationResource($updated->load(['bookedBy', 'guest', 'accommodation', 'companions']));
     }
 
     /**
@@ -164,11 +165,37 @@ class ReservationController extends Controller
         return response()->noContent();
     }
 
+    /**
+     * Retrieve all reservations for the authenticated user.
+     *
+     * @param \Illuminate\Http\Request $request The current HTTP request instance, used to get the authenticated user.
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection A collection of the user's reservations.
+     */
     public function ownReservations(Request $request)
     {
         $user = $request->user();
         $reservations = $user->guestReservations()
             ->with('bookedBy', 'guest', 'accommodation', 'companions')->get();
-        return ReservarionResource::collection($reservations);
+        return ReservationResource::collection($reservations);
+    }
+
+    /**
+     * Retrieve all reservations for a specific guest user, only accessible by authorized users.
+     *
+     * @param \App\Models\User $user
+     * The user (guest) whose reservations are being retrieved.
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * A collection of the specified user's reservations.
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * If the current user is not authorized to view others' reservations.
+     */
+    public function getByGuest(User $user)
+    {
+        $this->authorize('viewAny', Reservation::class);
+
+        $reservations = $user->guestReservations()
+        ->with('bookedBy', 'guest', 'accommodation', 'companions')->get();
+        return ReservationResource::collection($reservations);
     }
 }
