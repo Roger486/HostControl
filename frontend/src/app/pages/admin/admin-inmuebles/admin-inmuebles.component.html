@@ -1,0 +1,87 @@
+<h1>Gestión de Inmuebles</h1>
+
+<!-- Filtro por tipo -->
+<div>
+  <label for="tipo">Filtrar por tipo:</label>
+  <select id="tipo" [(ngModel)]="tipoSeleccionado">
+    <option value="">Todos</option>
+    <option value="bungalow">Bungalow</option>
+    <option value="camping_spot">Camping Spot</option>
+    <option value="house">House</option>
+    <option value="room">Room</option>
+  </select>
+  <button (click)="buscarPorTipo()">Buscar</button>
+</div>
+
+<br>
+
+<div *ngIf="cargando">Cargando inmuebles...</div>
+<div *ngIf="error">{{ error }}</div>
+
+<div *ngIf="!cargando && inmuebles.length > 0">
+  <ul>
+    <li *ngFor="let inmueble of inmuebles" style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+      <strong>ID:</strong> {{ inmueble.id }}<br>
+      <strong>Código:</strong> {{ inmueble.accommodation_code }}<br>
+      <strong>Tipo:</strong> {{ inmueble.type }}<br>
+      <strong>Sección:</strong> {{ inmueble.section }}<br>
+      <strong>Capacidad:</strong> {{ inmueble.capacity }} personas<br>
+      <strong>Precio por día:</strong> {{ inmueble.price_per_day }}€<br>
+      <strong>Comentarios:</strong> {{ inmueble.comments || 'Sin comentarios' }}<br>
+
+      <!-- Mostrar campos especiales según el tipo -->
+      <div *ngIf="inmueble.house">
+        <strong>Habitaciones:</strong> {{ inmueble.house.room_amount }}<br>
+        <strong>Camas:</strong> {{ inmueble.house.bed_amount }}<br>
+        <strong>Aire acondicionado:</strong> {{ inmueble.house.has_air_conditioning ? 'Sí' : 'No' }}
+      </div>
+
+      <div *ngIf="inmueble.bungalow">
+        <strong>Camas:</strong> {{ inmueble.bungalow.bed_amount }}<br>
+        <strong>Aire acondicionado:</strong> {{ inmueble.bungalow.has_air_conditioning ? 'Sí' : 'No' }}<br>
+        <strong>Cocina:</strong> {{ inmueble.bungalow.has_kitchen ? 'Sí' : 'No' }}
+      </div>
+
+      <div *ngIf="inmueble.camping_spot">
+        <strong>Área (m²):</strong> {{ inmueble.camping_spot.area_size_m2 }}<br>
+        <strong>Electricidad:</strong> {{ inmueble.camping_spot.has_electricity ? 'Sí' : 'No' }}<br>
+        <strong>Acepta caravana:</strong> {{ inmueble.camping_spot.accepts_caravan ? 'Sí' : 'No' }}
+      </div>
+
+      <div *ngIf="inmueble.room">
+        <strong>Camas:</strong> {{ inmueble.room.bed_amount }}<br>
+        <strong>Aire acondicionado:</strong> {{ inmueble.room.has_air_conditioning ? 'Sí' : 'No' }}<br>
+        <strong>Baño privado:</strong> {{ inmueble.room.has_private_wc ? 'Sí' : 'No' }}
+      </div>
+
+      <br>
+      <button (click)="eliminarInmueble(inmueble.id)">Eliminar</button>
+    </li>
+  </ul>
+
+  <hr>
+
+<h2>Actualizar Precio de Inmueble</h2>
+
+<div>
+  <label>ID del inmueble:</label>
+  <input type="number" [(ngModel)]="idInmuebleActualizar">
+
+  <label>Nuevo precio por día (€):</label>
+  <input type="number" [(ngModel)]="nuevoPrecio">
+
+  <button (click)="actualizarPrecioInmueble()">Actualizar Precio</button>
+</div>
+
+<hr>
+
+  <div style="margin-top: 20px;">
+    <button (click)="anteriorPagina()" [disabled]="currentPage <= 1">Anterior</button>
+    <span>Página {{ currentPage }} de {{ lastPage }}</span>
+    <button (click)="siguientePagina()" [disabled]="currentPage >= lastPage">Siguiente</button>
+  </div>
+</div>
+
+<div *ngIf="!cargando && inmuebles.length === 0">
+  No hay inmuebles disponibles.
+</div>

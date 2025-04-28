@@ -14,6 +14,8 @@ import { PerfilModificadoComponent } from './pages/perfil-modificado/perfil-modi
 import { AdminComponent } from './pages/admin/admin.component';
 import { AdminClientesComponent } from './pages/admin/admin-clientes/admin-clientes.component';
 import { AdminReservasComponent } from './pages/admin/admin-reservas/admin-reservas.component';
+import { AdminInmueblesComponent } from './pages/admin/admin-inmuebles/admin-inmuebles.component';
+
 
 export const routes: Routes = [
     {
@@ -35,6 +37,7 @@ export const routes: Routes = [
             { path: 'admin', component: AdminComponent }, // Ruta a panel administrador
             { path: 'admin/clientes', component: AdminClientesComponent }, // Ruta a gestion de clientes
             { path: 'admin/reservas', component: AdminReservasComponent }, // Ruta a gestion de reservas
+            { path: 'admin/inmuebles', component: AdminInmueblesComponent }, // Ruta a gestion de inmuebles
         ]
         },
         {

@@ -21,9 +21,7 @@ export class AdminReservasComponent {
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.busquedaForm = this.fb.group({
-      email: [''],
-      fecha_checkin: [''],
-      fecha_checkout: ['']
+      email: ['', [Validators.required, Validators.email]]
     });
     this.modificarForm = this.fb.group({
       nuevoCheckin: [''],

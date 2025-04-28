@@ -3,13 +3,6 @@
 <form [formGroup]="busquedaForm" (ngSubmit)="buscarReservas()">
   <label for="email">Email:</label>
   <input id="email" type="email" formControlName="email" />
-
-  <label for="checkin">Fecha de check-in:</label>
-  <input id="checkin" type="date" formControlName="fecha_checkin" />
-
-  <label for="checkout">Fecha de check-out:</label>
-  <input id="checkout" type="date" formControlName="fecha_checkout" />
-
   <button type="submit">Buscar</button>
 </form>
 

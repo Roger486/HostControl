@@ -99,6 +99,7 @@ export class AuthService {
     });
   }
 
+  // ------------------------ Admin Clientes ------------------------- //
   // Desde admin obtenemos datos de un cliente
   buscarCliente(filtros: { email?: string, document_number?: string }): Observable<any> {
     const token = localStorage.getItem('authToken');
@@ -132,7 +133,9 @@ export class AuthService {
       }
     });
   }
+ 
 
+// ------------------------ Admin Reservas ------------------------- //
   // Llamamos al backend para obtener todas las reservas
   getReservas(): Observable<any> {
     const token = localStorage.getItem('authToken');
