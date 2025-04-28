@@ -42,6 +42,7 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [PUT /api/reservations/{id}](#put-apireservationsid)
 - [DELETE /api/reservations/{id}](#delete-apireservationsid)
 - [GET /api/user/reservations](#get-apiuserreservations)
+- [GET /api/reservations/guest/{user}](#get-apireservationsguestuser)
 
 ### 🗒️ Reservation Logs
 - [GET /api/reservation_logs/{reservation}](#get-apireservation_logsreservation_id)
@@ -1048,6 +1049,72 @@ If the reservation includes companions (other people staying), they must be incl
   "error": "You must be logged in to view your reservations."
 }
 ```
+
+---
+
+### GET /api/reservations/guest/{user}
+
+**Description:** Retrieve all reservations for a specific guest user. This endpoint is restricted to admins or other authorized users.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`viewAny` policy on reservations)
+
+**Path Parameters:**
+- `user` (integer, required): The ID of the user (guest) whose reservations are being retrieved.
+
+**Success response (200):**
+```json
+{
+  "data": [
+    {
+      "id": 12,
+      "booked_by_id": 4,
+      "guest_id": 7,
+      "accommodation_id": 15,
+      "check_in_date": "2025-07-01",
+      "check_out_date": "2025-07-10",
+      "status": "confirmed",
+      "comments": "Guest prefers early check-in.",
+      "booked_by": {
+        "id": 4,
+        "first_name": "Alice",
+        "last_name_1": "Johnson",
+        "email": "alice@example.com"
+      },
+      "guest": {
+        "id": 7,
+        "first_name": "Bob",
+        "last_name_1": "Smith",
+        "email": "bob@example.com"
+      },
+      "accommodation": {
+        "id": 15,
+        "accommodation_code": "BUNG-123",
+        "capacity": 4,
+        "price_per_day": 12000,
+        "type": "bungalow"
+      },
+      "companions": [
+        {
+          "id": 3,
+          "first_name": "Charlie",
+          "last_name_1": "Brown",
+          "birthdate": "1995-05-20"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Errors:**
+
+- **404**: User not found.
+
+- **403**: Unauthorized to view this guest's reservations.
+
+- **401**: Unauthenticated (missing or invalid token).
 
 ---
 
