@@ -18,6 +18,7 @@ export class AdminInmueblesComponent implements OnInit {
   currentPage: number = 1;
   lastPage: number = 1;
   nuevoPrecio: number | null = null;
+  nuevaCapacidad: number | null = null;
   idInmuebleActualizar: number | null = null;
 
   constructor(private inmueblesService: InmueblesService) { }
@@ -99,6 +100,32 @@ export class AdminInmueblesComponent implements OnInit {
       });
     } else {
       alert('Por favor completa ambos campos.');
+    }
+  }
+
+  actualizarCapacidadInmueble(): void {
+    if (this.idInmuebleActualizar !== null && this.nuevaCapacidad !== null) {
+      const id = Number(this.idInmuebleActualizar);
+      const nuevaCapacidad = Number(this.nuevaCapacidad);
+  
+      if (isNaN(id) || isNaN(nuevaCapacidad)) {
+        alert('Por favor introduce valores numéricos válidos.');
+        return;
+      }
+  
+      this.inmueblesService.actualizarCapacidad(id, nuevaCapacidad).subscribe({
+        next: () => {
+          alert('Capacidad actualizada correctamente.');
+          this.obtenerInmuebles(); // Recargar lista
+          this.nuevaCapacidad = null;
+        },
+        error: (err) => {
+          console.error('Error al actualizar capacidad', err);
+          alert('Error al actualizar capacidad.');
+        }
+      });
+    } else {
+      alert('Por favor completa ID y nueva capacidad.');
     }
   }
 }

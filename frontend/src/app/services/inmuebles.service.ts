@@ -38,4 +38,14 @@ export class InmueblesService {
       }
     });
   }
+
+  actualizarCapacidad(id: number, nuevaCapacidad: number): Observable<any> {
+    const token = localStorage.getItem('authToken');
+  
+    return this.http.put(`${this.apiUrl}/${id}`, { capacity: nuevaCapacidad }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 }
