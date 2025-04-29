@@ -20,6 +20,28 @@ export class AdminInmueblesComponent implements OnInit {
   nuevoPrecio: number | null = null;
   nuevaCapacidad: number | null = null;
   idInmuebleActualizar: number | null = null;
+  mostrarFormularioCrear = false;
+
+
+  // Variable para almacenar el tipo de inmueble seleccionado
+  nuevoInmueble: any = {
+    accommodation_code: '',
+    section: '',
+    capacity: null,
+    price_per_day: null,
+    is_available: true,
+    comments: '',
+    type: '',
+    // Campos específicos opcionales
+    bed_amount: null,
+    has_air_conditioning: false,
+    has_kitchen: false,
+    room_amount: null,
+    has_private_wc: false,
+    area_size_m2: null,
+    has_electricity: false,
+    accepts_caravan: false
+  };
 
   constructor(private inmueblesService: InmueblesService) { }
 
@@ -27,6 +49,7 @@ export class AdminInmueblesComponent implements OnInit {
     this.obtenerInmuebles();
   }
 
+  // Método para obtener los inmuebles desde el servicio
   obtenerInmuebles(): void {
     this.cargando = true;
     this.error = null;
@@ -44,10 +67,14 @@ export class AdminInmueblesComponent implements OnInit {
     });
   }
 
+  // Método para filtrar inmuebles por tipo
+
   buscarPorTipo(): void {
     this.currentPage = 1; // Reiniciamos la página a 1 al buscar por tipo
     this.obtenerInmuebles();
   }
+
+  // Método para cambiar de página
 
   siguientePagina(): void {
     if (this.currentPage < this.lastPage) {
@@ -63,6 +90,8 @@ export class AdminInmueblesComponent implements OnInit {
     }
   }
 
+  // Método para eliminar un inmueble
+
   eliminarInmueble(id: number): void {
     if (confirm('¿Seguro que quieres eliminar este inmueble?')) {
       this.inmueblesService.deleteInmueble(id).subscribe({
@@ -76,6 +105,7 @@ export class AdminInmueblesComponent implements OnInit {
     }
   }
 
+  // Método para actualizar el precio y la capacidad de un inmueble
   actualizarPrecioInmueble(): void {
     if (this.idInmuebleActualizar !== null && this.nuevoPrecio !== null) {
       const id = Number(this.idInmuebleActualizar);
@@ -127,5 +157,56 @@ export class AdminInmueblesComponent implements OnInit {
     } else {
       alert('Por favor completa ID y nueva capacidad.');
     }
+  }
+
+  // Método para crear un nuevo inmueble
+  crearInmueble(): void {
+    if (!this.nuevoInmueble.type) {
+      alert('Por favor selecciona un tipo de alojamiento.');
+      return;
+    }
+  
+    const datos = {
+      accommodation_code: this.nuevoInmueble.accommodation_code,
+      section: this.nuevoInmueble.section,
+      capacity: this.nuevoInmueble.capacity,
+      price_per_day: this.nuevoInmueble.price_per_day,
+      is_available: this.nuevoInmueble.is_available,
+      comments: this.nuevoInmueble.comments,
+      type: this.nuevoInmueble.type,
+      // Ahora, campos especiales según tipo
+      ...(this.nuevoInmueble.type === 'bungalow' && {
+        bed_amount: this.nuevoInmueble.bed_amount,
+        has_air_conditioning: this.nuevoInmueble.has_air_conditioning,
+        has_kitchen: this.nuevoInmueble.has_kitchen
+      }),
+      ...(this.nuevoInmueble.type === 'house' && {
+        bed_amount: this.nuevoInmueble.bed_amount,
+        room_amount: this.nuevoInmueble.room_amount,
+        has_air_conditioning: this.nuevoInmueble.has_air_conditioning
+      }),
+      ...(this.nuevoInmueble.type === 'room' && {
+        bed_amount: this.nuevoInmueble.bed_amount,
+        has_air_conditioning: this.nuevoInmueble.has_air_conditioning,
+        has_private_wc: this.nuevoInmueble.has_private_wc
+      }),
+      ...(this.nuevoInmueble.type === 'camping_spot' && {
+        area_size_m2: this.nuevoInmueble.area_size_m2,
+        has_electricity: this.nuevoInmueble.has_electricity,
+        accepts_caravan: this.nuevoInmueble.accepts_caravan
+      })
+    };
+  
+    this.inmueblesService.crearInmueble(datos).subscribe({
+      next: () => {
+        alert('Inmueble creado correctamente.');
+        this.mostrarFormularioCrear = false;
+        this.obtenerInmuebles(); // recargar lista
+      },
+      error: (err) => {
+        console.error('Error al crear inmueble', err);
+        alert('Error al crear inmueble.');
+      }
+    });
   }
 }

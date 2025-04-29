@@ -25,7 +25,13 @@ export class InmueblesService {
 
   // Borramos inmuebles de la API
   deleteInmueble(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+
+    return this.http.delete(`${this.apiUrl}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 
   // Actualizamos el precio de un inmueble
@@ -43,6 +49,17 @@ export class InmueblesService {
     const token = localStorage.getItem('authToken');
   
     return this.http.put(`${this.apiUrl}/${id}`, { capacity: nuevaCapacidad }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  // Creamos un nuevo inmueble
+  crearInmueble(datos: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+  
+    return this.http.post(this.apiUrl, datos, {
       headers: {
         Authorization: `Bearer ${token}`
       }
