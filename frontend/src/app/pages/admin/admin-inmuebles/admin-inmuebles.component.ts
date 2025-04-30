@@ -91,7 +91,6 @@ export class AdminInmueblesComponent implements OnInit {
   }
 
   // Método para eliminar un inmueble
-
   eliminarInmueble(id: number): void {
     if (confirm('¿Seguro que quieres eliminar este inmueble?')) {
       this.inmueblesService.deleteInmueble(id).subscribe({
@@ -100,12 +99,15 @@ export class AdminInmueblesComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al eliminar el inmueble', err);
+          alert('Error al eliminar el inmueble.');
         }
       });
+    } else {
+      alert('El inmueble no ha sido eliminado.');
     }
   }
 
-  // Método para actualizar el precio y la capacidad de un inmueble
+  // Método para actualizar precio x dia del inmueble
   actualizarPrecioInmueble(): void {
     if (this.idInmuebleActualizar !== null && this.nuevoPrecio !== null) {
       const id = Number(this.idInmuebleActualizar);
@@ -132,7 +134,7 @@ export class AdminInmueblesComponent implements OnInit {
       alert('Por favor completa ambos campos.');
     }
   }
-
+  // Método para actualizar la capacidad de un inmueble
   actualizarCapacidadInmueble(): void {
     if (this.idInmuebleActualizar !== null && this.nuevaCapacidad !== null) {
       const id = Number(this.idInmuebleActualizar);
@@ -174,7 +176,7 @@ export class AdminInmueblesComponent implements OnInit {
       is_available: this.nuevoInmueble.is_available,
       comments: this.nuevoInmueble.comments,
       type: this.nuevoInmueble.type,
-      // Ahora, campos especiales según tipo
+      // Campos segun tipo de inmueble
       ...(this.nuevoInmueble.type === 'bungalow' && {
         bed_amount: this.nuevoInmueble.bed_amount,
         has_air_conditioning: this.nuevoInmueble.has_air_conditioning,
