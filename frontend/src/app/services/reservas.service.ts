@@ -29,4 +29,16 @@ export class ReservasService {
       headers: { Authorization: `Bearer ${token}` }
     });
   }
+ // Llamar a la API para modificar una reserva
+  modificarReserva(id: number, datos: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+  
+    return this.http.put(`${this.apiUrl}/reservations/${id}`, datos, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 }
+
+

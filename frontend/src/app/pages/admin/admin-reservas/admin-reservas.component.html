@@ -17,28 +17,45 @@
   <p><strong>Documento:</strong> {{ usuario.documento }}</p>
 
   <h3>Reservas</h3>
-  <div *ngIf="reservas.length > 0; else sinReservas">
-    <div *ngFor="let r of reservas" style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px;">
+  <div *ngIf="reservas.length > 0">
+    <div *ngFor="let r of reservas" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
       <p><strong>ID:</strong> {{ r.id }}</p>
       <p><strong>Check-in:</strong> {{ r.check_in_date }}</p>
       <p><strong>Check-out:</strong> {{ r.check_out_date }}</p>
       <p><strong>Status:</strong> {{ r.status }}</p>
-
-      <h4>Acompañantes</h4>
-      <ul *ngIf="r.companions?.length > 0; else sinCompanions">
-        <li *ngFor="let c of r.companions">
-          {{ c.first_name }} {{ c.last_name_1 }} ({{ c.document_type }} {{ c.document_number }})
-        </li>
-      </ul>
-      <ng-template #sinCompanions>
-        <p>No hay acompañantes.</p>
-      </ng-template>
+  
+      <button (click)="editarReserva = r.id">Modificar reserva</button>
+  
+      <div *ngIf="editarReserva === r.id" style="margin-top: 10px;">
+        <label>Check-in:</label>
+        <input type="date" [(ngModel)]="r.check_in_date" name="in_{{r.id}}">
+        <br><br>
+  
+        <label>Check-out:</label>
+        <input type="date" [(ngModel)]="r.check_out_date" name="out_{{r.id}}">
+        <br><br>
+  
+        <label>Status:</label>
+        <select [(ngModel)]="r.status" name="status_{{r.id}}">
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="checked_in">Checked In</option>
+          <option value="checked_out">Checked Out</option>
+        </select>
+        <br><br>
+  
+        <label>Log (motivo del cambio):</label>
+        <input type="text" [(ngModel)]="r.log_detail" name="log_{{r.id}}" required>
+        <br><br>
+  
+        <button (click)="ModificarReserva(r)">Guardar cambios</button>
+        <button (click)="editarReserva = null">Cancelar</button>
+      </div>
     </div>
   </div>
-
-  <ng-template #sinReservas>
-    <p>Este usuario no tiene reservas.</p>
-  </ng-template>
+  
+  <p *ngIf="reservas.length === 0">Este usuario no tiene reservas.</p>
 </div>
 
 
