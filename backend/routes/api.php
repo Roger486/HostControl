@@ -65,6 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // 🛡️ Admin only (authorization handled via policies)
     Route::get('/reservations', [ReservationController::class, 'index']);
+    Route::get('/reservations/guest/{user}', [ReservationController::class, 'getByGuest']);
     Route::put('/reservations/{reservation}', [ReservationController::class, 'update']);
     Route::get('/reservations/{reservation}', [ReservationController::class, 'show']);
     // TODO: implement soft delete somehow
