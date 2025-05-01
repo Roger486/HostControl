@@ -1,104 +1,45 @@
-<h2>Gestión de reservas</h2>
 
-<form [formGroup]="busquedaForm" (ngSubmit)="buscarReservas()">
-  <label for="email">Email:</label>
-  <input id="email" type="email" formControlName="email" />
-  <button type="submit">Buscar</button>
-</form>
+<h1>Administrar Reservas (Admin)</h1>
 
-<hr />
+<label>Email del usuario:</label>
+<input type="email" [(ngModel)]="emailUsuario">
+<button (click)="buscarUsuario()">Buscar</button>
 
-<!-- Mostrar resultados en tabla -->
-<div *ngIf="reservas.length > 0">
-  <h3>Resultados encontrados:</h3>
-  <table border="1" cellpadding="5" cellspacing="0">
-    <thead>
-      <tr>
-        <th>ID Reserva</th>
-        <th>Cliente</th>
-        <th>Email</th>
-        <th>Check-in</th>
-        <th>Check-out</th>
-        <th>Código alojamiento</th>
-        <th>Tipo de alojamiento</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let reserva of reservas">
-        <td>{{ reserva.id }}</td>
-        <td>{{ reserva.booked_by?.first_name }} {{ reserva.booked_by?.last_name_1 }}</td>
-        <td>{{ reserva.booked_by?.email }}</td>
-        <td>{{ reserva.check_in_date?.substring(0, 10) }}</td>
-        <td>{{ reserva.check_out_date?.substring(0, 10) }}</td>
-        <td>{{ reserva.accommodation?.accommodation_code }}</td>
-        <td>{{ reserva.accommodation?.type }}</td>
-        <td>{{ reserva.status }}</td>
-        <td>
-          <button type="button" (click)="verDetalles(reserva)">Ver detalles</button>
-          <button type="button" (click)="modificarReserva(reserva)">Modificar reserva</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<div *ngIf="cargando">Cargando datos...</div>
+<div *ngIf="error" style="color: red;">{{ error }}</div>
+
+<hr>
+
+<div *ngIf="usuario">
+  <h3>Datos del usuario</h3>
+  <p><strong>ID:</strong> {{ usuario.id }}</p>
+  <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+  <p><strong>Documento:</strong> {{ usuario.documento }}</p>
+
+  <h3>Reservas</h3>
+  <div *ngIf="reservas.length > 0; else sinReservas">
+    <div *ngFor="let r of reservas" style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px;">
+      <p><strong>ID:</strong> {{ r.id }}</p>
+      <p><strong>Check-in:</strong> {{ r.check_in_date }}</p>
+      <p><strong>Check-out:</strong> {{ r.check_out_date }}</p>
+      <p><strong>Status:</strong> {{ r.status }}</p>
+
+      <h4>Acompañantes</h4>
+      <ul *ngIf="r.companions?.length > 0; else sinCompanions">
+        <li *ngFor="let c of r.companions">
+          {{ c.first_name }} {{ c.last_name_1 }} ({{ c.document_type }} {{ c.document_number }})
+        </li>
+      </ul>
+      <ng-template #sinCompanions>
+        <p>No hay acompañantes.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <ng-template #sinReservas>
+    <p>Este usuario no tiene reservas.</p>
+  </ng-template>
 </div>
 
-<!-- Muestra los datos de la reserva seleccionada -->
-<div *ngIf="reservaSeleccionada">
-  <h3>Detalles de la reserva</h3>
-  
-  <p><strong>ID Reserva:</strong> {{ reservaSeleccionada.id }}</p>
-  <p><strong>Cliente:</strong> {{ reservaSeleccionada.booked_by?.first_name }} {{ reservaSeleccionada.booked_by?.last_name_1 }}</p>
-  <p><strong>Email:</strong> {{ reservaSeleccionada.booked_by?.email }}</p>
-  <p><strong>Check-in:</strong> {{ reservaSeleccionada.check_in_date?.substring(0,10) }}</p>
-  <p><strong>Check-out:</strong> {{ reservaSeleccionada.check_out_date?.substring(0,10) }}</p>
 
-  <h4>Alojamiento:</h4>
-  <p><strong>Código:</strong> {{ reservaSeleccionada.accommodation?.accommodation_code }}</p>
-  <p><strong>Tipo:</strong> {{ reservaSeleccionada.accommodation?.type }}</p>
 
-  <h4>Huésped principal:</h4>
-  <p><strong>Nombre:</strong> {{ reservaSeleccionada.guest?.first_name }} {{ reservaSeleccionada.guest?.last_name_1 }}</p>
-  <p><strong>Email:</strong> {{ reservaSeleccionada.guest?.email }}</p>
-
-  <h4>Acompañantes:</h4>
-  <ul>
-    <li *ngFor="let comp of reservaSeleccionada.companions">
-      {{ comp.first_name }} {{ comp.last_name_1 }} ({{ comp.birthdate?.substring(0,10) }})
-    </li>
-  </ul>
-
-  <p><strong>Comentarios:</strong> {{ reservaSeleccionada.comments || 'Sin comentarios' }}</p>
-
-  <button type="button" (click)="cerrarDetalles()">Cerrar detalles</button>
-</div>
-
-<!-- Modificamos la reserva -->
-<div *ngIf="reservaAModificar">
-  <h3>Modificar Reserva ID: {{ reservaAModificar.id }}</h3>
-
-  <form [formGroup]="modificarForm" (ngSubmit)="guardarCambiosReserva()">
-    <label for="nuevoCheckin">Nuevo check-in:</label>
-    <input id="nuevoCheckin" type="date" formControlName="nuevoCheckin" />
-
-    <label for="nuevoCheckout">Nuevo check-out:</label>
-    <input id="nuevoCheckout" type="date" formControlName="nuevoCheckout" />
-
-    <label for="comentarios">Comentarios de la modificación:</label>
-    <textarea id="comentarios" formControlName="comentarios"></textarea>
-
-    <br><br>
-    <button type="submit">Guardar cambios</button>
-    <button type="button" (click)="cancelarModificacion()">Cancelar</button>
-  </form>
-</div>
-
-<!-- Mensaje si no hay resultados -->
-<div *ngIf="reservas.length === 0 && busquedaRealizada">
-  <p style="color: red;">No se han encontrado reservas.</p>
-</div>
-
-<hr />
-
-<!-- Botón volver -->
-<button (click)="volverAdmin()">Volver a administración</button>
