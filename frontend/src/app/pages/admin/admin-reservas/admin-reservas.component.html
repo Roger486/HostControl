@@ -19,10 +19,25 @@
   <h3>Reservas</h3>
   <div *ngIf="reservas.length > 0">
     <div *ngFor="let r of reservas" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
-      <p><strong>ID:</strong> {{ r.id }}</p>
-      <p><strong>Check-in:</strong> {{ r.check_in_date }}</p>
-      <p><strong>Check-out:</strong> {{ r.check_out_date }}</p>
-      <p><strong>Status:</strong> {{ r.status }}</p>
+      <p><strong>ID de reserva:</strong> {{ r.id }}</p>
+      <p><strong>Check-in actual:</strong> {{ r.check_in_date }}</p>
+      <p><strong>Check-out actual:</strong> {{ r.check_out_date }}</p>
+      <p><strong>Status actual:</strong> {{ r.status }}</p>
+      <p><strong>Comentarios:</strong> {{ r.comments || 'Sin comentarios' }}</p>
+
+      <p><strong>Alojamiento:</strong> {{ r.accommodation?.accommodation_code }} ({{ r.accommodation?.type }})</p>
+      <p><strong>Capacidad:</strong> {{ r.accommodation?.capacity }} personas</p>
+      <p><strong>Precio por día:</strong> {{ r.accommodation?.price_per_day }}€</p>
+      <h4>Acompañantes:</h4>
+      <ul *ngIf="r.companions?.length > 0; else sinAcompanantes">
+        <li *ngFor="let c of r.companions">
+          {{ c.first_name }} {{ c.last_name_1 }} –
+          {{ c.document_type }} {{ c.document_number || '(sin número)' }}
+        </li>
+      </ul>
+      <ng-template #sinAcompanantes>
+        <p>No hay acompañantes.</p>
+      </ng-template>
   
       <button (click)="editarReserva = r.id">Modificar reserva</button>
   
@@ -57,6 +72,8 @@
   
   <p *ngIf="reservas.length === 0">Este usuario no tiene reservas.</p>
 </div>
+<hr>
+<button (click)="volverAlPanelAdmin()">Volver al panel de administración</button>
 
 
 

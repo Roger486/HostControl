@@ -20,7 +20,7 @@ export class AdminReservasComponent {
   idUsuarioSeleccionado!: number; 
   editarReserva: number | null = null;
 
-  constructor(private reservasService: ReservasService) {}
+  constructor(private reservasService: ReservasService, private router: Router) {}
   buscarUsuario(): void {
     this.error = '';
     this.usuario = null;
@@ -45,6 +45,10 @@ export class AdminReservasComponent {
           next: (r) => {
             this.reservas = r.data;
             console.log(`Reservas del usuario ${this.idUsuarioSeleccionado}:`, this.reservas);
+            // Mostrar companions de cada reserva
+            this.reservas.forEach((reserva: any) => {
+              console.log(`Companions de reserva ID ${reserva.id}:`, reserva.companions);
+            });
             this.cargando = false;
           },
           error: () => {
@@ -66,6 +70,7 @@ export class AdminReservasComponent {
     return date.toISOString().split('T')[0]; 
   }
 
+  // Modificamos la reserva
   ModificarReserva(reserva: any): void {
     if (!reserva.log_detail || reserva.log_detail.trim() === '') {
       alert('Por favor, indica un motivo en el campo Log.');
@@ -100,6 +105,10 @@ export class AdminReservasComponent {
         alert('Error al actualizar la reserva.');
       }
     });
+  }
+
+  volverAlPanelAdmin(): void {
+    this.router.navigate(['/admin']);
   }
 }
   

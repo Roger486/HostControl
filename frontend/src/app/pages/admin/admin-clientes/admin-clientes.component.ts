@@ -93,6 +93,7 @@ confirmarCambios() {
     phone: cambios.phone
   };
 
+
   // Si se ha introducido una nueva contraseña válida, la añadimos
   if (cambios.password1 && cambios.password1 === cambios.password2) {
     datosActualizados.password = cambios.password1;
@@ -101,6 +102,7 @@ confirmarCambios() {
   // Mostramos confirmación con los nuevos datos
   if (confirm('¿Confirmas que quieres guardar los siguientes cambios?\n\n' + JSON.stringify(cambios, null, 2))) {
     console.log('Datos a actualizar:', cambios);
+    console.log('Datos enviados al backend:', datosActualizados);
     // Llamamos al servicio para actualizar el cliente
     this.auth.actualizarCliente(this.cliente.id, datosActualizados).subscribe({
       next: () => {
