@@ -20,6 +20,19 @@
   <label>Teléfono:</label>
   <input type="text" formControlName="phone"><br>
 
-  <button type="submit" [disabled]="modificarForm.invalid">Aceptar</button>
+  <label>Nueva contraseña:</label>
+  <input type="password" formControlName="password1"><br>
+
+  <label>Repetir contraseña:</label>
+  <input type="password" formControlName="password2"><br>
+
+  <div *ngIf="modificarForm.get('password1')?.invalid && modificarForm.get('password1')?.touched" style="color: red;">
+    La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula y un número.
+  </div>
+  <div *ngIf="modificarForm.errors?.['passwordMismatch'] && modificarForm.dirty" style="color: red;">
+    Las contraseñas no coinciden.
+  </div>
+
+  <button type="submit" [disabled]="modificarForm.invalid">Modificar perfil</button>
   <button type="button" (click)="cancelar()">Cancelar</button>
 </form>

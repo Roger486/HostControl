@@ -16,6 +16,7 @@ export class VerificarIdentidadComponent {
   verificacionForm!: FormGroup;
   errorVerificacion: boolean = false;
   errorActualizacion: boolean = false;
+  
 
   constructor(
     private fb: FormBuilder, 
@@ -31,6 +32,7 @@ export class VerificarIdentidadComponent {
   }
 
   onSubmit() {
+    
     if (this.verificacionForm.valid) {
       const { email, password } = this.verificacionForm.value;
 
@@ -51,12 +53,13 @@ export class VerificarIdentidadComponent {
             },
             error: () => {
               console.error('Error al actualizar el perfil');
+              alert('Ha ocurrido un error al guardar los datos. Revisa los datos introducidos e inténtalo de nuevo más tarde.');
               this.errorActualizacion = true; // Mostramos mensaje de error
             }
           })
         },
-        error: () => {
-          //Si hay error, mostramos mensaje
+        error: (err) => {
+          console.error('Error en las credenciales', err);
           this.errorVerificacion = true;
         }
       });

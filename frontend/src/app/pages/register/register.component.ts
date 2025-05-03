@@ -26,7 +26,7 @@ export class RegisterComponent {
       telefono: ['', Validators.required],
       direccion: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password1: ['', [Validators.required, Validators.minLength(6)]],
+      password1: ['', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)]],
       password2: ['', [Validators.required]]
     },{validators: this.passwordsIguales })
   }
@@ -41,6 +41,15 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       const form = this.registerForm.value;
+      const fechaNacimiento = new Date(form.fecha_nacimiento);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0); // seteamos la hora para comparar solo fecha
+
+      // controlamos que fecha nacimiento no sea igual o posterior a hoy
+      if (fechaNacimiento >= hoy) {
+        alert('La fecha de nacimiento no puede ser igual o posterior a hoy.');
+        return;
+      }
   
       const datos = {
         first_name: form.name,
@@ -63,6 +72,12 @@ export class RegisterComponent {
         },
         error: (err) => {
           console.error('Error al registrar usuario:', err);
+
+          if (err.status === 422) {
+            alert('No se pudo completar el registro. Revisa que todos los datos sean correctos.');
+          } else {
+            alert('Ha ocurrido un error inesperado. Intenta de nuevo más tarde.');
+          }
         }
       });
     }
