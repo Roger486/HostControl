@@ -32,12 +32,23 @@ export class AuthService {
   login(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, data).pipe(
       tap((res: any) => {
-        // Guardamos el token recibido y el usuario
+        console.log('Respuesta del login:', res); // Para depurar la respuesta del login
+        // Guardamos el token recibido del usuario
         localStorage.setItem('authToken', res.token);
-        localStorage.setItem('usuarioLogueado', JSON.stringify({ email: data.email }));
-  
-        // Notificamos al resto de la app que hay un usuario logueado
-        this.usuarioLogueadoSubject.next({ email: data.email });
+
+        //obtenido el token, hacemos una peticion GET al backend para obtener el perfil del usuario
+      this.http.get(`${this.apiUrl}/user`, {
+        headers: {
+          Authorization: `Bearer ${res.token}`
+        }
+      }).subscribe((user: any) => {
+        // Guardamos email y rol en localStorage
+        localStorage.setItem('usuarioRol', JSON.stringify(user.data.role));
+        localStorage.setItem('usuarioLogueado', JSON.stringify({ email: user.data.email }));
+
+        // Notificamos al resto de la app
+        this.usuarioLogueadoSubject.next({ email: user.data.email });
+      });  
       })
     );
 
@@ -58,6 +69,7 @@ export class AuthService {
         // Limpiamos el localstorage al finalizar sesion
         localStorage.removeItem('authToken');
         localStorage.removeItem('usuarioLogueado');
+        localStorage.removeItem('usuarioRol'); // Limpiamos el rol del usuario
         // Emitimoos null para avisar que no hay usuario 
         this.usuarioLogueadoSubject.next(null);
       })
@@ -87,3 +99,4 @@ export class AuthService {
     });
   }
 }
+

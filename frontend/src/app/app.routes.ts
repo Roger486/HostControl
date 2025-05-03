@@ -11,6 +11,10 @@ import { PerfilComponent } from './pages/perfil/perfil.component';
 import { ModificarPerfilComponent } from './pages/modificar-perfil/modificar-perfil.component';
 import { VerificarIdentidadComponent } from './pages/verificar-identidad/verificar-identidad.component';
 import { PerfilModificadoComponent } from './pages/perfil-modificado/perfil-modificado.component';
+import { AdminComponent } from './pages/admin/admin.component';
+import { AdminClientesComponent } from './pages/admin/admin-clientes/admin-clientes.component';
+import { AdminReservasComponent } from './pages/admin/admin-reservas/admin-reservas.component';
+import { AdminInmueblesComponent } from './pages/admin/admin-inmuebles/admin-inmuebles.component';
 
 
 export const routes: Routes = [
@@ -29,7 +33,11 @@ export const routes: Routes = [
             { path: 'perfil', component: PerfilComponent }, // Ruta a perfil de cliente
             { path: 'perfil/editar', component: ModificarPerfilComponent }, // Ruta a modificar perfil de cliente
             { path: 'verificar', component: VerificarIdentidadComponent }, // Ruta a verificar identidad
-            { path: 'perfil/modificado', component: PerfilModificadoComponent } // Ruta a perfil modificado
+            { path: 'perfil/modificado', component: PerfilModificadoComponent }, // Ruta a perfil modificado
+            { path: 'admin', component: AdminComponent }, // Ruta a panel administrador
+            { path: 'admin/clientes', component: AdminClientesComponent }, // Ruta a gestion de clientes
+            { path: 'admin/reservas', component: AdminReservasComponent }, // Ruta a gestion de reservas
+            { path: 'admin/inmuebles', component: AdminInmueblesComponent }, // Ruta a gestion de inmuebles
         ]
         },
         {

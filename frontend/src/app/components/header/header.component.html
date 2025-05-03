@@ -15,4 +15,5 @@
         <a routerLink="/login">Login</a>
         <a routerLink="/register">Registro</a>
     </ng-template>
+    <a *ngIf="rolUsuario === 'admin'" routerLink="/admin">Admin</a>
 </nav>

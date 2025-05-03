@@ -1,0 +1,79 @@
+<h2>Gestión de clientes</h2>
+
+<!-- Formulario de búsqueda -->
+<form [formGroup]="busquedaForm" (ngSubmit)="buscarCliente()">
+
+  <label for="email">Email:</label>
+  <input id="email" type="email" formControlName="email" />
+  <div *ngIf="busquedaForm.get('email')?.invalid && busquedaForm.get('email')?.touched" style="color: red;">
+    Email obligatorio y con formato válido.
+  </div>
+
+  <label for="document">Número de documento:</label>
+  <input id="document" type="text" formControlName="document_number" />
+  <div *ngIf="busquedaForm.get('document_number')?.invalid && busquedaForm.get('document_number')?.touched" style="color: red;">
+    Número de documento obligatorio.
+  </div>
+
+  <button type="submit">Buscar</button>
+</form>
+
+<hr />
+
+<!-- Resultado encontrado -->
+<div *ngIf="cliente">
+  <h3>Datos del cliente</h3>
+  <p><strong>Nombre:</strong> {{ cliente.first_name }}</p>
+  <p><strong>Primer apellido:</strong> {{ cliente.last_name_1 }}</p>
+  <p><strong>Segundo apellido:</strong> {{ cliente.last_name_2 }}</p>
+  <p><strong>Email:</strong> {{ cliente.email }}</p>
+  <p><strong>Fecha de nacimiento:</strong> {{ cliente.birthdate }}</p>
+  <p><strong>Dirección:</strong> {{ cliente.address }}</p>
+  <p><strong>Tipo de documento:</strong> {{ cliente.document_type }}</p>
+  <p><strong>Número de documento:</strong> {{ cliente.document_number }}</p>
+  <p><strong>Teléfono:</strong> {{ cliente.phone }}</p>
+  <p><strong>Rol:</strong> {{ cliente.role }}</p>
+</div>
+
+<!-- Mensaje si no hay resultados -->
+<div *ngIf="cliente === null && busquedaRealizada">
+  <p style="color: red;">No se han encontrado coincidencias.</p>
+</div>
+
+<div *ngIf="mostrarEdicion">
+  <h3>Modificar datos del cliente</h3>
+
+  <form [formGroup]="edicionForm">
+    <label>Nombre:</label>
+    <input type="text" formControlName="first_name" />
+
+    <label>Primer apellido:</label>
+    <input type="text" formControlName="last_name_1" />
+
+    <label>Segundo apellido:</label>
+    <input type="text" formControlName="last_name_2" />
+
+    <label>Fecha de nacimiento:</label>
+    <input type="date" formControlName="birthdate" />
+
+    <label>Dirección:</label>
+    <input type="text" formControlName="address" />
+
+    <label>Teléfono:</label>
+    <input type="text" formControlName="phone" />
+    <label>Nueva contraseña:</label>
+    <input type="password" formControlName="password1" />
+
+    <label>Repetir contraseña:</label>
+    <input type="password" formControlName="password2" />
+
+    <div *ngIf="edicionForm.errors?.['passwordMismatch'] && edicionForm.dirty" style="color:red;">
+      Las contraseñas no coinciden.
+    </div>
+    <br><br>
+    <button type="button" (click)="confirmarCambios()">Guardar cambios</button>
+    <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+    <h3>Dar de baja al cliente</h3>
+    <button type="button" (click)="confirmarEliminacion()">Dar de baja al cliente</button>
+  </form>
+</div>
