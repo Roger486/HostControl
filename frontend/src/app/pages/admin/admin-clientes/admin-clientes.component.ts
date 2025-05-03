@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from 'app/services/auth.service';
+import { ClientesService } from 'app/services/clientes.service';
 
 
 @Component({
@@ -19,7 +20,7 @@ export class AdminClientesComponent {
   mostrarEdicion: boolean = false;
   hoy: string = new Date().toISOString().substring(0, 10);
 
-  constructor(private fb: FormBuilder, private auth: AuthService) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private clientesService: ClientesService) {
     this.busquedaForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       document_number: ['', [Validators.required]]
@@ -35,7 +36,7 @@ buscarCliente() {
     return;
   }
 
-  this.auth.buscarCliente({ email, document_number }).subscribe({
+  this.clientesService.buscarCliente({ email, document_number }).subscribe({
     next: (res) => {
       const cliente = res.data;
       
@@ -104,7 +105,7 @@ confirmarCambios() {
     console.log('Datos a actualizar:', cambios);
     console.log('Datos enviados al backend:', datosActualizados);
     // Llamamos al servicio para actualizar el cliente
-    this.auth.actualizarCliente(this.cliente.id, datosActualizados).subscribe({
+    this.clientesService.actualizarCliente(this.cliente.id, datosActualizados).subscribe({
       next: () => {
         alert('Cliente actualizado correctamente.');
       },
@@ -134,7 +135,7 @@ cancelarEdicion() {
 
 confirmarEliminacion() {
   if (confirm('¿Seguro que quieres eliminar este cliente? Esta acción no se puede deshacer.')) {
-    this.auth.eliminarCliente(this.cliente.id).subscribe({
+    this.clientesService.eliminarCliente(this.cliente.id).subscribe({
       next: () => {
         alert('Cliente eliminado correctamente.');
         // Limpiamos pantalla
