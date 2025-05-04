@@ -20,4 +20,14 @@ export class ReservaUsuarioService {
       },
     });
   }
+
+  // Metodo para que el usuario pueda ver sus reservas
+  getReservasDelUsuario(): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    return this.http.get(`${this.apiUrl}/user/reservations`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 }
