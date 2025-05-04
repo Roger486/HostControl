@@ -11,6 +11,7 @@ export class ReservaUsuarioService {
 
   constructor(private http: HttpClient) {}
 
+  // Metodo para que usuario pueda reservar
   crearReserva(reserva: any): Observable<any> {
     const token = localStorage.getItem('authToken');
     return this.http.post(`${this.apiUrl}/reservations`, reserva, {
