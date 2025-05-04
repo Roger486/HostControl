@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from 'app/services/auth.service';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ReservasService } from 'app/services/reservas.service';
 
 
 @Component({
@@ -22,8 +23,11 @@ export class PerfilComponent implements OnInit{
   mostrarPopup = false;
   verificacionForm!: FormGroup;
 
+  // Las reservas del user
+  reservas: any[] = [];
 
-  constructor(private auth: AuthService, private fb: FormBuilder, private router: Router) {}
+
+  constructor(private auth: AuthService, private fb: FormBuilder, private router: Router, private reservasService: ReservasService) {}
 
   ngOnInit(): void {
       // Al iniciar el componente se pide al backend los datos del perfil de usuario

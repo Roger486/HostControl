@@ -39,6 +39,30 @@ export class ReservasService {
       }
     });
   }
+
+  // Llamamos a la API para mostrar todas las reservas
+  obtenerAlojamientosDisponibles(
+    filtros: { type: string; check_in_date: string; check_out_date: string },
+    pagina: number = 1
+  ): Observable<any> {
+    return this.http.get(`${this.apiUrl}/accommodations`, {
+      params: {
+        ...filtros,
+        page: pagina
+      }
+    });
+  }
+
+  // Llamar a la API para crear una reserva
+  crearReserva(datos: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    return this.http.post(`${this.apiUrl}/reservations`, datos, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
 }
 
 
