@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from 'app/services/auth.service';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ReservasService } from 'app/services/reservas.service';
+import { ReservaUsuarioService } from 'app/services/reserva-usuario.service';
 
 
 @Component({
@@ -27,7 +27,7 @@ export class PerfilComponent implements OnInit{
   reservas: any[] = [];
 
 
-  constructor(private auth: AuthService, private fb: FormBuilder, private router: Router, private reservasService: ReservasService) {}
+  constructor(private auth: AuthService, private fb: FormBuilder, private router: Router, private reservasUsuarioService: ReservaUsuarioService) {}
 
   ngOnInit(): void {
       // Al iniciar el componente se pide al backend los datos del perfil de usuario
@@ -42,6 +42,16 @@ export class PerfilComponent implements OnInit{
 
         }
       });   
+
+      this.reservasUsuarioService.getReservasDelUsuario().subscribe({
+        next: (res) => {
+          this.reservas = res.data;
+          console.log('Reservas del usuario:', this.reservas);
+        },
+        error: (err) => {
+          console.error('Error al cargar las reservas del usuario:', err);
+        }
+      });
   }
 
   volverInicio() {
