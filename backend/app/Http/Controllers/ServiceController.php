@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Service\StoreServiceRequest;
 use App\Http\Requests\Service\UpdateServiceRequest;
+use App\Http\Resources\ServiceResource;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        return Service::all();
+        return ServiceResource::collection(Service::all());
     }
 
     /**
@@ -26,7 +27,11 @@ class ServiceController extends Controller
 
         $validated = $request->validated();
 
-        return Service::create($validated);
+        $service = Service::create($validated);
+
+        return (new ServiceResource($service))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -34,7 +39,7 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        return $service;
+        return new ServiceResource($service);
     }
 
     /**
@@ -47,7 +52,7 @@ class ServiceController extends Controller
         $validated = $request->validated();
 
         $service->update($validated);
-        return $service;
+        return new ServiceResource($service);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Service\AttachServiceRequest;
 use App\Http\Requests\Service\DetachServiceRequest;
+use App\Http\Resources\ServiceResource;
 use App\Models\Reservation;
 
 class ReservationServiceController extends Controller
@@ -17,7 +18,7 @@ class ReservationServiceController extends Controller
         $serviceAttached = $reservation->services()
             ->where('services.id', $validated['service_id'])
             ->first();
-        return response()->json($serviceAttached, 200);
+        return new ServiceResource($serviceAttached);
     }
 
     public function detachService(DetachServiceRequest $request, Reservation $reservation)
