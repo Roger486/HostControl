@@ -193,6 +193,9 @@ return [
         ],
         'reservation' => [
             'not_free_by_date' => 'This accommodation is already booked between the specified dates'
+        ],
+        'service' => [
+            'not_enough_slots' => 'Not enough slot available for this service. Only :available left.'
         ]
     ],
 

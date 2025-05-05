@@ -92,5 +92,5 @@ Route::middleware('auth:sanctum')->group(function () {
 // =========================
 
 Route::apiResource('services', ServiceController::class);
-Route::post('/reservations/{id}/services', [ReservationServiceController::class, 'attachService']);
-Route::delete('/reservations/{id}/services', [ReservationServiceController::class, 'detachService']);
+Route::post('/reservations/{reservation}/services', [ReservationServiceController::class, 'attachService']);
+Route::delete('/reservations/{reservation}/services', [ReservationServiceController::class, 'detachService']);
