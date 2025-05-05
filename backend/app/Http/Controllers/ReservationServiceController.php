@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DetachServiceRequest;
 use App\Http\Requests\Service\AttachServiceRequest;
+use App\Http\Requests\Service\DetachServiceRequest;
 use App\Models\Reservation;
-use App\Models\Service;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ReservationServiceController extends Controller
 {
