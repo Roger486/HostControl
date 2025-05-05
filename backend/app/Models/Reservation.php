@@ -92,4 +92,17 @@ class Reservation extends Model
     {
         return $this->hasMany(ReservationLog::class, 'reservation_id');
     }
+
+    /**
+     * Get the Reservation Services attached to this reservation.
+     *
+     * A reservation has many different services.
+     */
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'reservation_service')
+                    ->using(ReservationService::class)
+                    ->withPivot('amount')
+                    ->withTimestamps();
+    }
 }
