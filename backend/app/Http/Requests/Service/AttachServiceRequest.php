@@ -54,7 +54,10 @@ class AttachServiceRequest extends FormRequest
             $available = $service->available_slots - $totalReserved;
 
             if ($amount > $available) {
-                $validator->errors()->add('amount', __('validation.custom.service.not_enough_slots', ['available' => $available]));
+                $validator->errors()->add(
+                    'amount',
+                    __('validation.custom.service.not_enough_slots', ['available' => $available])
+                );
             }
         });
     }
