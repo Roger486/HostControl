@@ -20,6 +20,8 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Service::class);
+
         $validated = $request->validate([
             'name' => 'required|string|max:50',
             'description' => 'required|string',
@@ -44,6 +46,8 @@ class ServiceController extends Controller
      */
     public function update(Request $request, Service $service)
     {
+        $this->authorize('update', $service);
+
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:50',
             'description' => 'sometimes|required|string',
@@ -61,6 +65,7 @@ class ServiceController extends Controller
      */
     public function destroy(Service $service)
     {
+        $this->authorize('delete', $service);
         $service->delete();
         return response()->noContent();
     }

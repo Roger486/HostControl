@@ -91,6 +91,18 @@ Route::middleware('auth:sanctum')->group(function () {
 // 🧑‍🔧 SERVICES
 // =========================
 
-Route::apiResource('services', ServiceController::class);
-Route::post('/reservations/{reservation}/services', [ReservationServiceController::class, 'attachService']);
-Route::delete('/reservations/{reservation}/services', [ReservationServiceController::class, 'detachService']);
+// 📖 Public: List and view services
+Route::get('/services', [ServiceController::class, 'index']);
+Route::get('/services/{service}', [ServiceController::class, 'show']);
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    // 🛡️ Admin only (authorization handled via policies)
+    Route::post('/services', [ServiceController::class, 'store']);
+    Route::put('/services/{service}', [ServiceController::class, 'update']);
+    Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
+
+    // 🔐 Current authenticated user actions
+    Route::post('/reservations/{reservation}/services', [ReservationServiceController::class, 'attachService']);
+    Route::delete('/reservations/{reservation}/services', [ReservationServiceController::class, 'detachService']);
+});
