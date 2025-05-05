@@ -15,14 +15,13 @@ import { AdminComponent } from './pages/admin/admin.component';
 import { AdminClientesComponent } from './pages/admin/admin-clientes/admin-clientes.component';
 import { AdminReservasComponent } from './pages/admin/admin-reservas/admin-reservas.component';
 import { AdminInmueblesComponent } from './pages/admin/admin-inmuebles/admin-inmuebles.component';
-
-
+import { PoliticaCookiesComponent } from './pages/politica-cookies/politica-cookies.component';
+import { SobreNosotrosComponent } from './pages/sobre-nosotros/sobre-nosotros.component';
 export const routes: Routes = [
     {
         path: '',
         component: MainLayoutComponent,
         children: [
-            // Aqui se añadiran paginas como Home, Login, etc..
             { path: '', component: HomeComponent }, // Ruta a home
             { path: 'login', component: LoginComponent }, // Ruta a login
             { path: 'register', component: RegisterComponent }, // Ruta a register
@@ -38,6 +37,8 @@ export const routes: Routes = [
             { path: 'admin/clientes', component: AdminClientesComponent }, // Ruta a gestion de clientes
             { path: 'admin/reservas', component: AdminReservasComponent }, // Ruta a gestion de reservas
             { path: 'admin/inmuebles', component: AdminInmueblesComponent }, // Ruta a gestion de inmuebles
+            { path: 'politica-cookies', component: PoliticaCookiesComponent }, // Ruta a politica de cookies
+            { path: 'sobre-nosotros', component: SobreNosotrosComponent } // Ruta a sobre nosotros
         ]
         },
         {
