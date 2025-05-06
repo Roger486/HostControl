@@ -14,9 +14,11 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 ## Index
 
 ### 🆎 Important info
+
 - [📌 Regular Expressions used in validation](#-regular-expressions-used-in-validation)
 
 ### 👤 Users
+
 - [GET /api/users](#get-apiusers)
 - [GET /api/users/search](#get-apiuserssearch)
 - [GET /api/users/{id}](#get-apiusersid)
@@ -27,6 +29,7 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [PUT /api/user](#put-apiuser)
 
 ### 🏠 Accommodations
+
 - [GET /api/accommodations](#get-apiaccommodations)
 - [GET /api/accommodations/{id}](#get-apiaccommodationsid)
 - [POST /api/accommodations](#post-apiaccommodations)
@@ -36,6 +39,7 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [DELETE /api/accommodations/images/{image}](#delete-apiaccommodationsimagesimage)
 
 ### 🗓️ Reservations
+
 - [GET /api/reservations](#get-apireservations)
 - [GET /api/reservations/{id}](#get-apireservationsid)
 - [POST /api/reservations](#post-apireservations)
@@ -45,30 +49,45 @@ Some routes are public, but most require authentication via Laravel Sanctum.
 - [GET /api/reservations/guest/{user}](#get-apireservationsguestuser)
 
 ### 🗒️ Reservation Logs
+
 - [GET /api/reservation_logs/{reservation}](#get-apireservation_logsreservation_id)
 
 ### 👮 Auth
+
 - [POST /api/login](#post-apilogin)
 - [POST /api/logout](#post-apilogout)
 
+### 🧑‍🔧 Services
+
+- [GET /api/services](#get-apiservices)
+- [GET /api/services/{id}](#get-apiservicesid)
+- [POST /api/services](#post-apiservices)
+- [PUT /api/services/{id}](#put-apiservicesid)
+- [DELETE /api/services/{id}](#delete-apiservicesid)
+
+### ➕ Reservation Services
+
+- [POST /api/reservations/{reservation}/services](#post-apireservationsreservationservices)
+- [DELETE /api/reservations/{reservation}/services](#delete-apireservationsreservationservices)
+
 ---
+
 ---
 
 ## 🆎 Important info
 
 ### 📌 Regular Expressions used in validation
 
-| Field      | Regex Pattern                                               | Description                          |
-|------------|-------------------------------------------------------------|--------------------------------------|
-| `DNI`      | `/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]$/`                    | 8 digits followed by a capital letter |
-| `NIE`      | `/^[XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKET]$/`               | Starts with X, Y, or Z + 7 digits + letter |
-| `Passport` | `/^[A-Za-z0-9]{5,20}$/`                                        | Alphanumeric, 5 to 20 characters      |
-| `Phone`    | `/^\+?[0-9\s\-]{7,20}$/`                                    | Digits, spaces or hyphens, optional `+` |
+| Field      | Regex Pattern                                 | Description                                |
+| ---------- | --------------------------------------------- | ------------------------------------------ |
+| `DNI`      | `/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]$/`      | 8 digits followed by a capital letter      |
+| `NIE`      | `/^[XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKET]$/` | Starts with X, Y, or Z + 7 digits + letter |
+| `Passport` | `/^[A-Za-z0-9]{5,20}$/`                       | Alphanumeric, 5 to 20 characters           |
+| `Phone`    | `/^\+?[0-9\s\-]{7,20}$/`                      | Digits, spaces or hyphens, optional `+`    |
 
 > These are **api validation formats**. If frontend needs stricter pre-validation, use these as a base.
 
 ## 👤 Users
-
 
 These endpoints allow you to manage users (create, list, update, delete).
 
@@ -77,11 +96,13 @@ These endpoints allow you to manage users (create, list, update, delete).
 ### 📌 User Field Options (Enums)
 
 **document_type:**
+
 - "DNI"
 - "NIE"
 - "Passport"
 
 **role:**
+
 - "user"
 - "admin"
 
@@ -99,6 +120,7 @@ If you send something else, it may fail.
 **Authorization:** Admins only (`viewAny` policy)
 
 **Success response (200):**
+
 ```json
 {
   "data": [
@@ -162,8 +184,8 @@ Returns the first match, with an optional warning if multiple results are found 
 
 **Query Parameters:**
 
-- `email` (string) – optional, required if `document_number` is not present  
-- `document_number` (string) – optional, required if `email` is not present  
+- `email` (string) – optional, required if `document_number` is not present
+- `document_number` (string) – optional, required if `email` is not present
 
 > You must provide **either** `email` or `document_number`.
 
@@ -206,15 +228,14 @@ Returns the first match, with an optional warning if multiple results are found 
   }
 }
 ```
+
 **422 – No results found:**
 
 ```json
 {
   "message": "No results for this search.",
   "errors": {
-    "search": [
-      "No results for this search."
-    ]
+    "search": ["No results for this search."]
   }
 }
 ```
@@ -230,6 +251,7 @@ Returns the first match, with an optional warning if multiple results are found 
 **Authorization:** Admins (`view` policy)
 
 **Success response (200):**
+
 ```json
 {
   "data": {
@@ -253,6 +275,7 @@ Returns the first match, with an optional warning if multiple results are found 
 ```
 
 **Errors:**
+
 - 404: User not found
 
 ---
@@ -264,6 +287,7 @@ Returns the first match, with an optional warning if multiple results are found 
 **Auth required:** ❌ No
 
 **Body (JSON):**
+
 ```json
 {
   "first_name": "John",
@@ -283,25 +307,19 @@ Returns the first match, with an optional warning if multiple results are found 
 **Success response (201):** Returns created user (excluding hidden fields like password)
 
 **Errors:**
+
 - 422: Missing required fields, wrong format or email/document already in use
 
 **Error Response example:**
+
 ```json
 {
   "message": "The first name field is required. (and 4 more errors)",
   "errors": {
-    "first_name": [
-      "The first name field is required."
-    ],
-    "email": [
-      "The email has already been taken."
-    ],
-    "birthdate": [
-      "The birthdate field must be a valid date."
-    ],
-    "document_number": [
-      "The document number has already been taken."
-    ],
+    "first_name": ["The first name field is required."],
+    "email": ["The email has already been taken."],
+    "birthdate": ["The birthdate field must be a valid date."],
+    "document_number": ["The document number has already been taken."],
     "phone": [
       "Phone number can start with +, must be 7 to 20 characters long and can include digits(0-9), spaces( ), or hyphens(-)."
     ]
@@ -324,23 +342,22 @@ Returns the first match, with an optional warning if multiple results are found 
 **Success response (200):** Updated user data
 
 **Errors:**
+
 - 404: User not found
 - 422: Validation error
 
 **Error Response example:**
+
 ```json
 {
   "message": "The last name 1 field is required. (and 1 more error)",
   "errors": {
-    "last_name_1": [
-      "The last name 1 field is required."
-    ],
-    "email": [
-      "The email field must be a valid email address."
-    ]
+    "last_name_1": ["The last name 1 field is required."],
+    "email": ["The email field must be a valid email address."]
   }
 }
 ```
+
 ---
 
 ### DELETE /api/users/{id}
@@ -354,6 +371,7 @@ Returns the first match, with an optional warning if multiple results are found 
 **Success response (204):** No content
 
 **Errors:**
+
 - 404: User not found
 
 ---
@@ -366,7 +384,8 @@ Returns the first match, with an optional warning if multiple results are found 
 
 **Authorization:** The authenticated user only
 
-**Success response (200):** 
+**Success response (200):**
+
 ```json
 {
   "data": {
@@ -390,7 +409,9 @@ Returns the first match, with an optional warning if multiple results are found 
 ```
 
 **Errors:**
+
 - 401: Unauthenticated (if token is missing or invalid)
+
 ---
 
 ### PUT /api/user
@@ -415,7 +436,8 @@ Returns the first match, with an optional warning if multiple results are found 
 }
 ```
 
-**Success response (200):** 
+**Success response (200):**
+
 ```json
 {
   "data": {
@@ -439,17 +461,17 @@ Returns the first match, with an optional warning if multiple results are found 
 ```
 
 **Errors:**
+
 - 401: Unauthenticated (if token is missing or invalid)
 - 422: Validation error (if any of the fields are invalid or required fields are missing)
 
 **Error Response example:**
+
 ```json
 {
   "message": "The last name 1 field is required.",
   "errors": {
-    "last_name_1": [
-      "The last name 1 field is required."
-    ]
+    "last_name_1": ["The last name 1 field is required."]
   }
 }
 ```
@@ -467,12 +489,12 @@ These endpoints allow you to manage all types of accommodations (houses, bungalo
 Each type has its own specific fields.  
 These fields are required when creating or updating an accommodation of that type.
 
-| Type           | Extra Fields                                         | Data Types                     |
-|----------------|------------------------------------------------------|--------------------------------|
-| `bungalow`     | `bed_amount`, `has_air_conditioning`, `has_kitchen` | `int`, `bool`, `bool`          |
-| `camping_spot` | `area_size_m2`, `has_electricity`, `accepts_caravan`| `int`, `bool`, `bool`          |
-| `house`        | `bed_amount`, `room_amount`, `has_air_conditioning` | `int`, `int`, `bool`           |
-| `room`         | `bed_amount`, `has_air_conditioning`, `has_private_wc` | `int`, `bool`, `bool`        |
+| Type           | Extra Fields                                           | Data Types            |
+| -------------- | ------------------------------------------------------ | --------------------- |
+| `bungalow`     | `bed_amount`, `has_air_conditioning`, `has_kitchen`    | `int`, `bool`, `bool` |
+| `camping_spot` | `area_size_m2`, `has_electricity`, `accepts_caravan`   | `int`, `bool`, `bool` |
+| `house`        | `bed_amount`, `room_amount`, `has_air_conditioning`    | `int`, `int`, `bool`  |
+| `room`         | `bed_amount`, `has_air_conditioning`, `has_private_wc` | `int`, `bool`, `bool` |
 
 ---
 
@@ -484,11 +506,11 @@ These fields are required when creating or updating an accommodation of that typ
 
 **Query Parameters (optional):**
 
-| Parameter         | Type    | Description                                                                 |
-|------------------|---------|-----------------------------------------------------------------------------|
+| Parameter        | Type    | Description                                                                |
+| ---------------- | ------- | -------------------------------------------------------------------------- |
 | `type`           | string  | Filter by accommodation type (`house`, `bungalow`, `room`, `camping_spot`) |
-| `min_capacity`   | integer | Minimum capacity (e.g. `min_capacity=4`)                                    |
-| `max_capacity`   | integer | Maximum capacity                                                            |
+| `min_capacity`   | integer | Minimum capacity (e.g. `min_capacity=4`)                                   |
+| `max_capacity`   | integer | Maximum capacity                                                           |
 | `check_in_date`  | date    | Desired check-in date (`YYYY-MM-DD`)                                       |
 | `check_out_date` | date    | Desired check-out date (`YYYY-MM-DD`)                                      |
 | `page`           | integer | Page number for pagination                                                 |
@@ -501,6 +523,7 @@ These fields are required when creating or updating an accommodation of that typ
 - Filtering by `type` will only match known types (as defined in the backend constant `TYPES`).
 
 **Success response (200):**
+
 ```json
 {
   "data": [
@@ -590,6 +613,7 @@ These fields are required when creating or updating an accommodation of that typ
 **Auth required:** ❌ No
 
 **Success response (200):**
+
 ```json
 {
   "data": {
@@ -620,6 +644,7 @@ These fields are required when creating or updating an accommodation of that typ
 ```
 
 **Errors:**
+
 - 404: Accommodation not found
 
 ---
@@ -633,6 +658,7 @@ These fields are required when creating or updating an accommodation of that typ
 **Authorization:** Admins only (`create` policy)
 
 **Body (JSON):**
+
 ```json
 {
   "accommodation_code": "A001",
@@ -651,6 +677,7 @@ These fields are required when creating or updating an accommodation of that typ
 **Success response (201):** Created accommodation with details
 
 **Errors:**
+
 - 422: Missing or wrong fields
 
 ---
@@ -664,9 +691,11 @@ These fields are required when creating or updating an accommodation of that typ
 **Authorization:** Admins only (`update` policy on the accommodation)
 
 **Path Parameters:**
+
 - `id` (integer, required): The ID of the accommodation.
 
 **Body Parameters (Form Data):**
+
 - `image` (file, required): The image file to upload. Accepted formats: JPEG, PNG, JPG, GIF. Max size: 2MB.
 
 ---
@@ -684,18 +713,20 @@ curl -X POST http://localhost/api/accommodations/1/images \
 ```json
 {
   "data": {
-      "url": "http://localhost:8000/storage/accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png",
-      "image_path": "accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png"
+    "url": "http://localhost:8000/storage/accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png",
+    "image_path": "accommodations/9wGnwOIFsAAFK924rAne4D2TxVK2naRFCiYYdfNT.png"
   }
 }
 ```
 
 **Errors:**
+
 - 404: Accommodation not found.
 - 422: Image field is missing or invalid.
 - 403: Unauthorized (user lacks permissions to upload images).
 
 **Notes:**
+
 - Uploaded images are accessible via `/storage/accommodations/{filename}`.
 - The URL is generated automatically and returned for immediate use in frontend applications.
 
@@ -714,6 +745,7 @@ curl -X POST http://localhost/api/accommodations/1/images \
 **Success response (200):** Updated accommodation with details
 
 **Errors:**
+
 - 404: Accommodation not found
 - 422: Validation error
 
@@ -730,6 +762,7 @@ curl -X POST http://localhost/api/accommodations/1/images \
 **Success response (204):** No content
 
 **Errors Responses:**
+
 - 404: Accommodation not found
 - 403 Forbidden: Unauthorized.
 - 401 Unauthenticated: Missing or invalid token.
@@ -747,6 +780,7 @@ curl -X POST http://localhost/api/accommodations/1/images \
 ---
 
 **Path Parameters:**
+
 - `image` (integer, required): The ID of the image to delete.
 
 ---
@@ -761,11 +795,13 @@ curl -X DELETE http://localhost/api/accommodations/images/3 \
 **Success response (204):** No content
 
 **Error Responses:**
+
 - 403 Forbidden: Unauthorized to delete the image.
 - 404 Not Found: Image does not exist.
 - 401 Unauthenticated: Missing or invalid token.
 
 **Notes:**
+
 - The image is physically removed from `storage/app/public/accommodations/`.
 - After deletion, the associated URL will no longer be accessible.
 
@@ -780,6 +816,7 @@ These endpoints allow you to manage reservations made by users, including their 
 ### 📌 Field Options (Enums)
 
 **status:**
+
 - "pending"
 - "confirmed"
 - "cancelled"
@@ -787,6 +824,7 @@ These endpoints allow you to manage reservations made by users, including their 
 - "checked_out"
 
 **companion.document_type:**
+
 - "DNI"
 - "NIE"
 - "Passport"
@@ -803,6 +841,7 @@ See User for booked_by and guest structure.
 **Authorization:** Admins only (`viewAny` policy)
 
 **Success response (200):** Testing recomended for full comprehension.
+
 ```json
 {
   "data": [
@@ -870,6 +909,7 @@ See User for booked_by and guest structure.
 **Success response (200):** Same structure as GET all
 
 **Errors:**
+
 - 404: Reservation not found
 
 ---
@@ -884,6 +924,7 @@ If the reservation includes companions (other people staying), they must be incl
 **Authorization:** Any authenticated user
 
 **Request Body (JSON):**
+
 ```json
 {
   "booked_by_id": 5,
@@ -902,11 +943,12 @@ If the reservation includes companions (other people staying), they must be incl
     }
   ]
 }
-
 ```
+
 ---
 
 **Notes:**
+
 - `accommodation_id`, `check_in_date`, and `check_out_date` are required and must define a valid, available slot.
 - `status` is managed internally and will be ignored if sent.
 - If any adult companion is added, their document information is required.
@@ -916,6 +958,7 @@ If the reservation includes companions (other people staying), they must be incl
 **Success response (201):** Reservation with all relationships
 
 **Errors:**
+
 - 422: Missing required fields
 - 500: Internal error (usually invalid `accommodation_id`)
 
@@ -930,6 +973,7 @@ If the reservation includes companions (other people staying), they must be incl
 **Authorization:** Admins only (`update` policy)
 
 **Body (JSON):** Same as POST. Sending companions will replace all existing ones.
+
 - `guest_id` (optional): ID of the guest user.
 - `check_in_date` (optional): Date, required with `check_out_date`.
 - `check_out_date` (optional): Date, required with `check_in_date`.
@@ -938,7 +982,7 @@ If the reservation includes companions (other people staying), they must be incl
 - `log_detail` (**required**): String, custom comment for the reservation log.
 - `companions` (optional): Array of companion objects. Sending companions replaces all existing ones.
 
-*Example:*
+_Example:_
 
 ```json
 {
@@ -970,6 +1014,7 @@ If the reservation includes companions (other people staying), they must be incl
 **Success response (200):** Updated reservation with details
 
 **Errors:**
+
 - 404: Reservation not found
 - 422: Validation error
 
@@ -988,6 +1033,7 @@ If the reservation includes companions (other people staying), they must be incl
 **Success response (204):** No content
 
 **Errors:**
+
 - 404: Reservation not found
 
 ---
@@ -1000,7 +1046,8 @@ If the reservation includes companions (other people staying), they must be incl
 
 **Authorization:** The authenticated user only
 
-**Success response (200):** 
+**Success response (200):**
+
 ```json
 {
   "data": [
@@ -1039,10 +1086,12 @@ If the reservation includes companions (other people staying), they must be incl
 ```
 
 **Errors:**
+
 - 401: Unauthenticated (if token is missing or invalid)
 - 422: Validation error (if data is invalid, e.g., missing parameters)
 
 **Error Response example:**
+
 ```json
 {
   "message": "Unauthorized",
@@ -1061,9 +1110,11 @@ If the reservation includes companions (other people staying), they must be incl
 **Authorization:** Admins only (`viewAny` policy on reservations)
 
 **Path Parameters:**
+
 - `user` (integer, required): The ID of the user (guest) whose reservations are being retrieved.
 
 **Success response (200):**
+
 ```json
 {
   "data": [
@@ -1204,6 +1255,7 @@ These endpoints manage user authentication using Laravel Sanctum.
 **Auth required:** ❌ No
 
 **Body (JSON):**
+
 ```json
 {
   "email": "user@example.com",
@@ -1220,6 +1272,7 @@ These endpoints manage user authentication using Laravel Sanctum.
 ```
 
 **Errors:**
+
 - 401: Invalid credentials
 
 ---
@@ -1235,6 +1288,262 @@ These endpoints manage user authentication using Laravel Sanctum.
 **Success response (204):** No content
 
 **Errors:**
+
 - 401: Unauthenticated (if no valid token)
+
+---
+
+## 🧑‍🔧 Services
+
+These endpoints allow you to manage all types of accommodations
+
+### GET `/api/services`
+
+**Description:** Get a list of all available services.  
+**Auth required:** ❌ No
+**Success response (200):**
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Spa",
+      "description": "Relaxing spa session",
+      "price": 3756,
+      "available_slots": 5,
+      "comments": "Includes sauna",
+      "created_at": "2025-05-05T10:32:21.000000Z",
+      "updated_at": "2025-05-05T10:32:21.000000Z"
+    },
+    ...
+  ]
+}
+```
+
+**Possible Responses:**
+
+- `200 OK`: Request successful (may return an empty list).
+- `422 Unprocessable Content`: Invalid or missing filter parameters. (no parameters implemmented for now).
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
+
+---
+
+### GET `/api/services/{service}`
+
+**Description:** Get details of a specific service by ID.
+
+**Auth required:** ❌ No 
+
+**Success response (200):**
+
+```json
+{
+    "data": {
+        "id": 13,
+        "name": "Late Checkout",
+        "description": "Stay until 3PM",
+        "price": 600,
+        "available_slots": 10,
+        "comments": null,
+        "created_at": "2025-05-05T16:47:31.000000Z",
+        "updated_at": "2025-05-05T16:56:42.000000Z"
+    }
+}
+```
+
+**Errors:**
+
+- `404 Not Found`: Service not found.
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
+
+---
+
+### POST `/api/services`
+
+**Description:** Create a new service.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`create` policy)
+
+**Body (JSON):**
+
+```json
+{
+  "name": "Late Checkout",
+  "description": "Stay until 3PM",
+  "price": 2000,
+  "available_slots": 5,
+  "comments": "Optional comment"
+}
+```
+
+**Success response (200):**
+
+```json
+{
+    "data": {
+        "id": 13,
+        "name": "Late Checkout",
+        "description": "Stay until 3PM",
+        "price": 2000,
+        "available_slots": 5,
+        "comments": null,
+        "created_at": "2025-05-05T16:47:31.000000Z",
+        "updated_at": "2025-05-05T16:56:42.000000Z"
+    }
+}
+```
+
+**Errors:**
+
+- `401 Unauthorized`: Unauthenticated.
+- `403 Forbidden`: This action is unauthorized.
+- `422 Validation failed`: Invalid or missing fields (body).
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
+
+---
+
+### PUT `/api/services/{id}`
+
+**Description:** Update an existing service.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update ` policy)
+
+**Body (JSON) (partial or full):**
+
+```json
+{
+  "price": 2500,
+  "available_slots": 6
+}
+```
+
+**Success response (200):**
+
+```json
+{
+    "data": {
+        "id": 13,
+        "name": "Late Checkout",
+        "description": "Stay until 3PM",
+        "price": 2500,
+        "available_slots": 6,
+        "comments": null,
+        "created_at": "2025-05-05T16:47:31.000000Z",
+        "updated_at": "2025-05-05T16:56:42.000000Z"
+    }
+}
+```
+
+**Errors:**
+
+- `401 Unauthorized`: Unauthenticated.
+- `403 Forbidden`: This action is unauthorized.
+- `404 Not Found`: Service not found.
+- `422 Validation failed`: Invalid or missing fields (body).
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
+
+---
+
+### DELETE `/api/services/{id}`
+
+**Description:** Delete a service.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`delete ` policy)
+
+**Success response (204):** No content.
+
+**Errors:**
+
+- `401 Unauthorized`: Unauthenticated.
+- `403 Forbidden`: This action is unauthorized.
+- `404 Not Found`: Service not found.
+- `422 Validation failed`: Invalid or missing fields (body).
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
+
+---
+
+## ➕ Reservation Services
+
+These endpoints manage attachment and detachment of services to reservations.
+
+---
+
+### POST `/api/reservations/{reservation}/services`
+
+**Description:** Attach a service to a reservation.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy on reservations since it's a reservation update)
+
+**Body (JSON):**
+
+```json
+{
+  "service_id": 3,
+  "amount": 2
+}
+```
+
+**Success response (200):**
+
+```json
+{
+    "data": {
+        "id": 3,
+        "name": "repellat ut",
+        "description": "Aut dolorum sequi sed minus in provident.",
+        "price": 4318,
+        "available_slots": 12,
+        "comments": null,
+        "created_at": "2025-05-05T10:32:21.000000Z",
+        "updated_at": "2025-05-05T10:32:21.000000Z",
+        "pivot": {
+            "reservation_id": 18,
+            "service_id": 3,
+            "amount": 2,
+            "created_at": "2025-05-05T11:46:21.000000Z",
+            "updated_at": "2025-05-05T12:19:01.000000Z"
+        }
+    }
+}
+```
+
+**Errors:**
+
+- `401 Unauthorized`: Unauthenticated.
+- `403 Forbidden`: This action is unauthorized.
+- `404 Not Found`: Reservation not found.
+- `422 Validation failed`: Invalid or missing fields (body).
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
+
+---
+
+### DELETE `/api/reservations/{reservation}/services`
+
+**Description:** Detach a service to a reservation.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** Admins only (`update` policy on reservations since it's a reservation update)
+
+**Success response (204):** No content.
+
+**Errors:**
+
+- `401 Unauthorized`: Unauthenticated.
+- `403 Forbidden`: This action is unauthorized.
+- `404 Not Found`: Reservation not found.
+- `422 Validation failed`: Invalid or missing fields (body).
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
+
+---
 
 ## 🛠️ More endpoints coming soon...
