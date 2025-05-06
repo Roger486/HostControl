@@ -11,6 +11,8 @@ class ReservationServiceController extends Controller
 {
     public function attachService(AttachServiceRequest $request, Reservation $reservation)
     {
+        $this->authorize('update', $reservation);
+
         $validated = $request->validated();
 
         $reservation->attachServiceWithAmount($validated['service_id'], $validated['amount']);
@@ -23,6 +25,8 @@ class ReservationServiceController extends Controller
 
     public function detachService(DetachServiceRequest $request, Reservation $reservation)
     {
+        $this->authorize('update', $reservation);
+
         $data = $request->validated();
         $reservation->services()->detach($data['service_id']);
 
