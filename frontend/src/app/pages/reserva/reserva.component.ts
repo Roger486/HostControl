@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ReservasService } from 'app/services/reservas.service';
 import { ReservaUsuarioService } from 'app/services/reserva-usuario.service';
 import { AuthService } from 'app/services/auth.service';
@@ -9,7 +10,7 @@ import { AuthService } from 'app/services/auth.service';
 @Component({
   selector: 'app-reserva',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule],
   templateUrl: './reserva.component.html',
   styleUrl: './reserva.component.css'
 })
