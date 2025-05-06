@@ -32,4 +32,25 @@ class ReservationServiceController extends Controller
 
         return response()->noContent();
     }
+
+    public function ownAttachedServices(Reservation $reservation)
+    {
+        $this->authorize('viewOwn', $reservation);
+
+        return ServiceResource::collection($reservation->services);
+    }
+
+    public function attachOwnService(AttachServiceRequest $request, Reservation $reservation)
+    {
+        $this->authorize('manageOwn', $reservation);
+
+        $validated = $request->validated();
+
+        $reservation->attachServiceWithAmount($validated['service_id'], $validated['amount']);
+
+        $serviceAttached = $reservation->services()
+            ->where('services.id', $validated['service_id'])
+            ->first();
+        return new ServiceResource($serviceAttached);
+    }
 }
