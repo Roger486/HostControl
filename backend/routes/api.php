@@ -4,6 +4,8 @@ use App\Http\Controllers\AccommodationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReservationLogController;
+use App\Http\Controllers\ReservationServiceController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -83,4 +85,24 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     // 🛡️ Admin only (authorization handled via policies)
     Route::get('reservation_logs/{reservation}', [ReservationLogController::class, 'index']);
+});
+
+// =========================
+// 🧑‍🔧 SERVICES
+// =========================
+
+// 📖 Public: List and view services
+Route::get('/services', [ServiceController::class, 'index']);
+Route::get('/services/{service}', [ServiceController::class, 'show']);
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    // 🛡️ Admin only (authorization handled via policies)
+    Route::post('/services', [ServiceController::class, 'store']);
+    Route::put('/services/{service}', [ServiceController::class, 'update']);
+    Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
+
+    // 🔐 Current authenticated user actions
+    Route::post('/reservations/{reservation}/services', [ReservationServiceController::class, 'attachService']);
+    Route::delete('/reservations/{reservation}/services', [ReservationServiceController::class, 'detachService']);
 });

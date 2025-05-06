@@ -27,7 +27,9 @@ class DatabaseSeeder extends Seeder
             // With reservations we can create companions
             CompanionSeeder::class,
             // With admin users and reservations we can create reservation logs
-            ReservationLogSeeder::class
+            ReservationLogSeeder::class,
+            // Create and attach services to the reservations
+            ReservationWithServicesSeeder::class
         ]);
     }
 }

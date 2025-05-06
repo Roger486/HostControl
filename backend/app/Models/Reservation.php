@@ -6,6 +6,7 @@ use App\Models\Accommodation\Accommodation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reservation extends Model
@@ -91,5 +92,32 @@ class Reservation extends Model
     public function reservationLogs(): HasMany
     {
         return $this->hasMany(ReservationLog::class, 'reservation_id');
+    }
+
+    /**
+     * Get the Reservation Services attached to this reservation.
+     *
+     * A reservation has many different services.
+     */
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class, 'reservation_service')
+                    ->using(ReservationService::class)
+                    ->withPivot('amount')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Attach the service with ID $serviceId to this Reservation with specified $amount.
+     */
+    public function attachServiceWithAmount($serviceId, $amount)
+    {
+        $this->services()->syncWithoutDetaching([
+            $serviceId => [
+                'amount' => $amount,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]
+        ]);
     }
 }
