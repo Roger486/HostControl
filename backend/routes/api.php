@@ -101,8 +101,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/services', [ServiceController::class, 'store']);
     Route::put('/services/{service}', [ServiceController::class, 'update']);
     Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
-
-    // 🔐 Current authenticated user actions
     Route::post('/reservations/{reservation}/services', [ReservationServiceController::class, 'attachService']);
     Route::delete('/reservations/{reservation}/services', [ReservationServiceController::class, 'detachService']);
+
+    // 🔐 Current authenticated user actions over services
+    Route::get('/user/reservations/{reservation}/services', [ReservationServiceController::class, 'ownAttachedServices']);
+    Route::post('user/reservations/{reservation}/services', [ReservationServiceController::class, 'attachOwnService']);
 });

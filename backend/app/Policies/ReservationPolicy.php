@@ -24,6 +24,22 @@ class ReservationPolicy
     }
 
     /**
+     * Determine whether the user can view the model (being the owner).
+     */
+    public function viewOwn(User $user, Reservation $reservation): bool
+    {
+        return $reservation->guest_id === $user->id;
+    }
+
+    /**
+     * Determine whether the user can make changes to the model (being the owner).
+     */
+    public function manageOwn(User $user, Reservation $reservation): bool
+    {
+        return $reservation->guest_id === $user->id;
+    }
+
+    /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
