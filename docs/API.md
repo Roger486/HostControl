@@ -1333,22 +1333,22 @@ These endpoints allow you to manage all types of accommodations
 
 **Description:** Get details of a specific service by ID.
 
-**Auth required:** ❌ No 
+**Auth required:** ❌ No
 
 **Success response (200):**
 
 ```json
 {
-    "data": {
-        "id": 13,
-        "name": "Late Checkout",
-        "description": "Stay until 3PM",
-        "price": 600,
-        "available_slots": 10,
-        "comments": null,
-        "created_at": "2025-05-05T16:47:31.000000Z",
-        "updated_at": "2025-05-05T16:56:42.000000Z"
-    }
+  "data": {
+    "id": 13,
+    "name": "Late Checkout",
+    "description": "Stay until 3PM",
+    "price": 600,
+    "available_slots": 10,
+    "comments": null,
+    "created_at": "2025-05-05T16:47:31.000000Z",
+    "updated_at": "2025-05-05T16:56:42.000000Z"
+  }
 }
 ```
 
@@ -1383,16 +1383,16 @@ These endpoints allow you to manage all types of accommodations
 
 ```json
 {
-    "data": {
-        "id": 13,
-        "name": "Late Checkout",
-        "description": "Stay until 3PM",
-        "price": 2000,
-        "available_slots": 5,
-        "comments": null,
-        "created_at": "2025-05-05T16:47:31.000000Z",
-        "updated_at": "2025-05-05T16:56:42.000000Z"
-    }
+  "data": {
+    "id": 13,
+    "name": "Late Checkout",
+    "description": "Stay until 3PM",
+    "price": 2000,
+    "available_slots": 5,
+    "comments": null,
+    "created_at": "2025-05-05T16:47:31.000000Z",
+    "updated_at": "2025-05-05T16:56:42.000000Z"
+  }
 }
 ```
 
@@ -1426,16 +1426,16 @@ These endpoints allow you to manage all types of accommodations
 
 ```json
 {
-    "data": {
-        "id": 13,
-        "name": "Late Checkout",
-        "description": "Stay until 3PM",
-        "price": 2500,
-        "available_slots": 6,
-        "comments": null,
-        "created_at": "2025-05-05T16:47:31.000000Z",
-        "updated_at": "2025-05-05T16:56:42.000000Z"
-    }
+  "data": {
+    "id": 13,
+    "name": "Late Checkout",
+    "description": "Stay until 3PM",
+    "price": 2500,
+    "available_slots": 6,
+    "comments": null,
+    "created_at": "2025-05-05T16:47:31.000000Z",
+    "updated_at": "2025-05-05T16:56:42.000000Z"
+  }
 }
 ```
 
@@ -1496,23 +1496,23 @@ These endpoints manage attachment and detachment of services to reservations.
 
 ```json
 {
-    "data": {
-        "id": 3,
-        "name": "repellat ut",
-        "description": "Aut dolorum sequi sed minus in provident.",
-        "price": 4318,
-        "available_slots": 12,
-        "comments": null,
-        "created_at": "2025-05-05T10:32:21.000000Z",
-        "updated_at": "2025-05-05T10:32:21.000000Z",
-        "pivot": {
-            "reservation_id": 18,
-            "service_id": 3,
-            "amount": 2,
-            "created_at": "2025-05-05T11:46:21.000000Z",
-            "updated_at": "2025-05-05T12:19:01.000000Z"
-        }
+  "data": {
+    "id": 3,
+    "name": "repellat ut",
+    "description": "Aut dolorum sequi sed minus in provident.",
+    "price": 4318,
+    "available_slots": 12,
+    "comments": null,
+    "created_at": "2025-05-05T10:32:21.000000Z",
+    "updated_at": "2025-05-05T10:32:21.000000Z",
+    "pivot": {
+      "reservation_id": 18,
+      "service_id": 3,
+      "amount": 2,
+      "created_at": "2025-05-05T11:46:21.000000Z",
+      "updated_at": "2025-05-05T12:19:01.000000Z"
     }
+  }
 }
 ```
 
@@ -1535,6 +1535,92 @@ These endpoints manage attachment and detachment of services to reservations.
 **Authorization:** Admins only (`update` policy on reservations since it's a reservation update)
 
 **Success response (204):** No content.
+
+**Errors:**
+
+- `401 Unauthorized`: Unauthenticated.
+- `403 Forbidden`: This action is unauthorized.
+- `404 Not Found`: Reservation not found.
+- `422 Validation failed`: Invalid or missing fields (body).
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
+
+---
+
+### GET `/api/user/reservations/{reservation}/services`
+
+**Description:** Returns the list of services currently attached to a reservation that belongs to the authenticated user.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** The authenticated user only
+
+**Success response (200):**
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "beatae et",
+      "description": "Sit cumque dolores unde impedit qui tenetur sint.",
+      "price": 3756,
+      "available_slots": 5,
+      "comments": "Quos dignissimos est eos explicabo.",
+      "created_at": "2025-05-05T10:32:21.000000Z",
+      "updated_at": "2025-05-05T10:32:21.000000Z",
+      "pivot": {
+        "reservation_id": 12,
+        "service_id": 1,
+        "amount": 3,
+        "created_at": "2025-05-05T10:32:21.000000Z",
+        "updated_at": "2025-05-05T10:32:21.000000Z"
+      }
+    },
+    ...
+  ]
+}
+```
+
+**Errors:**
+
+- `401 Unauthorized`: Unauthenticated.
+- `403 Forbidden`: This action is unauthorized.
+- `404 Not Found`: Reservation not found.
+- `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
+
+---
+
+### POST `/api/user/reservations/{reservation}/services`
+
+**Description:** Allows the authenticated user to attach a service to their own reservation, specifying the quantity.
+
+**Auth required:** ✅ Yes
+
+**Authorization:** The authenticated user only
+
+**Success response (200):**
+
+```json
+{
+  "data": {
+    "id": 2,
+    "name": "repellat ut",
+    "description": "Aut dolorum sequi sed minus in provident.",
+    "price": 4318,
+    "available_slots": 12,
+    "comments": null,
+    "created_at": "2025-05-05T10:32:21.000000Z",
+    "updated_at": "2025-05-05T10:32:21.000000Z",
+    "pivot": {
+      "reservation_id": 34,
+      "service_id": 2,
+      "amount": 1,
+      "created_at": "2025-05-06T13:23:14.000000Z",
+      "updated_at": "2025-05-06T13:23:14.000000Z"
+    }
+  }
+}
+```
 
 **Errors:**
 
