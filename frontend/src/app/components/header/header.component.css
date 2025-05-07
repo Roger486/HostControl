@@ -1,20 +1,57 @@
-nav {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  background-color: #eee;
-  padding: 1rem;
+header {
+  background-color: #168a5d !important;
 }
 
-a {
-  text-decoration: none;
-  font-weight: bold;
+/* Logo */
+header .navbar-brand img {
+  max-height: 100px;
 }
 
-button {
-  background: none;
-  border: none;
-  color: #c00;
-  font-weight: bold;
-  cursor: pointer;
+/* Botones */
+.btn-outline-primary {
+  color: white;
+  border-color: #023504;
+}
+
+.btn-outline-primary:hover {
+  background-color: #2E7D32;
+  color: white;
+  border-color: #ffffff;
+}
+
+.btn-outline-secondary {
+  background-color: #f4f8f5;
+  color: rgb(5, 104, 35);
+  border-color: #061306;
+}
+
+.btn-outline-secondary:hover {
+  color: rgb(143, 19, 19);
+  border-color: #f6f8f6;
+}
+
+.btn-outline-danger {
+  color: #D32F2F;
+  border-color: #D32F2F;
+}
+
+.btn-outline-danger:hover {
+  background-color: #D32F2F;
+  color: white;
+  border-color: #D32F2F;
+}
+
+/* Texto del saludo */
+header .text-muted {
+  font-size: 0.95rem;
+  color: #fcf9f9 !important;
+}
+
+/* Espaciado responsive */
+@media (max-width: 768px) {
+  header .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.5rem;
+  }
 }
