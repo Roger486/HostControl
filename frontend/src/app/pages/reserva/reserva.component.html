@@ -1,46 +1,131 @@
-<section class="reserva">
+<section>
     <h2>Buscar alojamiento</h2>
-
-    <form [formGroup]="reservaForm" (ngSubmit)="onSubmit()" class="formulario-busqueda">
-        <div>
-            <label for="fechaInicio">Entrada</label>
-            <input type="date" id="fechaInicio" formControlName="fechaInicio">
-        </div>
-
-        <div>
-            <label for="fechaFin">Salida</label>
-            <input type="date" id="fechaFin" formControlName="fechaFin">
-        </div>
-
-        <div>
-            <label for="tipo">Tipo</label>
-            <select id="tipo" formControlName="tipo">
-                <option value="">-- Selecciona --</option>
-                <option value="bungalow">Bungalow</option>
-                <option value="parcela">Parcela</option>
-                <option value="casa-rural">Casa Rural</option>
-            </select>
-        </div>
-
-        <button type="submit">Buscar</button>
+  
+    <!-- Formulario de búsqueda -->
+    <form (ngSubmit)="buscarAlojamientos()">
+      <label for="tipo">Tipo de alojamiento:</label>
+      <select id="tipo" [(ngModel)]="tipo" name="tipo" required>
+        <option value="" disabled selected>Selecciona un tipo</option>
+        <option value="bungalow">Bungalow</option>
+        <option value="camping_spot">Camping Spot</option>
+        <option value="house">House</option>
+        <option value="room">Room</option>
+      </select><br><br>
+  
+      <label for="check_in">Fecha de entrada:</label>
+      <input type="date" id="check_in" [(ngModel)]="check_in_date" name="check_in_date" required><br><br>
+  
+      <label for="check_out">Fecha de salida:</label>
+      <input type="date" id="check_out" [(ngModel)]="check_out_date" name="check_out_date" required><br><br>
+  
+      <button type="submit">Buscar</button>
     </form>
-
-    <div class="resultados">
+    <a routerLink="/">Volver a la página principal</a>
+  
+    <hr>
+  
+    <!-- Lista de alojamientos disponibles -->
+    <div *ngIf="alojamientosDisponibles.length > 0; else sinResultados">
         <h3>Alojamientos disponibles</h3>
-        <p>No hay resultados todavía. Realiza una búsqueda.</p>
-    </div>
-</section>
+        <ul>
+            <li *ngFor="let alojamiento of alojamientosDisponibles" style="margin-bottom: 30px; border-bottom: 1px solid #ccc; padding-bottom: 15px;">
 
-<div class="resultados" *ngIf="alojamientosDisponibles.length > 0">
-    <h3>Alojamientos disponibles</h3>
-    <ul>
-        <li *ngFor="let aloj of alojamientosDisponibles">
-            <strong>{{ aloj.nombre }}</strong> - Capacidad: {{ aloj.capacidad }} personas
-            <button (click)="irAConfirmacion(aloj)">Reservar</button>
-        </li>
-    </ul>
-</div>
-
-<div *ngIf="alojamientosDisponibles.length === 0 && reservaForm.dirty">
-    <p>No hay resultados para la búsqueda actual.</p>
-</div>
+                <!-- Imagen -->
+                <div *ngIf="alojamiento.images?.length > 0">
+                <img [src]="alojamiento.images[0].url" alt="Imagen del alojamiento" style="max-width: 300px; border-radius: 8px;">
+                </div>
+                <div *ngIf="alojamiento.images?.length === 0">
+                  <em>No hay imagen disponible.</em>
+                </div>
+              
+                <!-- Información general -->
+                <p><strong>Código:</strong> {{ alojamiento.accommodation_code }}</p>
+                <p><strong>Tipo:</strong> {{ alojamiento.type }}</p>
+                <p><strong>Sección:</strong> {{ alojamiento.section }}</p>
+                <p><strong>Capacidad:</strong> {{ alojamiento.capacity }} personas</p>
+                <p><strong>Precio por día:</strong> {{ alojamiento.price_per_day }} €</p>
+                <p><strong>Comentarios:</strong> {{ alojamiento.comments || 'Sin comentarios' }}</p>
+              
+                <!-- Características específicas según el tipo -->
+              
+                <!-- Bungalow -->
+                <div *ngIf="alojamiento.type === 'bungalow'">
+                  <p><strong>Camas:</strong> {{ alojamiento.bungalow?.bed_amount }}</p>
+                  <p><strong>Aire acondicionado:</strong> {{ alojamiento.bungalow?.has_air_conditioning ? 'Sí' : 'No' }}</p>
+                  <p><strong>Cocina:</strong> {{ alojamiento.bungalow?.has_kitchen ? 'Sí' : 'No' }}</p>
+                </div>
+              
+                <!-- Camping Spot -->
+                <div *ngIf="alojamiento.type === 'camping_spot'">
+                    <p><strong>Electricidad:</strong> {{ alojamiento.camping_spot?.has_electricity ? 'Sí' : 'No' }}</p>
+                    <p><strong>Acepta caravanas:</strong> {{ alojamiento.camping_spot?.accepts_caravan ? 'Sí' : 'No' }}</p>
+                    <p><strong>Área en m²:</strong> {{ alojamiento.camping_spot?.area_size_m2 }} m²</p>
+                </div>
+              
+                <!-- Room -->
+                <div *ngIf="alojamiento.type === 'room'">
+                  <p><strong>Baño:</strong> {{ alojamiento.room?.has_private_wc ? 'Sí' : 'No' }}</p>
+                  <p><strong>Aire acondicionado:</strong> {{ alojamiento.room?.has_air_conditioning ? 'Sí' : 'No' }}</p>
+                  <p><strong>Camas:</strong> {{ alojamiento.room?.bed_amount }}</p>
+                </div>
+              
+                <!-- House -->
+                <div *ngIf="alojamiento.type === 'house'">
+                  <p><strong>Habitaciones:</strong> {{ alojamiento.house?.room_amount }}</p>
+                  <p><strong>Camas:</strong> {{ alojamiento.house?.bed_amount }}</p>
+                  <p><strong>Aire acondicionado:</strong> {{ alojamiento.house?.has_air_conditioning ? 'Sí' : 'No' }}</p>
+                </div>
+                <button (click)="seleccionarAlojamiento(alojamiento)">Reservar este alojamiento</button>
+                <!-- Formuario de reserva -->
+                <form *ngIf="idAlojamientoSeleccionado === alojamiento.id" [formGroup]="reservaForm" (ngSubmit)="enviarReserva()">
+                    <input type="hidden" formControlName="accommodation_id">
+            
+                    <label>Fecha de entrada:</label>
+                    <input type="date" formControlName="check_in_date" required><br>
+            
+                    <label>Fecha de salida:</label>
+                    <input type="date" formControlName="check_out_date" required><br>
+            
+                    <label>Comentarios (opcional):</label><br>
+                    <textarea formControlName="comments" rows="3" cols="40"></textarea><br><br>
+                    <!-- Formulario acompanyantes -->
+                    <fieldset>
+                        <legend>Acompañante (opcional)</legend>
+                      
+                        <label>Nombre:</label>
+                        <input type="text" formControlName="companion_first_name"><br>
+                      
+                        <label>Primer apellido:</label>
+                        <input type="text" formControlName="companion_last_name"><br>
+                      
+                        <label>Tipo de documento:</label>
+                        <select formControlName="companion_document_type">
+                          <option value="DNI">DNI</option>
+                          <option value="NIE">NIE</option>
+                          <option value="PASSPORT">Pasaporte</option>
+                        </select><br>
+                      
+                        <label>Número de documento:</label>
+                        <input type="text" formControlName="companion_document_number"><br>
+                      
+                        <label>Fecha de nacimiento:</label>
+                        <input type="date" formControlName="companion_birthdate"><br>
+                      </fieldset>
+                    <button type="submit" [disabled]="reservaForm.invalid">Confirmar reserva</button>
+                    <button type="button" (click)="cancelarReserva()">Cancelar</button>
+                  </form>
+            </li>
+        </ul>
+        
+      </div>
+  
+    <!-- Si no hay resultados -->
+    <ng-template #sinResultados>
+      <p style="color: gray;" *ngIf="busquedaRealizada">No hay alojamientos disponibles con los filtros seleccionados.</p>
+    </ng-template>
+  </section>
+  <div *ngIf="ultimaPagina > 1" style="margin-top: 20px;">
+    <button (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1">Anterior</button>
+    Página {{ paginaActual }} de {{ ultimaPagina }}
+    <button (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === ultimaPagina">Siguiente</button>
+  </div>

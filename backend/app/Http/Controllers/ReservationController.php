@@ -2,10 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreReservationRequest;
-use App\Http\Requests\UpdateReservationRequest;
+use App\Events\ReservationActionPerformed;
+use App\Http\Requests\Reservation\StoreReservationRequest;
+use App\Http\Requests\Reservation\UpdateReservationRequest;
+use App\Http\Resources\ReservationResource;
+use App\Models\Accommodation\Accommodation;
 use App\Models\Reservation;
+use App\Models\ReservationLog;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -14,8 +24,10 @@ class ReservationController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Reservation::class);
+
         $reservations = Reservation::with('bookedBy', 'guest', 'accommodation', 'companions')->paginate(10);
-        return response()->json($reservations, 200);
+        return ReservationResource::collection($reservations);
     }
 
     /**
@@ -23,16 +35,44 @@ class ReservationController extends Controller
      */
     public function store(StoreReservationRequest $request)
     {
-        // TODO: change all() for validated() when activating validation rules
-        $reservation = Reservation::create($request->all());
+        $this->authorize('create', Reservation::class);
 
-        if ($request->has('companions') && is_array($request->companions)) {
-            foreach ($request->companions as $companionData) {
-                $reservation->companions()->create($companionData);
-            }
+        $validated = $request->validated();
+
+        // Validate if the accommodation is free by dates
+        // 1st get dates and accommodation_id
+        $checkInDate = Carbon::parse($validated['check_in_date']);
+        $checkOutDate = Carbon::parse($validated['check_out_date']);
+        $accommodation = Accommodation::find($validated['accommodation_id']);
+        // 2nd check if the accomodation is free to book is those dates
+        if (!$accommodation->isAvailableBetweenDates($checkInDate, $checkOutDate)) {
+            throw ValidationException::withMessages([
+                'accommodation_id' => [__('validation.custom.reservation.not_free_by_date')],
+            ]);
         }
 
-        return response()->json($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']), 201);
+        $reservation = DB::transaction(function () use ($validated) {
+
+            $reservation = Reservation::create(Arr::except($validated, ['companions']));
+
+            if (isset($validated['companions']) && is_array($validated['companions'])) {
+                foreach ($validated['companions'] as $companionData) {
+                    $reservation->companions()->create($companionData);
+                }
+            }
+
+            return $reservation;
+        });
+
+        // Trigger event to register a new ReservationLog after creating a new Reservation
+        event(new ReservationActionPerformed(
+            $reservation,
+            Auth::user(), // from Illuminate\Support\Facades\Auth, returns the authenticated user
+            ReservationLog::ACTION_CREATE
+        ));
+
+        return (new ReservationResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions'])))
+            ->response()->setStatusCode(201);
     }
 
     /**
@@ -40,7 +80,9 @@ class ReservationController extends Controller
      */
     public function show(Reservation $reservation)
     {
-        return response()->json($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']), 200);
+        $this->authorize('view', $reservation);
+
+        return new ReservationResource($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']));
     }
 
     /**
@@ -48,16 +90,68 @@ class ReservationController extends Controller
      */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
-        $reservation->update($request->all());
 
-        if ($request->has('companions') && is_array($request->companions)) {
-            $reservation->companions()->delete();
+        $this->authorize('update', $reservation); // use a policy, only for admins
+        // "check /app/Http/Policies" for more info
 
-            foreach ($request->companions as $companionData) {
-                $reservation->companions()->create($companionData);
+        $validated = $request->validated();
+
+        if (isset($validated['check_in_date'], $validated['check_out_date'])) {
+            // Validate if the accommodation is free by dates
+            // 1st get dates and accommodation
+            $checkInDate = Carbon::parse($validated['check_in_date']);
+            $checkOutDate = Carbon::parse($validated['check_out_date']);
+            $accommodation = $reservation->accommodation;
+            // 2nd check if the accomodation is free to book is those dates
+            if (!$accommodation->isAvailableBetweenDates($checkInDate, $checkOutDate, $reservation->id)) {
+                throw ValidationException::withMessages([
+                    'accommodation_id' => [__('validation.custom.reservation.not_free_by_date')],
+                ]);
             }
         }
-        return response()->json($reservation->load(['bookedBy', 'guest', 'accommodation', 'companions']), 200);
+
+        $previousStatus = $reservation->status;
+
+        $updated = DB::transaction(function () use ($validated, $reservation) {
+
+            // Update main reservation fields
+            $reservation->update(Arr::except($validated, ['companions']));
+
+            if (isset($validated['companions']) && is_array($validated['companions'])) {
+                // If companions provided, replace them
+                $reservation->companions()->delete();
+
+                foreach ($validated['companions'] as $companionData) {
+                    $reservation->companions()->create($companionData);
+                }
+            }
+            return $reservation;
+        });
+
+        // Determine the specific log action based on status change
+        $logAction = ReservationLog::ACTION_UPDATE;
+
+        $statusToActionMap = [
+            Reservation::STATUS_CANCELLED => ReservationLog::ACTION_CANCEL,
+            Reservation::STATUS_CHECKED_IN => ReservationLog::ACTION_CHECK_IN,
+            Reservation::STATUS_CHECKED_OUT => ReservationLog::ACTION_CHECK_OUT,
+            Reservation::STATUS_CONFIRMED => ReservationLog::ACTION_CONFIRM,
+            Reservation::STATUS_PENDING => ReservationLog::ACTION_TO_PENDING
+        ];
+
+        if (isset($validated['status']) && $validated['status'] !== $previousStatus) {
+            $logAction = $statusToActionMap[$validated['status']] ?? ReservationLog::ACTION_UPDATE;
+        }
+
+        // Trigger event to register the ReservationLog based on action
+        event(new ReservationActionPerformed(
+            $reservation,
+            Auth::user(), // from Illuminate\Support\Facades\Auth, returns the authenticated user
+            $logAction,
+            $validated['log_detail']
+        ));
+
+        return new ReservationResource($updated->load(['bookedBy', 'guest', 'accommodation', 'companions']));
     }
 
     /**
@@ -65,7 +159,43 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
+        $this->authorize('delete', $reservation);
+
         $reservation->delete();
         return response()->noContent();
+    }
+
+    /**
+     * Retrieve all reservations for the authenticated user.
+     *
+     * @param \Illuminate\Http\Request $request The current HTTP request instance, used to get the authenticated user.
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection A collection of the user's reservations.
+     */
+    public function ownReservations(Request $request)
+    {
+        $user = $request->user();
+        $reservations = $user->guestReservations()
+            ->with('bookedBy', 'guest', 'accommodation', 'companions')->get();
+        return ReservationResource::collection($reservations);
+    }
+
+    /**
+     * Retrieve all reservations for a specific guest user, only accessible by authorized users.
+     *
+     * @param \App\Models\User $user
+     * The user (guest) whose reservations are being retrieved.
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * A collection of the specified user's reservations.
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * If the current user is not authorized to view others' reservations.
+     */
+    public function getByGuest(User $user)
+    {
+        $this->authorize('viewAny', Reservation::class);
+
+        $reservations = $user->guestReservations()
+        ->with('bookedBy', 'guest', 'accommodation', 'companions')->get();
+        return ReservationResource::collection($reservations);
     }
 }

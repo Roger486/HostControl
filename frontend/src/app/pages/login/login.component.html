@@ -1,16 +1,29 @@
 <section>
   <h2>Iniciar sesión</h2>
+
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <label>Email:</label>
     <input type="email" formControlName="email">
+    <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" style="color:red;">
+      Email inválido
+    </div>
 
     <label>Contraseña:</label>
     <input type="password" formControlName="password">
+    <!-- 
+    Esta línea muestra un mensaje de error solo si:
+    - El campo 'password' es inválido (por ejemplo, está vacío)
+    - Y el usuario ya ha interactuado con él (touched = lo tocó y salió del campo)
+    -->
+    <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" style="color:red;">
+      La contraseña es obligatoria
+    </div>
+
+    <!-- Mensaje de error cuando el backend devuelve fallo -->
+    <div *ngIf="loginError" style="color:red; margin-top: 10px;">
+      Credenciales incorrectas. Inténtalo de nuevo.
+    </div>
 
     <button type="submit">Entrar</button>
   </form>
-
-  <div *ngIf="loginError" style="color:red; margin-top: 1rem;">
-    Email o contraseña incorrectos.
-  </div>
 </section>

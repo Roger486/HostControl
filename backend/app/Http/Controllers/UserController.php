@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateSelfRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -14,7 +17,45 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::paginate(10), 200);
+        $this->authorize('viewAny', User::class);
+        $users = User::paginate(10);
+        return UserResource::collection($users);
+    }
+
+    public function search(Request $request)
+    {
+        $this->authorize('viewAny', User::class);
+        $request->validate([
+            'email' => ['email', 'max:255', 'required_without:document_number'],
+            'document_number' => ['string', 'max:20', 'required_without:email']
+        ]);
+
+        $email = $request->email;
+        $document_number = $request->document_number;
+        if ($email) {
+            $users = User::where('email', $email)->get();
+        } elseif ($document_number) {
+            $users = User::where('document_number', $document_number)->get();
+        }
+
+        // Use of validation exception so the output is like the Laravel default
+        if ($users->isEmpty()) {
+            throw ValidationException::withMessages([
+                'search' => [__('validation.custom.search.no_results')],
+            ]);
+        }
+
+        $response = [
+            'data' => new UserResource($users->first()),
+        ];
+
+        // Both email and document_number are unique in the DB
+        // This is an extra security measure to protect data integrity
+        if ($users->count() > 1) {
+            $response['meta'] = ['warning' => __('validation.custom.search.multiple_results')];
+        }
+
+        return response()->json($response);
     }
 
     /**
@@ -22,36 +63,19 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->all()); // TODO: change all() for validated() when activating validation rules
+        // with validated(), only the fields that pass validation in StoreUserRequest are passed
+        // this avoid malicious users sending a json to create an admin role user creation
+        $user = User::create($request->validated());
 
-        return response()->json($user, 201);
+        return (new UserResource($user))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    /**
-     * Show the specified user.
-     *
-     * This method uses Route Model Binding, so we get the user automatically
-     * without calling User::find($id).
-     *
-     * If the user does not exist, Laravel will return a 404 error automatically.
-     *
-     * This works because in api.php we use:
-     * Route::apiResource('users', UserController::class);
-     *
-     * Alternative traditional method:
-     *
-     * public function show(string $id)
-     * {
-     *     $user = User::find($id);
-     *     if (!$user) {
-     *         return response()->json(['message' => 'User not found'], 404);
-     *     }
-     *     return response()->json($user, 200);
-     * }
-     */
     public function show(User $user)
     {
-        return response()->json($user, 200);
+        $this->authorize('view', $user);
+        return new UserResource($user);
     }
 
     /**
@@ -59,8 +83,9 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user->update($request->all());
-        return response()->json($user, 200);
+        $this->authorize('update', $user);
+        $user->update($request->validated());
+        return new UserResource($user);
     }
 
     /**
@@ -68,8 +93,22 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
         $user->delete();
         return response()->noContent();
         // same as using response()->json([], 204);
+    }
+
+    public function me(Request $request)
+    {
+        $user = $request->user();
+        return new UserResource($user);
+    }
+
+    public function updateSelf(UpdateSelfRequest $request)
+    {
+        $user = $request->user();
+        $user->update($request->validated());
+        return new UserResource($user);
     }
 }

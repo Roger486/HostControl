@@ -1,0 +1,38 @@
+
+<h2>Modificar datos personales</h2>
+
+<form *ngIf="modificarForm" [formGroup]="modificarForm" (ngSubmit)="onSubmit()">
+  <label>Nombre:</label>
+  <input type="text" formControlName="first_name"><br>
+
+  <label>Primer apellido:</label>
+  <input type="text" formControlName="last_name_1"><br>
+
+  <label>Segundo apellido:</label>
+  <input type="text" formControlName="last_name_2"><br>
+
+  <label>Fecha de nacimiento:</label>
+  <input type="date" formControlName="birthdate"><br>
+
+  <label>Dirección:</label>
+  <input type="text" formControlName="address"><br>
+
+  <label>Teléfono:</label>
+  <input type="text" formControlName="phone"><br>
+
+  <label>Nueva contraseña:</label>
+  <input type="password" formControlName="password1"><br>
+
+  <label>Repetir contraseña:</label>
+  <input type="password" formControlName="password2"><br>
+
+  <div *ngIf="modificarForm.get('password1')?.invalid && modificarForm.get('password1')?.touched" style="color: red;">
+    La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula y un número.
+  </div>
+  <div *ngIf="modificarForm.errors?.['passwordMismatch'] && modificarForm.dirty" style="color: red;">
+    Las contraseñas no coinciden.
+  </div>
+
+  <button type="submit" [disabled]="modificarForm.invalid">Modificar perfil</button>
+  <button type="button" (click)="cancelar()">Cancelar</button>
+</form>

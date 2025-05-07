@@ -36,6 +36,10 @@
     <label>Contraseña:</label>
     <input type="password" formControlName="password1">
 
+    <div *ngIf="registerForm.get('password1')?.invalid && registerForm.get('password1')?.touched" style="color:red;">
+      La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.
+    </div>
+
     <label>Repetir contraseña:</label>
     <input type="password" formControlName="password2">
 
@@ -43,6 +47,6 @@
       Las contraseñas no coinciden.
     </div>
 
-    <button type="submit">Registrarse</button>
+    <button type="submit" [disabled]="registerForm.invalid">Registrarse</button>
   </form>
 </section>

@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Accommodation\Accommodation;
 use App\Models\Reservation;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,13 +20,17 @@ class ReservationFactory extends Factory
      */
     public function definition(): array
     {
+        $checkIn = Carbon::instance(fake()->dateTimeBetween('now', '+1 year'));
+
+        $checkOut = $checkIn->copy()->addDays(fake()->numberBetween(1, 14));
+
         return [
             'booked_by_id' => User::inRandomOrder()->first()?->id ?? User::factory()->create()->id,
             'guest_id' => User::inRandomOrder()->first()?->id ?? User::factory()->create()->id,
             'accommodation_id' => Accommodation::inRandomOrder()->first()
                 ?->id ?? Accommodation::factory()->create()->id,
-            'check_in_date' => fake()->dateTimeBetween('now', '+1 year'),
-            'check_out_date' => fake()->dateTimeBetween('+2 days', '+1 year +10 days'),
+            'check_in_date' => $checkIn,
+            'check_out_date' => $checkOut,
             'status' => fake()->randomElement(Reservation::STATUSES),
             'comments' => fake()->optional()->text(100),
         ];

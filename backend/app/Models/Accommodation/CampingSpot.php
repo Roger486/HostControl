@@ -2,11 +2,12 @@
 
 namespace App\Models\Accommodation;
 
+use App\Models\Accommodation\Contracts\HasDynamicValidation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CampingSpot extends Model
+class CampingSpot extends Model implements HasDynamicValidation
 {
     use HasFactory;
 
@@ -31,5 +32,23 @@ class CampingSpot extends Model
     public function accommodation(): BelongsTo
     {
         return $this->belongsTo(Accommodation::class, 'accommodation_id');
+    }
+
+    public static function rules(string $operation = 'store'): array
+    {
+
+        if ($operation === 'update') {
+            return [
+                'area_size_m2' => ['sometimes', 'required', 'integer', 'min:0'],
+                'has_electricity' => ['sometimes', 'required', 'boolean'],
+                'accepts_caravan' => ['sometimes', 'required', 'boolean']
+            ];
+        }
+
+        return [
+            'area_size_m2' => ['required', 'integer', 'min:1'],
+            'has_electricity' => ['required', 'boolean'],
+            'accepts_caravan' => ['required', 'boolean']
+        ];
     }
 }

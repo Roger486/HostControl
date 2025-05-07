@@ -3,10 +3,13 @@
 namespace App\Models\Accommodation;
 
 use App\Models\Reservation;
+use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Accommodation extends Model
@@ -27,6 +30,20 @@ class Accommodation extends Model
         self::TYPE_BUNGALOW,
         self::TYPE_CAMPING_SPOT,
         self::TYPE_ROOM
+    ];
+
+    /**
+     * Base attributes shared across all accommodation types.
+     * Used to extract common fields during creation or updates.
+     */
+    public const BASE_ATTRIBUTES = [
+        'accommodation_code',
+        'section',
+        'capacity',
+        'price_per_day',
+        'is_available',
+        'comments',
+        'type'
     ];
 
     protected $fillable = [
@@ -97,13 +114,47 @@ class Accommodation extends Model
     }
 
     /**
+     * Get the images associated with this Accommodation.
+     *
+     * One Accommodation can have many images.
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(AccommodationImage::class, 'accommodation_id');
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * This method sets up an Eloquent model event listener that listens for the
+     * deletion of an Accommodation. When an Accommodation is being deleted,
+     * it automatically iterates through all related images and deletes
+     * the corresponding files from the storage disk.
+     *
+     * Note:
+     * - The database records for images are removed automatically due to
+     *   the ON DELETE CASCADE rule defined in the foreign key constraint.
+     * - This method ensures that no orphaned files remain in storage.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::deleting(function ($accommodation) {
+            foreach ($accommodation->images as $image) {
+                Storage::disk('public')->delete($image->image_path);
+            }
+        });
+    }
+
+    /**
      * Return an array with the name of all relations with the correct lowerCamelCase format.
      * Since the array TYPES must be written in lower_snake_case,
      * we apply Str::camel to TYPES through array_map to make the conversion.
      */
     public static function withAllRelations()
     {
-        return array_map([Str::class, 'camel'], self::TYPES);
+        return array_merge(['images'], array_map([Str::class, 'camel'], self::TYPES));
         /*
         This sintax is also valid, but requires manual import of Str
         array_map('Str::camel', Accommodation::TYPES)
@@ -111,18 +162,105 @@ class Accommodation extends Model
     }
 
     /**
-     * Sets the `type` attribute automatically when creating an accommodation.
+     * Scope to filter accommodations that are available (i.e., not reserved)
+     * between two given dates.
      *
-     * The `type` field is an ENUM that stores the class name as a value.
-     * This makes creating accommodations slightly slower, but searching by type much faster.
+     * This scope excludes accommodations that have at least one reservation
+     * overlapping with the given check-in and check-out dates.
+     *
+     * Optionally, it can ignore reservations with the status "cancelled".
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query The current query builder instance.
+     * @param \Carbon\Carbon $checkInDate The desired check-in date.
+     * @param \Carbon\Carbon $checkOutDate The desired check-out date.
+     * @param bool $ignoreCancelled Whether to exclude cancelled reservations (default: true).
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    // protected static function boot()
-    // {
-    //     // Calls Laravel's default boot() to keep important Eloquent features working.
-    //     parent::boot();
+    public function scopeAvailableBetweenDates(
+        Builder $query,
+        Carbon $checkInDate,
+        Carbon $checkOutDate,
+        bool $ignoreCancelled = true
+    ) {
+        return $query->whereDoesntHave(
+            'reservations',
+            function ($subQuery) use ($checkInDate, $checkOutDate, $ignoreCancelled) {
+                $subQuery->where('check_in_date', '<', $checkOutDate)
+                    ->where('check_out_date', '>', $checkInDate);
 
-    //     static::creating(function ($accommodation) {
-    //         $accommodation->type = class_basename($accommodation);
-    //     });
-    // }
+                if ($ignoreCancelled) {
+                    $subQuery->whereNot('status', Reservation::STATUS_CANCELLED);
+                }
+            }
+        );
+    }
+
+    /**
+     * Checks if the accommodation is available between two given dates.
+     *
+     * Optionally, a reservation ID can be excluded from the check (e.g., during update).
+     *
+     * @param \Carbon\Carbon $checkInDate     The desired check-in date
+     * @param \Carbon\Carbon $checkOutDate    The desired check-out date
+     * @param int|null       $excludeReservationId  Optional reservation ID to ignore (e.g. current one on update)
+     * @return bool          True if available, false if overlapping reservation found
+     */
+    public function isAvailableBetweenDates(
+        Carbon $checkInDate,
+        Carbon $checkOutDate,
+        ?int $excludeReservationId = null
+    ): bool {
+        $query = $this->reservations()
+            ->where('check_in_date', '<', $checkOutDate)
+            ->where('check_out_date', '>', $checkInDate)
+            ->where('status', '!=', Reservation::STATUS_CANCELLED);
+
+        if ($excludeReservationId) {
+            $query->where('id', '!=', $excludeReservationId);
+        }
+
+        return !$query->exists();
+    }
+
+    /**
+     * Applies a set of filters to the Accommodation query.
+     *
+     * Supported filters:
+     * - is_available: boolean
+     * - type: string (must match one of the defined types)
+     * - min_capacity: integer (minimum number of guests)
+     * - max_capacity: integer (maximum number of guests)
+     * - check_in_date and check_out_date: used together to filter by availability
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query The query to apply filters on.
+     * @param array $filters The validated input filters from the request.
+     *
+     * @return void
+     */
+    public static function applyFilters(Builder $query, array $filters)
+    {
+        if (array_key_exists('is_available', $filters)) {
+            $query->where('is_available', $filters['is_available']);
+        }
+
+        if (isset($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+
+        if (isset($filters['min_capacity'])) {
+            $query->where('capacity', '>=', $filters['min_capacity']);
+        }
+
+        if (isset($filters['max_capacity'])) {
+            $query->where('capacity', '<=', $filters['max_capacity']);
+        }
+
+        if (isset($filters['check_in_date']) && isset($filters['check_out_date'])) {
+            $checkInDate = Carbon::parse($filters['check_in_date']);
+            $checkOutDate = Carbon::parse($filters['check_out_date']);
+
+            $query->availableBetweenDates($checkInDate, $checkOutDate);
+        }
+    }
 }
