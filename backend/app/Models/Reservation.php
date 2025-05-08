@@ -120,4 +120,20 @@ class Reservation extends Model
             ]
         ]);
     }
+
+    /**
+     * Determine whether services can be added to this reservation,
+     * based on its current status.
+     *
+     * Services can only be added when the reservation is in
+     * 'confirmed', or 'checked_in' status.
+     *
+     * @return bool True if services can be added; false otherwise.
+     */
+    public function canAddServices(): bool
+    {
+        return
+            $this->status === self::STATUS_CONFIRMED
+            || $this->status === self::STATUS_CHECKED_IN;
+    }
 }
