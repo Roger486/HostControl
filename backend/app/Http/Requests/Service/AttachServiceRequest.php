@@ -4,6 +4,7 @@ namespace App\Http\Requests\Service;
 
 use App\Models\Reservation;
 use App\Models\Service;
+use App\Validation\ServiceValidator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 
@@ -35,7 +36,7 @@ class AttachServiceRequest extends FormRequest
         $validator->after(function ($validator) {
             // get relevant data
             $serviceId = $this->input('service_id');
-            $amount = $this->input('amount');
+            $amount = (int) $this->input('amount');
             $reservation = $this->route('reservation');
 
             // Exit early if critical inputs are missing
@@ -55,24 +56,9 @@ class AttachServiceRequest extends FormRequest
                 );
             }
 
-            // Already checked on the rules, extra safety
             $service = Service::find($serviceId);
-            if (!$service) {
-                return;
-            }
-
-             // Calculates total service slots consumed by existing reservations at the moment
-            $totalReserved = DB::table('reservation_service')
-                ->where('service_id', $service->id)
-                ->sum('amount');
-
-            $available = $service->available_slots - $totalReserved;
-            // Check if there are enough free slots to attach the service
-            if ($amount > $available) {
-                $validator->errors()->add(
-                    'amount',
-                    __('validation.custom.service.not_enough_slots', ['available' => $available])
-                );
+            if ($service) {
+                ServiceValidator::validateServiceAttachability($service, $amount, $validator);
             }
         });
     }
