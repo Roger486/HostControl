@@ -2,11 +2,45 @@
 
 namespace App\Validation;
 
+use App\Models\Service;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Carbon;
 
 class DatetimeValidator
 {
+    /**
+     * Validates that the service is available for reservation at the current time.
+     *
+     * @param \App\Models\Service $service
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return void
+     */
+    public static function validateIsCurrentlyAvailable(Service $service, Validator $validator): void
+    {
+        $now = Carbon::now();
+
+        if (self::isNowAfter($service->available_until)) {
+            $validator->errors()->add(
+                'service_id',
+                __('validation.custom.service.unavailable_due_to_available_until')
+            );
+        }
+
+        if (self::isNowAfter($service->scheduled_at)) {
+            $validator->errors()->add(
+                'service_id',
+                __('validation.custom.service.unavailable_due_to_scheduled_at')
+            );
+        }
+
+        if (self::isNowAfter($service->ends_at)) {
+            $validator->errors()->add(
+                'service_id',
+                __('validation.custom.service.unavailable_due_to_ended')
+            );
+        }
+    }
+
     /**
      * Runs combined date-related validations for services.
      *
@@ -92,6 +126,11 @@ class DatetimeValidator
                 __('validation.custom.service.ends_before_scheduled_at')
             );
         }
+    }
+
+    private static function isNowAfter(?string $date): bool
+    {
+        return self::isAfter(Carbon::now(), $date);
     }
 
     /**

@@ -200,7 +200,10 @@ return [
             'invalid_request_data' => 'Missing or invalid request data. Please try again.',
             'available_until_after_scheduled_at' => 'The availability end date must be before or equal to the scheduled start date.',
             'ends_before_scheduled_at' => 'The end date must be after the scheduled start date.',
-            'available_until_after_ends_at' => 'The availability end date must be before or equal to the service end date.'
+            'available_until_after_ends_at' => 'The availability end date must be before or equal to the service end date.',
+            'unavailable_due_to_available_until' => 'This service is no longer available for reservation.',
+            'unavailable_due_to_scheduled_at' => 'This service has already started and cannot be reserved.',
+            'unavailable_due_to_ended' => 'This service has already ended.'
         ]
     ],
 
