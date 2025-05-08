@@ -24,6 +24,8 @@ export class HeaderComponent {
 
       if (usuario) {
         this.rolUsuario = JSON.parse(localStorage.getItem('usuarioRol') || '""');
+      } else {
+        this.rolUsuario = '';
       }
     });
   }
@@ -37,7 +39,7 @@ export class HeaderComponent {
         localStorage.removeItem('usuarioLogueado');
 
         // Redirigimos en este caso a login
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         // Mostramos error por consola si lo hay

@@ -1,10 +1,13 @@
-header {
-  background-color: #168a5d !important;
-}
+
+
 
 /* Logo */
 header .navbar-brand img {
   max-height: 100px;
+}
+
+.navbar-brand {
+  padding-top: 12px;
 }
 
 /* Botones */
