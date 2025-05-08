@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Service;
 
+use App\Validation\DatetimeValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateServiceRequest extends FormRequest
@@ -25,8 +26,28 @@ class UpdateServiceRequest extends FormRequest
             'name' => ['sometimes', 'required', 'string', 'max:50'],
             'description' => ['sometimes', 'required', 'string'],
             'price' => ['sometimes', 'required', 'integer', 'min:0'],
-            'available_slots' => ['sometimes', 'required', 'integer', 'min:0'],
-            'comments' => ['nullable', 'string'],
+            'daily_price' => ['sometimes', 'required', 'integer', 'min:0'],
+            'available_slots' => ['sometimes', 'required', 'integer', 'min:1'],
+            'comments' => ['sometimes', 'nullable', 'string'],
+            'available_until' => ['sometimes', 'nullable', 'date', 'after_or_equal:today'],
+            'scheduled_at' => ['sometimes', 'nullable', 'date'],
+            'ends_at' => ['sometimes', 'nullable', 'date', 'after:scheduled_at']
         ];
+    }
+
+    protected function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $availableUntil = $this->input('available_until');
+            $scheduledAt = $this->input('scheduled_at');
+            $endsAt = $this->input('ends_at');
+
+            DatetimeValidator::validateServicesDates(
+                $availableUntil,
+                $endsAt,
+                $scheduledAt,
+                $validator
+            );
+        });
     }
 }

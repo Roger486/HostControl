@@ -13,8 +13,18 @@ class Service extends Model
         'name',
         'description',
         'price',
+        'daily_price' ,
         'available_slots',
-        'comments'
+        'comments',
+        'available_until',
+        'scheduled_at',
+        'ends_at'
+    ];
+
+    protected $casts = [
+        'available_until' => 'datetime',
+        'scheduled_at' => 'datetime',
+        'ends_at' => 'datetime'
     ];
 
     public function reservations()

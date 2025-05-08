@@ -197,7 +197,9 @@ return [
         ],
         'service' => [
             'not_enough_slots' => 'Not enough slot available for this service. Only :available left.',
-            'invalid_request_data' => 'Missing or invalid request data. Please try again.'
+            'invalid_request_data' => 'Missing or invalid request data. Please try again.',
+            'available_until_after_scheduled_at' => 'The availability end date must be before or equal to the scheduled start date.',
+            'ends_before_scheduled_at' => 'The end date must be after the scheduled start date.'
         ]
     ],
 
