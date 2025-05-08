@@ -30,8 +30,8 @@ class StoreServiceRequest extends FormRequest
             'available_slots' => ['required', 'integer', 'min:1'],
             'comments' => ['nullable', 'string'],
             'available_until' => ['nullable', 'date', 'after_or_equal:today'],
-            'scheduled_at' => ['nullable', 'date'],
-            'ends_at' => ['nullable', 'date', 'after:scheduled_at']
+            'scheduled_at' => ['nullable', 'date', 'after_or_equal:today'],
+            'ends_at' => ['nullable', 'date', 'after:scheduled_at', 'after_or_equal:today']
         ];
     }
 

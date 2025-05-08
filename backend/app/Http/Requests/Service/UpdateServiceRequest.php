@@ -30,8 +30,8 @@ class UpdateServiceRequest extends FormRequest
             'available_slots' => ['sometimes', 'required', 'integer', 'min:1'],
             'comments' => ['sometimes', 'nullable', 'string'],
             'available_until' => ['sometimes', 'nullable', 'date', 'after_or_equal:today'],
-            'scheduled_at' => ['sometimes', 'nullable', 'date'],
-            'ends_at' => ['sometimes', 'nullable', 'date', 'after:scheduled_at']
+            'scheduled_at' => ['sometimes', 'nullable', 'date', 'after_or_equal:today'],
+            'ends_at' => ['sometimes', 'nullable', 'date', 'after:scheduled_at', 'after_or_equal:today']
         ];
     }
 
