@@ -22,16 +22,9 @@ class DatetimeValidator
         ?string $scheduledAt,
         Validator $validator
     ): void {
-        DatetimeValidator::validateAvailableUntil(
-            $availableUntil,
-            $scheduledAt,
-            $validator
-        );
-        DatetimeValidator::validateEndsAfterScheduled(
-            $endsAt,
-            $scheduledAt,
-            $validator
-        );
+        self::validateAvailableUntil($availableUntil, $scheduledAt, $validator);
+        self::validateEndsAfterScheduled($endsAt, $scheduledAt, $validator);
+        self::validateAvailableUntilBeforeEndsAt($availableUntil, $endsAt, $validator);
     }
 
     /**
@@ -54,6 +47,28 @@ class DatetimeValidator
             );
         }
     }
+
+    /**
+     * Validates that available_until is not after ends_at.
+     *
+     * @param string|null $availableUntil
+     * @param string|null $endsAt
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return void
+     */
+    private static function validateAvailableUntilBeforeEndsAt(
+        ?string $availableUntil,
+        ?string $endsAt,
+        Validator $validator
+    ): void {
+        if (!self::isBeforeOrEqual($availableUntil, $endsAt)) {
+            $validator->errors()->add(
+                'available_until',
+                __('validation.custom.service.available_until_after_ends_at')
+            );
+        }
+    }
+
 
     /**
      * Validates that the end date (ends_at) is after the scheduled start date (scheduled_at).
