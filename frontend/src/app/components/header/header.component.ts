@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from 'app/services/auth.service';
@@ -8,7 +8,7 @@ import { AuthService } from 'app/services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
   usuarioLogueado: any = null;
@@ -24,6 +24,8 @@ export class HeaderComponent {
 
       if (usuario) {
         this.rolUsuario = JSON.parse(localStorage.getItem('usuarioRol') || '""');
+      } else {
+        this.rolUsuario = '';
       }
     });
   }
@@ -37,7 +39,7 @@ export class HeaderComponent {
         localStorage.removeItem('usuarioLogueado');
 
         // Redirigimos en este caso a login
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         // Mostramos error por consola si lo hay

@@ -1,8 +1,11 @@
+
+
+
 img {
   transition: transform 0.3s ease;
 }
 img:hover {
-  transform: scale(1.09);
+  transform: scale(1.02);
 }
 
 h1, h2, h3 {
