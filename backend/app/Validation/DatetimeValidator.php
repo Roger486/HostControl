@@ -158,7 +158,7 @@ class DatetimeValidator
     private static function isAfter(?string $dateA, ?string $dateB): bool
     {
         if (!$dateA || !$dateB) {
-            return true;
+            return false;
         }
         return Carbon::parse($dateA)->greaterThan(Carbon::parse($dateB));
     }
