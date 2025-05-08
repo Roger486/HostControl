@@ -192,10 +192,12 @@ return [
             'no_results' => 'No results for this search.',
         ],
         'reservation' => [
-            'not_free_by_date' => 'This accommodation is already booked between the specified dates'
+            'not_free_by_date' => 'This accommodation is already booked between the specified dates',
+            'status_doesnt_allow_service_attachment' => 'You cannot add services to this reservation at its current status: :status.'
         ],
         'service' => [
-            'not_enough_slots' => 'Not enough slot available for this service. Only :available left.'
+            'not_enough_slots' => 'Not enough slot available for this service. Only :available left.',
+            'invalid_request_data' => 'Missing or invalid request data. Please try again.'
         ]
     ],
 
