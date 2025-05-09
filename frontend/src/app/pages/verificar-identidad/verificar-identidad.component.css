@@ -1,0 +1,28 @@
+.container {
+    max-width: 500px;
+}
+
+form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+input {
+    margin-bottom: 0.5rem;
+}
+
+.form-text.text-danger {
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
