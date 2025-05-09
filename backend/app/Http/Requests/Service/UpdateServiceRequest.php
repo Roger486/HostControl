@@ -16,7 +16,8 @@ class UpdateServiceRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Validation rules for updating an existing service.
+     * Only fields that are sent will be validated.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -35,6 +36,12 @@ class UpdateServiceRequest extends FormRequest
         ];
     }
 
+    /**
+     * Custom validation for related date fields.
+     *
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return void
+     */
     protected function withValidator($validator)
     {
         $validator->after(function ($validator) {

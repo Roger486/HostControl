@@ -20,12 +20,14 @@ class UpdateReservationRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Validation rules for updating a reservation.
+     * Only the submitted fields will be validated.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
+        // TODO: allow accommodation_id update and all the logic related to it (availability, date checks, etc.)
         return [
             'guest_id' => ['sometimes', 'required', 'exists:users,id'],
             'accommodation_id' => ['prohibited'],
@@ -48,6 +50,12 @@ class UpdateReservationRequest extends FormRequest
         ];
     }
 
+    /**
+     * Add custom companion validation after default rules.
+     *
+     * @param Validator $validator
+     * @return void
+     */
     public function withValidator(Validator $validator)
     {
         // Validations after rules
@@ -64,6 +72,7 @@ class UpdateReservationRequest extends FormRequest
                 return;
             }
 
+            // Run custom companion validation logic
             CompanionValidator::validate($companions, $guestId, $validator);
         });
     }

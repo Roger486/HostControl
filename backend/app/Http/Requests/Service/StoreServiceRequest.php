@@ -16,7 +16,7 @@ class StoreServiceRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Validation rules for creating a service.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -35,6 +35,9 @@ class StoreServiceRequest extends FormRequest
         ];
     }
 
+    /**
+     * Set default values before validation.
+     */
     protected function prepareForValidation()
     {
         $this->merge([
@@ -43,6 +46,12 @@ class StoreServiceRequest extends FormRequest
         ]);
     }
 
+    /**
+     * Add custom validation for date fields after default rule checks.
+     *
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return void
+     */
     protected function withValidator($validator)
     {
         $validator->after(function ($validator) {

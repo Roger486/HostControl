@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests\Service;
 
-use App\Models\Reservation;
 use App\Models\Service;
-use App\Validation\ServiceValidator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\DB;
+use App\Validation\ServiceValidator;
 
 class AttachServiceRequest extends FormRequest
 {
@@ -19,7 +17,7 @@ class AttachServiceRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Basic validation rules for attaching a service to a reservation.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -31,6 +29,15 @@ class AttachServiceRequest extends FormRequest
         ];
     }
 
+    /**
+     * Add custom logic after basic validation is done.
+     * This checks:
+     * - if the reservation allows adding services
+     * - if the service is attachable (e.g. stock, limits, etc.)
+     *
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return void
+     */
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
@@ -56,6 +63,7 @@ class AttachServiceRequest extends FormRequest
                 );
             }
 
+            // Run custom validation rules for service attachability
             $service = Service::find($serviceId);
             if ($service) {
                 ServiceValidator::validateServiceAttachability($service, $amount, $validator);

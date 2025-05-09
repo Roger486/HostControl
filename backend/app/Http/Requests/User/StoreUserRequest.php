@@ -20,7 +20,7 @@ class StoreUserRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Validation rules for registering a new user.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -43,6 +43,13 @@ class StoreUserRequest extends FormRequest
         ];
     }
 
+    /**
+     * Additional validation after default checks.
+     * This validates the document number format based on the type.
+     *
+     * @param Validator $validator
+     * @return void
+     */
     public function withValidator(Validator $validator)
     {
         $validator->after(function (Validator $validator) {
