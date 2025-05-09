@@ -1,0 +1,44 @@
+/* Estilos para el componente de inicio de sesión */
+
+
+/* Estilos generales para el contenedor del formulario */
+form {
+    background-color: #ffffff;
+    padding: 2em;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Elementos de formulario */
+input {
+    margin-bottom: 10px;
+}
+
+
+button[type="submit"] {
+    transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.alert {
+    margin-top: 1rem;
+}
+
+/* Estilos boton volver a inicio */
+.btn-outline-primary {
+    transition: all 0.3s ease;
+    border-width: 2px;
+    font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+    background-color: #2E7D32;
+    color: white;
+    border-color: #2E7D32;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
