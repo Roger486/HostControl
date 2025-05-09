@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Event triggered when a user performs an action on a reservation.
+ */
 class ReservationActionPerformed
 {
     use Dispatchable;
@@ -17,8 +20,14 @@ class ReservationActionPerformed
     public $actionType;
     public $logDetail;
 
+
     /**
-     * Create a new event instance.
+     * Set up the event with reservation, user and action details.
+     *
+     * @param Reservation $reservation The reservation being changed.
+     * @param User $user The user performing the action.
+     * @param string $actionType The type of action (e.g., created, updated).
+     * @param string|null $logDetail Optional custom message. If not provided, uses default translation.
      */
     public function __construct(Reservation $reservation, User $user, string $actionType, ?string $logDetail = null)
     {
