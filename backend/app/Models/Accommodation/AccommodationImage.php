@@ -15,8 +15,19 @@ class AccommodationImage extends Model
         'image_path'
     ];
 
+    /**
+     * Add the 'url' attribute to the model's JSON output.
+     */
     protected $appends = ['url'];
 
+    /**
+     * Accessor for the image URL.
+     *
+     * If the image is in the demo folder, use public path.
+     * Otherwise, assume it's stored in 'public' disk (storage/app/public).
+     *
+     * @return string
+     */
     public function getUrlAttribute()
     {
 
@@ -30,9 +41,9 @@ class AccommodationImage extends Model
     }
 
     /**
-     * Get the main accommodation details for this image.
+     * The accommodation that this image belongs to.
      *
-     * An image belongs to an accommodation.
+     * @return BelongsTo
      */
     public function accommodation(): BelongsTo
     {

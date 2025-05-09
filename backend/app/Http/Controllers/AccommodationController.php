@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Validator;
 class AccommodationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Return a list of accommodations with filters and pagination.
      */
     public function index(IndexAccommodationRequest $request)
     {
@@ -36,7 +36,7 @@ class AccommodationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new accommodation (with dynamic subtype support).
      */
     public function store(StoreAccommodationRequest $request)
     {
@@ -77,16 +77,18 @@ class AccommodationController extends Controller
             ->response()->setStatusCode(201);
     }
 
+
     /**
-     * Display the specified resource.
+     * Show a single accommodation with all related data.
      */
     public function show(Accommodation $accommodation)
     {
         return new AccommodationResource($accommodation->load(Accommodation::withAllRelations()));
     }
 
+
     /**
-     * Update the specified resource in storage.
+     * Update an existing accommodation (supports dynamic subtypes).
      */
     public function update(UpdateAccommodationRequest $request, Accommodation $accommodation)
     {
@@ -128,8 +130,9 @@ class AccommodationController extends Controller
         return new AccommodationResource($accommodation->load(Accommodation::withAllRelations()));
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * Delete an accommodation and its related data.
      */
     public function destroy(Accommodation $accommodation)
     {
@@ -141,7 +144,7 @@ class AccommodationController extends Controller
     }
 
     /**
-     * Upload an image and associate it with the Accommodation specified by id
+     * Upload an image and link it to a specific accommodation.
      */
     public function uploadImage(Request $request, Accommodation $accommodation)
     {
@@ -165,6 +168,9 @@ class AccommodationController extends Controller
         ]);
     }
 
+    /**
+     * Delete an accommodation image from storage and database.
+     */
     public function deleteImage(AccommodationImage $image)
     {
         $this->authorize('delete', $image->accommodation);

@@ -9,14 +9,19 @@ class LogReservationAction
 {
     /**
      * Create the event listener.
+     *
+     * This constructor is empty, but can be used to inject services if needed.
      */
     public function __construct()
     {
-        // Usefull to inject services, empty for now
+        //
     }
 
     /**
-     * Handle the event.
+     * Handle the event and store a log entry.
+     *
+     * @param ReservationActionPerformed $event
+     * @return void
      */
     public function handle(ReservationActionPerformed $event): void
     {

@@ -15,6 +15,9 @@ class Companion extends Model
     public const DOCUMENT_NIE = 'NIE';
     public const DOCUMENT_PASSPORT = 'Passport';
 
+    /**
+     * Available document types for companions.
+     */
     public const DOCUMENT_TYPES = [
         self::DOCUMENT_DNI,
         self::DOCUMENT_NIE,
@@ -36,10 +39,11 @@ class Companion extends Model
         'birthdate' => 'date'
     ];
 
+
     /**
-     * Get the reservation that a companion is filled in.
+     * The reservation this companion is associated with.
      *
-     * A companion belongs to a reservation.
+     * @return BelongsTo
      */
     public function reservation(): BelongsTo
     {

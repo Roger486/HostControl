@@ -545,8 +545,19 @@ These fields are required when creating or updating an accommodation of that typ
       },
       "bungalow": null,
       "camping_spot": null,
-      "room": null
-    }
+      "room": null,
+      "images": [
+        {
+          "id": 73,
+          "accommodation_id": 1,
+          "image_path": "demo-images/bungalow/bungalow_01.webp",
+          "created_at": "2025-05-08T13:25:59.000000Z",
+          "updated_at": "2025-05-08T13:25:59.000000Z",
+          "url": "http://localhost/demo-images/bungalow/bungalow_01.webp"
+        }
+      ]
+    },
+    ...
   ],
   "links": {
     "first": "http://localhost/api/accommodations?page=1",
@@ -638,7 +649,17 @@ These fields are required when creating or updating an accommodation of that typ
       "updated_at": "2025-04-11T15:50:49.000000Z"
     },
     "camping_spot": null,
-    "room": null
+    "room": null,
+    "images": [
+      {
+        "id": 73,
+        "accommodation_id": 43,
+        "image_path": "demo-images/bungalow/bungalow_01.webp",
+        "created_at": "2025-05-08T13:25:59.000000Z",
+        "updated_at": "2025-05-08T13:25:59.000000Z",
+        "url": "http://localhost/demo-images/bungalow/bungalow_01.webp"
+      }
+    ]
   }
 }
 ```
@@ -1311,8 +1332,12 @@ These endpoints allow you to manage all types of accommodations
       "name": "Spa",
       "description": "Relaxing spa session",
       "price": 3756,
+      "daily_price": 138,
       "available_slots": 5,
       "comments": "Includes sauna",
+      "available_until": "2025-10-03T00:00:00.000000Z",
+      "scheduled_at": null,
+      "ends_at": null,
       "created_at": "2025-05-05T10:32:21.000000Z",
       "updated_at": "2025-05-05T10:32:21.000000Z"
     },
@@ -1344,8 +1369,12 @@ These endpoints allow you to manage all types of accommodations
     "name": "Late Checkout",
     "description": "Stay until 3PM",
     "price": 600,
-    "available_slots": 10,
+    "daily_price": 0,
+    "available_slots": 100000,
     "comments": null,
+    "available_until": "2025-10-03T00:00:00.000000Z",
+    "scheduled_at": null,
+    "ends_at": null,
     "created_at": "2025-05-05T16:47:31.000000Z",
     "updated_at": "2025-05-05T16:56:42.000000Z"
   }
@@ -1371,27 +1400,38 @@ These endpoints allow you to manage all types of accommodations
 
 ```json
 {
-  "name": "Late Checkout",
-  "description": "Stay until 3PM",
-  "price": 2000,
-  "available_slots": 5,
-  "comments": "Optional comment"
+  "name": "Alquiler objetos bebé",
+  "description": "Incluir trona y cuna en el alojamiento con la reserva",
+  "price": 1500,
+  "daily_price": 500,
+  "available_slots": 10,
+  "available_until": "2025-10-03 00:00:00",
+  "scheduled_at": "2025-10-04 00:00:00",
+  "ends_at": "2025-10-05 00:00:00"
 }
 ```
+
+_Optional fields:_
+
+- _Nullables:_ available_until - scheduled_at - ends_at
+- _Default 0:_ price - daily_price
 
 **Success response (200):**
 
 ```json
 {
   "data": {
-    "id": 13,
-    "name": "Late Checkout",
-    "description": "Stay until 3PM",
-    "price": 2000,
-    "available_slots": 5,
-    "comments": null,
-    "created_at": "2025-05-05T16:47:31.000000Z",
-    "updated_at": "2025-05-05T16:56:42.000000Z"
+    "name": "Alquiler objetos bebé",
+    "description": "Incluir trona y cuna en el alojamiento con la reserva",
+    "price": 1500,
+    "daily_price": 500,
+    "available_slots": 10,
+    "available_until": "2025-10-03T00:00:00.000000Z",
+    "scheduled_at": "2025-10-04T00:00:00.000000Z",
+    "ends_at": "2025-10-05T00:00:00.000000Z",
+    "updated_at": "2025-05-09T08:19:35.000000Z",
+    "created_at": "2025-05-09T08:19:35.000000Z",
+    "id": 16
   }
 }
 ```
@@ -1400,7 +1440,7 @@ These endpoints allow you to manage all types of accommodations
 
 - `401 Unauthorized`: Unauthenticated.
 - `403 Forbidden`: This action is unauthorized.
-- `422 Validation failed`: Invalid or missing fields (body).
+- `422 Validation failed`: Invalid or missing fields (body). Includes datetime checks.
 - `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
 
 ---
@@ -1422,6 +1462,10 @@ These endpoints allow you to manage all types of accommodations
 }
 ```
 
+_Notes about fields:_
+
+- _Nullables:_ available_until - scheduled_at - ends_at
+
 **Success response (200):**
 
 ```json
@@ -1431,8 +1475,12 @@ These endpoints allow you to manage all types of accommodations
     "name": "Late Checkout",
     "description": "Stay until 3PM",
     "price": 2500,
+    "daily_price": 500,
     "available_slots": 6,
     "comments": null,
+    "available_until": null,
+    "scheduled_at": null,
+    "ends_at": "2025-10-05T00:00:00.000000Z",
     "created_at": "2025-05-05T16:47:31.000000Z",
     "updated_at": "2025-05-05T16:56:42.000000Z"
   }
@@ -1444,7 +1492,7 @@ These endpoints allow you to manage all types of accommodations
 - `401 Unauthorized`: Unauthenticated.
 - `403 Forbidden`: This action is unauthorized.
 - `404 Not Found`: Service not found.
-- `422 Validation failed`: Invalid or missing fields (body).
+- `422 Validation failed`: Invalid or missing fields (body). Includes datetime checks.
 - `500 Internal Server Error`: Unexpected server error (e.g. database error, unhandled exception).
 
 ---
@@ -1497,20 +1545,24 @@ These endpoints manage attachment and detachment of services to reservations.
 ```json
 {
   "data": {
-    "id": 3,
-    "name": "repellat ut",
-    "description": "Aut dolorum sequi sed minus in provident.",
-    "price": 4318,
-    "available_slots": 12,
-    "comments": null,
-    "created_at": "2025-05-05T10:32:21.000000Z",
-    "updated_at": "2025-05-05T10:32:21.000000Z",
+    "id": 2,
+    "name": "velit ipsum",
+    "description": "Voluptas omnis ut recusandae consequatur est aut.",
+    "price": 4072,
+    "daily_price": 359,
+    "available_slots": 25,
+    "comments": "Quia velit enim optio deleniti et totam nemo.",
+    "available_until": "2025-09-15T00:00:00.000000Z",
+    "scheduled_at": null,
+    "ends_at": "2025-08-24T16:53:36.000000Z",
+    "created_at": "2025-05-08T13:26:04.000000Z",
+    "updated_at": "2025-05-08T13:26:04.000000Z",
     "pivot": {
-      "reservation_id": 18,
-      "service_id": 3,
-      "amount": 2,
-      "created_at": "2025-05-05T11:46:21.000000Z",
-      "updated_at": "2025-05-05T12:19:01.000000Z"
+      "reservation_id": 1,
+      "service_id": 2,
+      "amount": 1,
+      "created_at": "2025-05-09T08:30:02.000000Z",
+      "updated_at": "2025-05-09T08:30:02.000000Z"
     }
   }
 }
@@ -1560,23 +1612,27 @@ These endpoints manage attachment and detachment of services to reservations.
 {
   "data": [
     {
-      "id": 1,
-      "name": "beatae et",
-      "description": "Sit cumque dolores unde impedit qui tenetur sint.",
-      "price": 3756,
-      "available_slots": 5,
-      "comments": "Quos dignissimos est eos explicabo.",
-      "created_at": "2025-05-05T10:32:21.000000Z",
-      "updated_at": "2025-05-05T10:32:21.000000Z",
+      "id": 2,
+      "name": "velit ipsum",
+      "description": "Voluptas omnis ut recusandae consequatur est aut.",
+      "price": 4072,
+      "daily_price": 359,
+      "available_slots": 25,
+      "comments": "Quia velit enim optio deleniti et totam nemo.",
+      "available_until": "2025-09-15T00:00:00.000000Z",
+      "scheduled_at": null,
+      "ends_at": "2025-08-24T16:53:36.000000Z",
+      "created_at": "2025-05-08T13:26:04.000000Z",
+      "updated_at": "2025-05-08T13:26:04.000000Z",
       "pivot": {
-        "reservation_id": 12,
-        "service_id": 1,
-        "amount": 3,
-        "created_at": "2025-05-05T10:32:21.000000Z",
-        "updated_at": "2025-05-05T10:32:21.000000Z"
-      }
-    },
-    ...
+        "reservation_id": 1,
+        "service_id": 2,
+        "amount": 1,
+        "created_at": "2025-05-09T08:30:02.000000Z",
+        "updated_at": "2025-05-09T08:30:02.000000Z"
+      },
+      ...
+    }
   ]
 }
 ```
@@ -1598,25 +1654,38 @@ These endpoints manage attachment and detachment of services to reservations.
 
 **Authorization:** The authenticated user only
 
+**Body (JSON):**
+
+```json
+{
+  "service_id": 2,
+  "amount": 1
+}
+```
+
 **Success response (200):**
 
 ```json
 {
   "data": {
     "id": 2,
-    "name": "repellat ut",
-    "description": "Aut dolorum sequi sed minus in provident.",
-    "price": 4318,
-    "available_slots": 12,
-    "comments": null,
-    "created_at": "2025-05-05T10:32:21.000000Z",
-    "updated_at": "2025-05-05T10:32:21.000000Z",
+    "name": "velit ipsum",
+    "description": "Voluptas omnis ut recusandae consequatur est aut.",
+    "price": 4072,
+    "daily_price": 359,
+    "available_slots": 25,
+    "comments": "Quia velit enim optio deleniti et totam nemo.",
+    "available_until": "2025-09-15T00:00:00.000000Z",
+    "scheduled_at": null,
+    "ends_at": "2025-08-24T16:53:36.000000Z",
+    "created_at": "2025-05-08T13:26:04.000000Z",
+    "updated_at": "2025-05-08T13:26:04.000000Z",
     "pivot": {
-      "reservation_id": 34,
+      "reservation_id": 1,
       "service_id": 2,
       "amount": 1,
-      "created_at": "2025-05-06T13:23:14.000000Z",
-      "updated_at": "2025-05-06T13:23:14.000000Z"
+      "created_at": "2025-05-09T08:30:02.000000Z",
+      "updated_at": "2025-05-09T08:30:02.000000Z"
     }
   }
 }

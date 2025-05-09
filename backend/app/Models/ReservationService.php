@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class ReservationService extends Pivot
@@ -15,5 +14,8 @@ class ReservationService extends Pivot
         'amount',
     ];
 
+    /**
+     * Enable timestamps (created_at and updated_at) for this pivot table.
+     */
     public $timestamps = true;
 }

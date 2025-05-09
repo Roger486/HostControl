@@ -20,7 +20,8 @@ class UpdateUserRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Validation rules for updating a user.
+     * Only the fields submitted will be validated.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -49,6 +50,13 @@ class UpdateUserRequest extends FormRequest
         ];
     }
 
+    /**
+     * Custom validation after standard rules.
+     * Validates document number format based on document type.
+     *
+     * @param Validator $validator
+     * @return void
+     */
     public function withValidator(Validator $validator)
     {
         $validator->after(function (Validator $validator) {

@@ -20,6 +20,9 @@ class Reservation extends Model
     public const STATUS_CHECKED_IN = 'checked_in';
     public const STATUS_CHECKED_OUT = 'checked_out';
 
+    /**
+     * Allowed status values for validation or filtering.
+     */
     public const STATUSES = [
         self::STATUS_PENDING,
         self::STATUS_CONFIRMED,
@@ -45,9 +48,7 @@ class Reservation extends Model
     ];
 
     /**
-     * Get the user that booked this reservation.
-     *
-     * A reservation is booked by a user.
+     * The user who created the booking (e.g., the one who made the reservation).
      */
     public function bookedBy(): BelongsTo
     {
@@ -55,9 +56,7 @@ class Reservation extends Model
     }
 
     /**
-     * Get the user that will be staying for this reservation.
-     *
-     * A reservation has a guest user.
+     * The guest who will actually stay (can be different from the booker).
      */
     public function guest(): BelongsTo
     {
@@ -65,9 +64,7 @@ class Reservation extends Model
     }
 
     /**
-     * Get the accommodation that is linked to this reservation.
-     *
-     * A reservation belongs to an accommodation.
+     * The accommodation assigned to this reservation.
      */
     public function accommodation(): BelongsTo
     {
@@ -75,9 +72,7 @@ class Reservation extends Model
     }
 
     /**
-     * Get all companions linked to this reservation.
-     *
-     * A reservation can have multiple companions.
+     * People associated with the reservation other than the main guest.
      */
     public function companions(): HasMany
     {
@@ -85,9 +80,7 @@ class Reservation extends Model
     }
 
     /**
-     * Get the Reservation Logs performed on this reservation.
-     *
-     * A reservation has many log entries.
+     * Reservation logs (audit history).
      */
     public function reservationLogs(): HasMany
     {
@@ -95,9 +88,7 @@ class Reservation extends Model
     }
 
     /**
-     * Get the Reservation Services attached to this reservation.
-     *
-     * A reservation has many different services.
+     * Services attached to this reservation via pivot table.
      */
     public function services(): BelongsToMany
     {
@@ -108,10 +99,20 @@ class Reservation extends Model
     }
 
     /**
-     * Attach the service with ID $serviceId to this Reservation with specified $amount.
+     * Attach a service to the reservation with the given amount.
+     *
+     * Note: This method uses syncWithoutDetaching(), which can lead to
+     * unnecessary database writes if used repeatedly without checking.
+     * Use with caution in loops or bulk operations.
+     *
+     * @param int|string $serviceId The ID of the service to attach.
+     * @param int $amount The amount to associate with the service.
+     * @return void
      */
     public function attachServiceWithAmount($serviceId, $amount)
     {
+        // TODO: Consider detecting whether the pivot already exists to only set
+        // 'created_at' on inserts, and only update 'updated_at' when necessary.
         $this->services()->syncWithoutDetaching([
             $serviceId => [
                 'amount' => $amount,
@@ -122,13 +123,10 @@ class Reservation extends Model
     }
 
     /**
-     * Determine whether services can be added to this reservation,
-     * based on its current status.
+     * Determine if new services can be added to this reservation.
+     * Only allowed if status is 'confirmed' or 'checked_in'.
      *
-     * Services can only be added when the reservation is in
-     * 'confirmed', or 'checked_in' status.
-     *
-     * @return bool True if services can be added; false otherwise.
+     * @return bool
      */
     public function canAddServices(): bool
     {
