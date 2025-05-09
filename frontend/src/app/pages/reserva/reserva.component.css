@@ -1,28 +1,34 @@
-.reserva {
-    padding: 2rem;
-    max-width: 800px;
+.container {
+    max-width: 900px;
     margin: auto;
 }
-  
-.formulario-busqueda {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-  
-.formulario-busqueda div {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 200px;
-}
-  
-button {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    background-color: #00695c;
-    color: white;
+
+.card {
     border: none;
-    border-radius: 5px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.pagination-container {
+    margin-top: 1.5rem;
 }
