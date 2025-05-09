@@ -1,52 +1,77 @@
-<section>
-  <h2>Registro de usuario</h2>
+<div class="container my-5" style="max-width: 500px;">
+  <h2 class="text-success text-center mb-4">Registro de usuario</h2>
+
+
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-    <label>Nombre:</label>
-    <input type="text" formControlName="name">
-
-    <label>Primer apellido:</label>
-    <input type="text" formControlName="papellido">
-
-    <label>Segundo apellido:</label>
-    <input type="text" formControlName="sapellido">
-
-    <label>Fecha de nacimiento:</label>
-    <input type="date" formControlName="fecha_nacimiento">
-
-    <label>Tipo de documento:</label>
-    <select formControlName="documento">
-      <option value="dni">DNI</option>
-      <option value="nie">NIE</option>
-      <option value="passport">Pasaporte</option>
-    </select>
-
-    <label>Número de documento:</label>
-    <input type="text" formControlName="num_documento">
-
-    <label>Teléfono:</label>
-    <input type="text" formControlName="telefono">
-
-    <label>Dirección:</label>
-    <input type="text" formControlName="direccion">
-
-    <label>Email:</label>
-    <input type="email" formControlName="email">
-
-    <label>Contraseña:</label>
-    <input type="password" formControlName="password1">
-
-    <div *ngIf="registerForm.get('password1')?.invalid && registerForm.get('password1')?.touched" style="color:red;">
-      La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.
+    <div class="mb-3">
+      <label class="form-label">Nombre:</label>
+      <input type="text" class="form-control" formControlName="name">
     </div>
 
-    <label>Repetir contraseña:</label>
-    <input type="password" formControlName="password2">
+    <div class="mb-3">
+      <label class="form-label">Primer apellido:</label>
+      <input type="text" class="form-control" formControlName="papellido">
+    </div>
 
-    <div *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.dirty" style="color:red;">
+    <div class="mb-3">
+      <label>Segundo apellido:</label>
+      <input type="text" class="form-control" formControlName="sapellido">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Fecha de nacimiento:</label>
+      <input type="date" class="form-control" formControlName="fecha_nacimiento">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Tipo de documento:</label>
+      <select class="form-select" formControlName="documento">
+        <option value="dni">DNI</option>
+        <option value="nie">NIE</option>
+        <option value="passport">Pasaporte</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Número de documento:</label>
+      <input type="text" class="form-control" formControlName="num_documento">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Teléfono:</label>
+      <input type="text" class="form-control" formControlName="telefono">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Dirección:</label>
+      <input type="text" class="form-control" formControlName="direccion">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Email:</label>
+      <input type="email" class="form-control" formControlName="email">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Contraseña:</label>
+      <input type="password" class="form-control" formControlName="password1">
+    
+      <div *ngIf="registerForm.get('password1')?.invalid && registerForm.get('password1')?.touched" class="form-text text-danger">
+        La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.
+      </div>
+    </div>
+    
+
+    <div class="mb-3">
+    <label class="form-label">Repetir contraseña:</label>
+    <input type="password" class="form-control" formControlName="password2">
+
+    <div *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.dirty" class="form-text text-danger">
       Las contraseñas no coinciden.
     </div>
+    </div>
 
-    <button type="submit" [disabled]="registerForm.invalid">Registrarse</button>
+    <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="registerForm.invalid">Registrarse</button>
   </form>
-</section>
+</div>
