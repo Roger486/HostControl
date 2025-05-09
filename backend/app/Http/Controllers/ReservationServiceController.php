@@ -9,6 +9,9 @@ use App\Models\Reservation;
 
 class ReservationServiceController extends Controller
 {
+    /**
+     * Attach a service to a reservation with a specific amount (admin).
+     */
     public function attachService(AttachServiceRequest $request, Reservation $reservation)
     {
         $this->authorize('update', $reservation);
@@ -23,6 +26,9 @@ class ReservationServiceController extends Controller
         return new ServiceResource($serviceAttached);
     }
 
+    /**
+     * Detach a service from a reservation (admin).
+     */
     public function detachService(DetachServiceRequest $request, Reservation $reservation)
     {
         $this->authorize('update', $reservation);
@@ -33,6 +39,9 @@ class ReservationServiceController extends Controller
         return response()->noContent();
     }
 
+    /**
+     * Get the services attached to the reservation (for current user/guest).
+     */
     public function ownAttachedServices(Reservation $reservation)
     {
         $this->authorize('viewOwn', $reservation);
@@ -40,6 +49,9 @@ class ReservationServiceController extends Controller
         return ServiceResource::collection($reservation->services);
     }
 
+    /**
+     * Attach a service to the reservation by the owner/client.
+     */
     public function attachOwnService(AttachServiceRequest $request, Reservation $reservation)
     {
         $this->authorize('manageOwn', $reservation);

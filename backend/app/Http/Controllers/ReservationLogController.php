@@ -9,7 +9,10 @@ use Illuminate\Http\Request;
 class ReservationLogController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show a paginated list of logs for a specific reservation.
+     *
+     * @param Reservation $reservation The reservation whose logs are being retrieved.
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Reservation $reservation)
     {

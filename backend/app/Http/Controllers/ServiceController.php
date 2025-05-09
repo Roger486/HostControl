@@ -6,12 +6,13 @@ use App\Http\Requests\Service\StoreServiceRequest;
 use App\Http\Requests\Service\UpdateServiceRequest;
 use App\Http\Resources\ServiceResource;
 use App\Models\Service;
-use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get a list of all services.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -19,7 +20,10 @@ class ServiceController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new service.
+     *
+     * @param StoreServiceRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreServiceRequest $request)
     {
@@ -35,7 +39,10 @@ class ServiceController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show a specific service.
+     *
+     * @param Service $service
+     * @return ServiceResource
      */
     public function show(Service $service)
     {
@@ -43,7 +50,11 @@ class ServiceController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a service.
+     *
+     * @param UpdateServiceRequest $request
+     * @param Service $service
+     * @return ServiceResource
      */
     public function update(UpdateServiceRequest $request, Service $service)
     {
@@ -55,8 +66,12 @@ class ServiceController extends Controller
         return new ServiceResource($service);
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * Delete a service.
+     *
+     * @param Service $service
+     * @return \Illuminate\Http\Response
      */
     public function destroy(Service $service)
     {
