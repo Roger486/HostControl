@@ -6,10 +6,16 @@ use App\Models\Service;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Carbon;
 
+// TODO: review possible DRY, SRP or KISS oportunities
+/**
+ * Class DatetimeValidator
+ *
+ * Handles validation rules related to service scheduling and availability dates.
+ */
 class DatetimeValidator
 {
     /**
-     * Validates that the service is available for reservation at the current time.
+     * Validates if a service is currently available based on its date fields.
      *
      * @param \App\Models\Service $service
      * @param \Illuminate\Contracts\Validation\Validator $validator
@@ -42,7 +48,7 @@ class DatetimeValidator
     }
 
     /**
-     * Runs combined date-related validations for services.
+     * Runs combined date-related validations on service date fields.
      *
      * @param string|null $availableUntil
      * @param string|null $endsAt
@@ -107,8 +113,8 @@ class DatetimeValidator
     /**
      * Validates that the end date (ends_at) is after the scheduled start date (scheduled_at).
      *
-     * If either date is null, the validation passes silently.
-     * If ends_at is not after scheduled_at, a validation error is added to the validator.
+     * If either date is null, the validation is skipped (considered valid).
+     * If ends_at is not after scheduled_at, a validation error is added.
      *
      * @param string|null $endsAt      The end date of the service.
      * @param string|null $scheduledAt The scheduled start date of the service.
@@ -128,6 +134,9 @@ class DatetimeValidator
         }
     }
 
+    /**
+     * Check if the current moment is after the given date.
+     */
     private static function isNowAfter(?string $date): bool
     {
         return self::isAfter(Carbon::now(), $date);

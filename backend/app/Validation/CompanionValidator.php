@@ -9,7 +9,8 @@ use Illuminate\Contracts\Validation\Validator;
 /**
  * Class CompanionValidator
  *
- * Handles validation logic for companions in reservations.
+ * Handles custom validation logic for companions in a reservation.
+ * Validates document format, required fields, and duplicates depending on age.
  */
 class CompanionValidator
 {
@@ -17,7 +18,7 @@ class CompanionValidator
      * Validate all companions in the request.
      *
      * @param array $companions List of companion data.
-     * @param int $guestId ID of the main guest to check for duplicate documents.
+     * @param int $guestId ID of the main guest (to avoid duplicate documents).
      * @param Validator $validator The Laravel validator instance.
      * @return void
      */
@@ -33,6 +34,7 @@ class CompanionValidator
             $birthdate = $companion['birthdate'] ?? null;
             if (!$birthdate) {
                 continue;
+                // Skip if no birthdate — main rule should already catch it
             }
             $age = Carbon::parse($birthdate)->age;
 
@@ -57,7 +59,7 @@ class CompanionValidator
     }
 
     /**
-     * Initialize the list of already-seen document numbers with the guest's.
+     * Load the main guest's document to avoid self-duplication.
      *
      * @param int $guestId
      * @return array<string>
@@ -72,7 +74,7 @@ class CompanionValidator
     }
 
     /**
-     * Validate that a minor does not provide only one of type or document number.
+     * Ensure that minors do not provide partial document data.
      *
      * @param Validator $validator
      * @param int $index
@@ -95,7 +97,7 @@ class CompanionValidator
     }
 
     /**
-     * Validate that an adult provides both type and document number.
+     * Ensure that adults provide full document information.
      *
      * @param Validator $validator
      * @param int $index
@@ -118,7 +120,7 @@ class CompanionValidator
     }
 
     /**
-     * Validate the format of the provided document.
+     * Validate document format using DocumentValidator.
      *
      * @param Validator $validator
      * @param int $index
@@ -138,7 +140,7 @@ class CompanionValidator
     }
 
     /**
-     * Ensure that the document number has not already been used.
+     * Ensure no document number is used twice (including main guest).
      *
      * @param Validator $validator
      * @param int $index
