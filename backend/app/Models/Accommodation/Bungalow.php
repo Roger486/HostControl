@@ -25,15 +25,21 @@ class Bungalow extends Model implements HasDynamicValidation
     ];
 
     /**
-     * Get the main accommodation details for this bungalow.
+     * Get the associated base accommodation.
      *
-     * A bungalow belongs to an accommodation.
+     * @return BelongsTo
      */
     public function accommodation(): BelongsTo
     {
         return $this->belongsTo(Accommodation::class, 'accommodation_id');
     }
 
+    /**
+     * Validation rules for creating or updating a bungalow.
+     *
+     * @param string $operation Context for validation: 'store' or 'update'
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     */
     public static function rules(string $operation = 'store'): array
     {
 

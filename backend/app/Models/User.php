@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+// TODO: implement email verification
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -86,16 +87,20 @@ class User extends Authenticatable
         ];
     }
 
-    // MODEL RELATIONS
+    // ========================
+    //      RELATIONSHIPS
+    // ========================
 
     /**
-     * Get all reservations booked by this user.
+     * Get all reservations where the user is the one who made the booking.
      *
      * This retrieves all reservations where the `booked_by_id`
      * in the `reservations` table matches this user's `id`.
      *
      * Equivalent SQL query:
      * SELECT * FROM reservations WHERE booked_by_id = this->id;
+     *
+     * @return HasMany
      */
     public function bookedByReservations(): HasMany
     {
@@ -110,6 +115,8 @@ class User extends Authenticatable
      *
      * Equivalent SQL query:
      * SELECT * FROM reservations WHERE guest_id = this->id;
+     *
+     * @return HasMany
      */
     public function guestReservations(): HasMany
     {
@@ -117,13 +124,15 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all reservation logs recorded by this user.
+     * Get all reservation log actions performed by this user.
      *
      * This retrieves all logs where the `user_id`
      * in the `reservation_logs` table matches this user's `id`.
      *
      * Equivalent SQL query:
      * SELECT * FROM reservation_logs WHERE user_id = this->id;
+     *
+     * @return HasMany
      */
     public function reservationLogs(): HasMany
     {

@@ -27,6 +27,13 @@ class Service extends Model
         'ends_at' => 'datetime'
     ];
 
+    /**
+     * Reservations that have this service attached.
+     *
+     * Many-to-many relationship via the reservation_service pivot table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function reservations()
     {
         return $this->belongsToMany(Reservation::class, 'reservation_service')
