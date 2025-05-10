@@ -1,79 +1,94 @@
 
-<h1>Administrar Reservas (Admin)</h1>
+<div class="container my-5" style="max-width: 800px;">
 
-<label>Email del usuario:</label>
-<input type="email" [(ngModel)]="emailUsuario">
-<button (click)="buscarUsuario()">Buscar</button>
+  <h2 class="text-success text-center mb-4">Administrar Reservas (Admin)</h2>
 
-<div *ngIf="cargando">Cargando datos...</div>
-<div *ngIf="error" style="color: red;">{{ error }}</div>
-
-<hr>
-
-<div *ngIf="usuario">
-  <h3>Datos del usuario</h3>
-  <p><strong>ID:</strong> {{ usuario.id }}</p>
-  <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
-  <p><strong>Documento:</strong> {{ usuario.documento }}</p>
-
-  <h3>Reservas</h3>
-  <div *ngIf="reservas.length > 0">
-    <div *ngFor="let r of reservas" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
-      <p><strong>ID de reserva:</strong> {{ r.id }}</p>
-      <p><strong>Check-in actual:</strong> {{ r.check_in_date }}</p>
-      <p><strong>Check-out actual:</strong> {{ r.check_out_date }}</p>
-      <p><strong>Status actual:</strong> {{ r.status }}</p>
-      <p><strong>Comentarios:</strong> {{ r.comments || 'Sin comentarios' }}</p>
-
-      <p><strong>Alojamiento:</strong> {{ r.accommodation?.accommodation_code }} ({{ r.accommodation?.type }})</p>
-      <p><strong>Capacidad:</strong> {{ r.accommodation?.capacity }} personas</p>
-      <p><strong>Precio por día:</strong> {{ r.accommodation?.price_per_day }}€</p>
-      <h4>Acompañantes:</h4>
-      <ul *ngIf="r.companions?.length > 0; else sinAcompanantes">
-        <li *ngFor="let c of r.companions">
-          {{ c.first_name }} {{ c.last_name_1 }} –
-          {{ c.document_type }} {{ c.document_number || '(sin número)' }}
-        </li>
-      </ul>
-      <ng-template #sinAcompanantes>
-        <p>No hay acompañantes.</p>
-      </ng-template>
-  
-      <button (click)="editarReserva = r.id">Modificar reserva</button>
-  
-      <div *ngIf="editarReserva === r.id" style="margin-top: 10px;">
-        <label>Check-in:</label>
-        <input type="date" [(ngModel)]="r.check_in_date" name="in_{{r.id}}">
-        <br><br>
-  
-        <label>Check-out:</label>
-        <input type="date" [(ngModel)]="r.check_out_date" name="out_{{r.id}}">
-        <br><br>
-  
-        <label>Status:</label>
-        <select [(ngModel)]="r.status" name="status_{{r.id}}">
-          <option value="pending">Pending</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="cancelled">Cancelled</option>
-          <option value="checked_in">Checked In</option>
-          <option value="checked_out">Checked Out</option>
-        </select>
-        <br><br>
-  
-        <label>Log (motivo del cambio):</label>
-        <input type="text" [(ngModel)]="r.log_detail" name="log_{{r.id}}" required>
-        <br><br>
-  
-        <button (click)="ModificarReserva(r)">Guardar cambios</button>
-        <button (click)="editarReserva = null">Cancelar</button>
-      </div>
+  <div class="bg-white p-4 rounded shadow mb-4">
+    <label class="form-label">Email del usuario:</label>
+    <div class="input-group">
+      <input type="email" class="form-control" [(ngModel)]="emailUsuario" />
+      <button class="btn btn-success" (click)="buscarUsuario()">Buscar</button>
     </div>
+    <div *ngIf="cargando" class="form-text mt-2">Cargando datos...</div>
+    <div *ngIf="error" class="form-text text-danger mt-2">{{ error }}</div>
   </div>
   
-  <p *ngIf="reservas.length === 0">Este usuario no tiene reservas.</p>
+
+  <div *ngIf="usuario" class="bg-white p-4 rounded shadow mb-4">
+    <h4 class="text-success mb-3">Datos del usuario</h4>
+    <p><strong>ID:</strong> {{ usuario.id }}</p>
+    <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+    <p><strong>Documento:</strong> {{ usuario.documento }}</p>
+
+    <h4 class="text-primary mt-4">Reservas</h4>
+
+    <div *ngIf="reservas.length > 0" class="mt-3">
+      <div *ngFor="let r of reservas" class="border rounded p-3 mb-4 shadow-sm">
+        <p><strong>ID de reserva:</strong> {{ r.id }}</p>
+        <p><strong>Check-in actual:</strong> {{ r.check_in_date | date: 'dd/MM/yyyy' }}</p>
+        <p><strong>Check-out actual:</strong> {{ r.check_out_date | date: 'dd/MM/yyyy'}}</p>
+        <p><strong>Status actual:</strong> {{ r.status }}</p>
+        <p><strong>Comentarios:</strong> {{ r.comments || 'Sin comentarios' }}</p>
+        <p><strong>Alojamiento:</strong> {{ r.accommodation?.accommodation_code }} ({{ r.accommodation?.type }})</p>
+        <p><strong>Capacidad:</strong> {{ r.accommodation?.capacity }} personas</p>
+        <p><strong>Precio por día:</strong> {{ r.accommodation?.price_per_day / 100 | number:'1.2-2' }}€</p>
+
+        <h5 class="mt-3">Acompañantes:</h5>
+        <ul *ngIf="r.companions?.length > 0; else sinAcompanantes">
+          <li *ngFor="let c of r.companions">
+            {{ c.first_name }} {{ c.last_name_1 }} – {{ c.document_type }} {{ c.document_number || '(sin número)' }}
+          </li>
+        </ul>
+        <ng-template #sinAcompanantes>
+          <p class="text-muted">Sin acompañantes.</p>
+        </ng-template>
+    
+        <!-- Edicion de reservas -->
+        <div class="text-end mt-3"> 
+          <button class="btn btn-outline-primary btn-sm" (click)="editarReserva = r.id">Modificar reserva</button>
+        </div>
+    
+        <div *ngIf="editarReserva === r.id" class="mt-4 border-top pt-3">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Check-in:</label>
+              <input type="date" class="form-control" [(ngModel)]="r.check_in_date" name="in_{{r.id}}">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Check-out:</label>
+              <input type="date" class="form-control" [(ngModel)]="r.check_out_date" name="out_{{r.id}}">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Status:</label>
+            <select class="form-select" [(ngModel)]="r.status" name="status_{{r.id}}">
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="checked_in">Checked In</option>
+              <option value="checked_out">Checked Out</option>
+            </select>
+          </div>
+    
+          <div class="mb-3">
+            <label class="form-label">Log (motivo del cambio):</label>
+            <input type="text" class="form-control" [(ngModel)]="r.log_detail" name="log_{{r.id}}" required>
+          </div>
+          
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-success" (click)="ModificarReserva(r)">Guardar cambios</button>
+            <button class="btn btn-outline-secondary" (click)="editarReserva = null">Cancelar</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <p *ngIf="reservas.length === 0">Este usuario no tiene reservas.</p>
+  </div>
+
+  <div class="text-center mt-4">
+    <button class="btn btn-outline-success" (click)="volverAlPanelAdmin()">Volver al panel de administración</button>
+  </div>
 </div>
-<hr>
-<button (click)="volverAlPanelAdmin()">Volver al panel de administración</button>
-
-
-

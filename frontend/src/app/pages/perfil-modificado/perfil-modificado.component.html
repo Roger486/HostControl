@@ -1,15 +1,22 @@
-<h2>Resultado de la modificación</h2>
+<div class="container my-5" style="max-width: 500px;">
+  <div class="bg-white p-5 rounded shadow text-center">
 
 
-<p [style.color]="error ? 'red' : 'green'" style="font-weight: bold;">
-  {{ mensaje }}
-</p>
+    <h2 class="text-success mb-4">Resultado de la modificación</h2>
 
-<div *ngIf="!error">
-  <button (click)="volverInicio()">Volver al inicio</button>
-  <button (click)="cerrarSesion()">Cerrar sesión</button>
-</div>
 
-<div *ngIf="error">
-  <button (click)="volverInicio()">Volver</button>
+    <p [ngClass]="{ 'text-danger': error, 'text-success': !error }" class="fw-bold mb-4">
+      {{ mensaje }}
+    </p>
+
+    <div *ngIf="!error" class="d-flex justify-content-between">
+      <button class="btn btn-outline-success" (click)="volverInicio()">Volver al inicio</button>
+      <button class="btn btn-outline-danger" (click)="cerrarSesion()">Cerrar sesión</button>
+    </div>
+
+    <div *ngIf="error">
+      <button class="btn btn-outline-primary" (click)="volverInicio()">Volver</button>
+    </div>
+
+  </div>
 </div>

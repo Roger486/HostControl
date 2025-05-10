@@ -45,6 +45,7 @@ export class InmueblesService {
     });
   }
 
+  // Actualizamos la capacidad del inmueble
   actualizarCapacidad(id: number, nuevaCapacidad: number): Observable<any> {
     const token = localStorage.getItem('authToken');
   

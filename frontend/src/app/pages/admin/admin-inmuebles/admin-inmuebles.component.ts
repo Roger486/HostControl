@@ -131,7 +131,7 @@ export class AdminInmueblesComponent implements OnInit {
         }
       });
     } else {
-      alert('Por favor completa ambos campos.');
+      alert('Por favor completa el campo id y precio.');
     }
   }
   // Método para actualizar la capacidad de un inmueble

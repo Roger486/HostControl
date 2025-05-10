@@ -1,46 +1,56 @@
-<h2>Perfil de usuario</h2>
+<div class="container my-5">
 
-<div *ngIf="usuario">
-  <p><strong>Nombre:</strong> {{ usuario.first_name }}</p>
-  <p><strong>Primer apellido:</strong> {{ usuario.last_name_1 }}</p>
-  <p><strong>Segundo apellido:</strong> {{ usuario.last_name_2 }}</p>
-  <p><strong>Fecha de nacimiento:</strong> {{ usuario.birthdate }}</p>
-  <p><strong>Dirección:</strong> {{ usuario.address }}</p>
-  <p><strong>Teléfono:</strong> {{ usuario.phone }}</p>
-  <div class="perfil-acciones">
-    <button type="button" (click)="irAEditarPerfil()">Modificar datos</button>
-    <button type="button" (click)="volverInicio()">Salir</button>
+  <h2 class="text-success text-center mb-4">Tu perfil</h2>
+
+  <div *ngIf="usuario" class="bg-white p-4 rounded shadow mb-5" style="max-width: 600px; margin: auto;">
+    <p><strong>Nombre:</strong> {{ usuario.first_name }}</p>
+    <p><strong>Primer apellido:</strong> {{ usuario.last_name_1 }}</p>
+    <p><strong>Segundo apellido:</strong> {{ usuario.last_name_2 }}</p>
+    <p><strong>Fecha de nacimiento:</strong> {{ usuario.birthdate | date: 'shortDate'}}</p>
+    <p><strong>Dirección:</strong> {{ usuario.address }}</p>
+    <p><strong>Teléfono:</strong> {{ usuario.phone }}</p>
+
+    <div class="d-flex justify-content-between mt-4">
+      <button class="btn btn-outline-primary" (click)="irAEditarPerfil()">Modificar datos</button>
+      <button class="btn btn-outline-danger" (click)="volverInicio()">Salir</button>
+    </div>
   </div>
-</div>
 
-<div *ngIf="reservas.length > 0">
-  <h3>Mis reservas</h3>
-  <ul>
-    <li *ngFor="let reserva of reservas" style="margin-bottom: 20px;">
-      <p><strong>ID de reserva:</strong> {{ reserva.id }}</p>
-      <p><strong>Entrada:</strong> {{ reserva.check_in_date }}</p>
-      <p><strong>Salida:</strong> {{ reserva.check_out_date }}</p>
-      <p><strong>Estado:</strong> {{ reserva.status }}</p>
+  <div *ngIf="reservas.length > 0">
+    <h3 class="text-center text-success mb-4">Tus reservas</h3>
 
-      <!-- Acompañantes -->
-      <div *ngIf="reserva.companions?.length > 0">
-        <p><strong>Acompañantes:</strong></p>
-        <ul>
-          <li *ngFor="let comp of reserva.companions">
-            {{ comp.first_name }} {{ comp.last_name_1 }}
-            ({{ comp.document_type }} {{ comp.document_number || 'sin número' }})
-          </li>
-        </ul>
+    <div class="row justify-content-center">
+      <div class="col-md-8" *ngFor="let reserva of reservas" style="margin-bottom: 20px;">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body">
+            <p><strong>ID de reserva:</strong> {{ reserva.id }}</p>
+            <p><strong>Entrada:</strong> {{ reserva.check_in_date | date: 'shortDate' }}</p>
+            <p><strong>Salida:</strong> {{ reserva.check_out_date | date: 'shortDate' }}</p>
+            <p><strong>Estado:</strong> {{ reserva.status }}</p>
+
+            <!-- Acompañantes -->
+            <div *ngIf="reserva.companions?.length > 0">
+              <p><strong>Acompañantes:</strong></p>
+              <ul class="mb-0">
+                <li *ngFor="let comp of reserva.companions">
+                  {{ comp.first_name }} {{ comp.last_name_1 }}
+                  ({{ comp.document_type }} {{ comp.document_number || 'sin número' }})
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
 
-      <hr>
-    </li>
-  </ul>
+  <!-- Mensaje si no hay reservas -->
+  <div *ngIf="reservas.length === 0" class="text-center mt-4">
+    <p style="color: rgb(133, 136, 133);">No tienes reservas registradas.</p>
+  </div>
+
+  <div class="text-center mt-4">
+    <button class="btn btn-outline-success" (click)="volverInicio()">Volver al inicio</button>
+  </div>
+
 </div>
-
-<!-- Mensaje si no hay reservas -->
-<div *ngIf="reservas.length === 0">
-  <p style="color: gray;">No tienes reservas registradas.</p>
-</div>
-
-<button (click)="volverInicio()">Volver al inicio</button>

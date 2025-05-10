@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from 'app/services/auth.service';
 import { ClientesService } from 'app/services/clientes.service';
+import { RouterModule } from '@angular/router';
 
 
 @Component({
   selector: 'app-admin-clientes',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   standalone: true,
   templateUrl: './admin-clientes.component.html',
   styleUrl: './admin-clientes.component.css'
