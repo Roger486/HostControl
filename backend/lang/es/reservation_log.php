@@ -16,12 +16,12 @@ return [
     */
 
     'log_messages' => [
-        'create' => 'Reservation created.',
-        'update' => 'Reservation updated.',
-        'cancel' => 'Reservation cancelled.',
-        'check_in' => 'Checked in to reservation.',
-        'confirm' => 'Checked out from reservation.',
-        'to_pending' => 'Reservation status set up to pending.',
-        'default' => 'Action performed: :action',
+        'create' => 'Reserva creada.',
+        'update' => 'Reserva actualizada.',
+        'cancel' => 'Reserva cancelada.',
+        'check_in' => 'Check-in realizado en la reserva.',
+        'confirm' => 'Check-out realizado de la reserva.',
+        'to_pending' => 'Reserva cambiada a estado pendiente.',
+        'default' => 'Acción realizada: :action',
     ]
 ];
