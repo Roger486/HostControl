@@ -187,5 +187,57 @@ return [
             'unavailable_due_to_ended' => 'Este servicio ya ha finalizado.'
         ]
     ],
-    'attributes' => []
+    'attributes' => [
+        // Multiple models
+        'comments' => 'comentarios',
+        // Accommodation
+        'min_capacity' => 'capacidad mínima',
+        'max_capacity' => 'capacidad máxima',
+        'check_in_date' => 'fecha de entrada',
+        'check_out_date' => 'fecha de salida',
+        'accommodation_code' => 'código del alojamiento',
+        'section' => 'sección',
+        'capacity' => 'capacidad',
+        'price_per_day' => 'precio por día',
+        'is_available' => 'está disponible',
+        'type' => 'tipo',
+        // Reservation
+        'booked_by_id' => 'persona que realiza la reserva',
+        'guest_id' => 'huésped',
+        'accommodation_id' => 'alojamiento',
+        'status' => 'estado',
+        // companion specific fields on Reservation
+        'companions' => 'acompañantes',
+        'companions.*.document_type' => 'tipo de documento del acompañante',
+        'companions.*.first_name' => 'nombre del acompañante',
+        'companions.*.last_name_1' => 'primer apellido del acompañante',
+        'companions.*.last_name_2' => 'segundo apellido del acompañante',
+        'companions.*.birthdate' => 'fecha de nacimiento del acompañante',
+        // Reservation logs
+        'log_detail' => 'detalle del registro',
+        // Service
+        'service_id' => 'servicio',
+        'name' => 'nombre',
+        'description' => 'descripción',
+        'price' => 'precio',
+        'daily_price' => 'precio por día',
+        'available_slots' => 'plazas disponibles',
+        'available_until' => 'disponible hasta',
+        'scheduled_at' => 'fecha de inicio',
+        'ends_at' => 'fecha de finalización',
+        // Service-Reservation attachment
+        'amount' => 'cantidad',
+        // User
+        'first_name' => 'nombre',
+        'last_name_1' => 'primer apellido',
+        'last_name_2' => 'segundo apellido',
+        'email' => 'correo electrónico',
+        'password' => 'contraseña',
+        'birthdate' => 'fecha de nacimiento',
+        'address' => 'dirección',
+        'document_type' => 'tipo de documento',
+        'document_number' => 'número de documento',
+        'phone' => 'teléfono',
+        'role' => 'rol',
+    ]
 ];
