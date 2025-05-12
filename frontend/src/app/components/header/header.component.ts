@@ -24,6 +24,7 @@ export class HeaderComponent {
 
       if (usuario) {
         this.rolUsuario = JSON.parse(localStorage.getItem('usuarioRol') || '""');
+        console.log('Rol del usuario:', this.rolUsuario); // Para depurar el rol del usuario
       } else {
         this.rolUsuario = '';
       }

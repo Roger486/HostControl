@@ -62,6 +62,10 @@ export class ReservaComponent {
       },
       error: (err) => {
         console.error('Error al obtener perfil:', err);
+
+        if (err.status === 401) {
+          alert('Para solicitar una reserva registrate o inicia sesión!')
+        }
       }
     });
   }
@@ -124,6 +128,13 @@ export class ReservaComponent {
   }
 
   enviarReserva(): void {
+
+    if (!this.usuarioActual) {
+      alert('Debes iniciar sesión para realizar una reserva.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (this.reservaForm.valid && this.usuarioActual) {
       const form = this.reservaForm.value;
   
@@ -162,12 +173,12 @@ export class ReservaComponent {
           console.error('Error al realizar la reserva:', err);
           if (err.status === 422) {
             alert('No se ha podido completar la reserva. Revisa los datos introducidos en el formulario.');
-          } else {
+          }else {
             alert('Ocurrió un error al realizar la reserva.');
           }
         }
       });
-    }
+    } 
 
     }
   }
