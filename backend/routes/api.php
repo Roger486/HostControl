@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccommodationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReservationLogController;
 use App\Http\Controllers\ReservationServiceController;
@@ -111,4 +112,11 @@ Route::middleware([SetLocaleFromHeader::class])->group(function () {
         Route::get('/user/reservations/{reservation}/services', [ReservationServiceController::class, 'ownAttachedServices']);
         Route::post('user/reservations/{reservation}/services', [ReservationServiceController::class, 'attachOwnService']);
     });
+
+    // =========================
+    // 📨 NOTIFICATIONS
+    // =========================
+
+    // 🔐 Current authenticated user actions
+    Route::middleware('auth:sanctum')->get('/user/notifications', [NotificationController::class, 'userNotifications']);
 });
