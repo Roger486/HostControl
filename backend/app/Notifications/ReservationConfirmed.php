@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Reservation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -52,10 +53,13 @@ class ReservationConfirmed extends Notification
      */
     public function toDatabase($notifiable)
     {
+        $statusKey = Reservation::STATUS_CONFIRMED;
+
         return [
-            'message' => 'Your reservation has been confirmed.',
+            'type' => $statusKey,
+            'title' => __("notifications.{$statusKey}.title"),
+            'message' => __("notifications.{$statusKey}.message"),
             'reservation_id' => $this->reservation->id,
-            'type' => 'reservation_confirmed',
             'date' => now(),
         ];
     }
