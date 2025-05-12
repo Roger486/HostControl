@@ -10,6 +10,7 @@ use App\Models\Accommodation\Accommodation;
 use App\Models\Reservation;
 use App\Models\ReservationLog;
 use App\Models\User;
+use App\Notifications\ReservationConfirmed;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -144,6 +145,9 @@ class ReservationController extends Controller
 
         if (isset($validated['status']) && $validated['status'] !== $previousStatus) {
             $logAction = $statusToActionMap[$validated['status']] ?? ReservationLog::ACTION_UPDATE;
+            if ($logAction === ReservationLog::ACTION_CONFIRM) {
+                $reservation->guest->notify(new ReservationConfirmed($reservation));
+            }
         }
 
         // Trigger event to register the ReservationLog based on action
