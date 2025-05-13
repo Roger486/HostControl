@@ -9,7 +9,7 @@ export const userGuard: CanActivateFn = (route, state) => {
   
 
 
-  if (token && rol === '"user"') {
+  if (token && rol === '"user"' || rol === '"admin"') {
     return true;
   } 
   router.navigate(['/']);
