@@ -21,6 +21,9 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+    this.loginForm.valueChanges.subscribe(() => {
+      this.loginError = false;
+    });
   }
 
   onSubmit() {

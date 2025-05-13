@@ -22,7 +22,7 @@
         Número de documento obligatorio.
       </div>
     </div>
-    <button type="submit" class="btn btn-success w-100">Buscar</button>
+    <button type="submit" class="btn btn-success w-100" [disabled]="busquedaForm.invalid">Buscar</button>
   </form>
 
   <hr />
@@ -84,6 +84,26 @@
         <label class="form-label">Teléfono:</label>
         <input type="text" class="form-control" formControlName="phone" />
       </div>
+
+      <div class="mb-3">
+        <label class="form-label">Correo electrónico:</label>
+        <input type="email" class="form-control" formControlName="email" />
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Tipo de documento:</label>
+          <select class="form-select" formControlName="document_type">
+            <option value="DNI">DNI</option>
+            <option value="NIE">NIE</option>
+            <option value="Passport">Pasaporte</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Número de documento:</label>
+          <input type="text" class="form-control" formControlName="document_number" />
+        </div>
+      </div>
       
       <div class="row">
         <div class="mb-3">
@@ -115,5 +135,8 @@
       <button type="button" class="btn btn-outline-danger" (click)="confirmarEliminacion()">Eliminar</button>
     </form>
   </div>
-  <a routerLink="/admin" class="btn btn-outline-success mt-3">Volver al panel de Administración</a>
+  <div class="text-center">
+    <a routerLink="/admin" class="btn btn-outline-success mt-3 w-50">Volver al panel de Administración</a>
+  </div>
+  
 </div>
