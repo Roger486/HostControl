@@ -19,6 +19,9 @@ import { PoliticaCookiesComponent } from './pages/politica-cookies/politica-cook
 import { SobreNosotrosComponent } from './pages/sobre-nosotros/sobre-nosotros.component';
 import { authGuard } from './guards/auth.guard'; // Importar el guardia de autenticación
 import { userGuard } from './guards/user.guard'; // Importar el guardia de usuario
+import { ExternosComponent } from './pages/externos/externos.component';
+
+
 export const routes: Routes = [
     {
         path: '',
@@ -40,7 +43,8 @@ export const routes: Routes = [
             { path: 'admin/reservas', component: AdminReservasComponent, canActivate: [authGuard] }, // Ruta a gestion de reservas
             { path: 'admin/inmuebles', component: AdminInmueblesComponent, canActivate: [authGuard] }, // Ruta a gestion de inmuebles
             { path: 'politica-cookies', component: PoliticaCookiesComponent }, // Ruta a politica de cookies
-            { path: 'sobre-nosotros', component: SobreNosotrosComponent } // Ruta a sobre nosotros
+            { path: 'sobre-nosotros', component: SobreNosotrosComponent }, // Ruta a sobre nosotros
+            { path: 'externos', component: ExternosComponent } // Ruta a externos
         ]
         },
         {
