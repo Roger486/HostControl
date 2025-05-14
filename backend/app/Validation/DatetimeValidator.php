@@ -139,6 +139,10 @@ class DatetimeValidator
      */
     private static function isNowAfter(?string $date): bool
     {
+        if (!$date) {
+            return false;
+        }
+
         return self::isAfter(Carbon::now(), $date);
     }
 
