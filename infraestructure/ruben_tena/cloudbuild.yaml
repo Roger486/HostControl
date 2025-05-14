@@ -1,0 +1,128 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  # 1. Limpiar backend y frontend (más específico)
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Limpiar Directorios
+    args:
+      - 'compute'
+      - 'ssh'
+      - 'web-server'
+      - '--zone'
+      - 'europe-southwest1-b'
+      - '--command'
+      # Borra el directorio del proyecto anterior si existe y el contenido de html
+      - 'sudo rm -rf /var/www/proyecto && sudo rm -rf /var/www/html/*'
+
+  # 2. Clonar el repo
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Clonar RepositorioA
+    args:
+      - 'compute'
+      - 'ssh'
+      - 'web-server'
+      - '--zone'
+      - 'europe-southwest1-b'
+      - '--command'
+      - 'cd /var/www && sudo git clone https://$_GIT_TOKEN@github.com/ruben-tena/proyectofinal-24-25-grupo-13-main.git proyecto'
+    waitFor: ['Limpiar Directorios'] # Espera a que la limpieza termine
+
+  # 3. Permisos iniciales
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Permisos Iniciales
+    args:
+      - 'compute'
+      - 'ssh'
+      - 'web-server'
+      - '--zone'
+      - 'europe-southwest1-b'
+      - '--command'
+      # Asegurar que el usuario/grupo 'rubentena05_gmail_com' existe en la VM
+      - 'sudo chown -R rubentena05_gmail_com:rubentena05_gmail_com /var/www/proyecto && sudo chmod -R 755 /var/www/proyecto'
+    waitFor: ['Clonar Repositorio'] # Espera a que la clonación termine
+
+  # 4. Configuración backend Laravel
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Configurar Backend
+    args:
+      - 'compute'
+      - 'ssh'
+      - 'web-server'
+      - '--zone'
+      - 'europe-southwest1-b'
+      - '--command'
+      - |
+        set -e # Hace que el script falle si algún comando falla
+        cd /var/www/proyecto
+        sudo git config --global --add safe.directory /var/www/proyecto
+        cd backend
+        sudo cp .env.example .env
+        # Considera usar variables de sustitución o Secret Manager para las credenciales
+        sudo sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
+        sudo sed -i "s/DB_HOST=.*/DB_HOST=10.30.208.3/" .env
+        sudo sed -i "s/DB_PORT=.*/DB_PORT=3306/" .env
+        sudo sed -i "s/DB_DATABASE=.*/DB_DATABASE=project_db/" .env
+        sudo sed -i "s/DB_USERNAME=.*/DB_USERNAME=root/" .env
+        sudo sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=root/" .env
+        # Asegúrate que 'rubentena05_gmail_com' existe o usa otro usuario/grupo
+        sudo chown rubentena05_gmail_com:www-data .env
+        sudo chmod 664 .env
+        # Permisos estándar para Laravel
+        sudo chown -R www-data:www-data storage bootstrap/cache
+        sudo chmod -R 775 storage bootstrap/cache
+        # Instalar dependencias con flags recomendados para CI/CD
+        sudo composer install --no-interaction --prefer-dist --optimize-autoloader
+        # Instalar Laravel Sanctum
+        sudo composer require laravel/sanctum --no-interaction --prefer-dist
+        # Generar clave de aplicación con sudo
+        sudo php artisan key:generate
+        # Crear enlace simbólico para el almacenamiento público
+        sudo php artisan storage:link
+    waitFor: ['Permisos Iniciales'] # Espera a los permisos iniciales
+
+  # 5. Instalar y compilar frontend
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Compilar Frontend
+    args:
+      - 'compute'
+      - 'ssh'
+      - 'web-server'
+      - '--zone'
+      - 'europe-southwest1-b'
+      - '--command'
+      - |
+        set -e # Hace que el script falle si algún comando falla
+        cd /var/www/proyecto/frontend
+        # Instalar Bootstrap
+        sudo npm install bootstrap
+        # Instalar dependencias y compilar con sudo
+        sudo npm install
+        sudo ng build --configuration=production
+        # Cambiar propietario de los archivos compilados
+        sudo chown -R www-data:www-data dist/hostcontrol
+    waitFor: ['Configurar Backend'] # Espera a la configuración del backend
+
+  # 6. Copiar frontend compilado a carpeta pública y reiniciar Apache
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Desplegar Frontend y Reiniciar Apache
+    args:
+      - 'compute'
+      - 'ssh'
+      - 'web-server'
+      - '--zone'
+      - 'europe-southwest1-b'
+      - '--command'
+      - |
+        set -e # Hace que el script falle si algún comando falla
+        # Asegurar que el directorio destino existe
+        sudo mkdir -p /var/www/html
+        # Copiar los archivos del build de Angular al DocumentRoot de Apache
+        sudo cp -r /var/www/proyecto/frontend/dist/hostcontrol/browser/* /var/www/html
+        # Asegurar permisos correctos para Apache
+        sudo chown -R www-data:www-data /var/www/html
+        # Reiniciar Apache para aplicar cambios
+        sudo systemctl restart apache2
+    waitFor: ['Compilar Frontend'] # Espera a la compilación del frontend
+
+# Definir la variable de sustitución _GIT_TOKEN al ejecutar el build
