@@ -198,8 +198,7 @@
               <input type="number" class="form-control" [(ngModel)]="nuevoPrecio">
             </div>
             <div class="col-md-4 d-flex align-items-end">
-              <button class="btn btn-outline-primary w-100" (click)="actualizarPrecioInmueble()">Actualizar
-                Precio</button>
+              <button class="btn btn-outline-primary w-100" (click)="actualizarPrecioInmueble()">Actualizar Precio</button>
             </div>
           </div>
 
@@ -231,8 +230,11 @@
     <button class="btn btn-outline-primary" (click)="siguientePagina()" [disabled]="currentPage >= lastPage">Siguiente</button>
   </div>
 
-
     <div *ngIf="!cargando && inmuebles.length === 0">
       No hay inmuebles disponibles.
+    </div>
+    
+    <div class="text-center">
+      <a routerLink="/admin" class="btn btn-outline-success mt-3 w-50">Volver al panel de Administración</a>
     </div>
 </div>
