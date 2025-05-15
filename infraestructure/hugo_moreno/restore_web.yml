@@ -1,0 +1,36 @@
+- name: Restaurar backup del servidor web desde Cloud Storage
+  hosts: web
+  become: false
+  vars:
+    backup_filename: web_backup_{{ ansible_date_time.date }}.tar.gz
+    destino: /home/hugo_moreno_donoro99
+
+  tasks:
+    - name: Descargar backup desde Google Cloud Storage
+      shell: |
+        gsutil cp gs://backups-grupo13/{{ backup_filename }} {{ destino }}/
+      register: descarga
+      failed_when: descarga.rc != 0
+
+    - name: Verificar que el archivo fue descargado correctamente
+      stat:
+        path: "{{ destino }}/{{ backup_filename }}"
+      register: archivo_descargado
+
+    - name: Mostrar error si el archivo no se descargó correctamente
+      debug:
+        msg: "❌ El archivo no fue descargado correctamente desde el bucket"
+      when: not archivo_descargado.stat.exists
+
+    - name: Extraer el contenido del backup
+      unarchive:
+        src: "{{ destino }}/{{ backup_filename }}"
+        dest: "{{ destino }}/"
+        remote_src: yes
+      when: archivo_descargado.stat.exists
+
+    - name: Mostrar mensaje final de éxito
+      debug:
+        msg: "✅ Backup restaurado correctamente en {{ destino }}"
+      when: archivo_descargado.stat.exists
+

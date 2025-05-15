@@ -1,0 +1,18 @@
+#!/bin/bash
+
+
+LOCAL_BACKUP_DIR="/home/hugo_moreno_donoro99/backups"
+BACKUP_FILE="backup_$(date +%F).sql"
+LOCAL_PATH="$LOCAL_BACKUP_DIR/$BACKUP_FILE"
+
+
+
+echo "Copiando backup desde Cloud Storage a directorio local: $LOCAL_PATH"
+gsutil cp "gs://backups-grupo13/$BACKUP_FILE" "$LOCAL_PATH"
+
+
+if [[ -f "$LOCAL_PATH" ]]; then
+    echo "Backup copiado correctamente: $LOCAL_PATH"
+else
+    echo "Error al copiar el backup desde Cloud Storage"
+fi

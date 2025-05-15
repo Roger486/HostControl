@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Nombre del bucket donde se guardan los backups
+BUCKET_NAME="gs://backups-grupo13"
+
+# Nombre de la base de datos
+DATABASE_NAME="project_db"
+
+# Nombre de la instancia de Cloud SQL
+INSTANCE_NAME="cloudsql-db"
+
+# Nombre del archivo de backup con fecha actual
+BACKUP_FILE="backup_$(date +%F).sql"
+
+# Ejecutar el backup
+gcloud sql export sql $INSTANCE_NAME $BUCKET_NAME/$BACKUP_FILE \
+    --database=$DATABASE_NAME \
+    --offload
+
+# Comprobar si el comando fue exitoso
+if [ $? -eq 0 ]; then
+    echo "Backup realizado con éxito: $BUCKET_NAME/$BACKUP_FILE"
+
+    # Verificación: Comprobar que el archivo existe y tiene tamaño > 0
+    gsutil stat $BUCKET_NAME/$BACKUP_FILE > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        SIZE=$(gsutil stat $BUCKET_NAME/$BACKUP_FILE | grep "Content-Length" | awk '{print $2}')
+        if [ "$SIZE" -gt 0 ]; then
+            echo "✅ Verificación correcta: el archivo existe y tiene tamaño $SIZE bytes."
+        else
+            echo "⚠️ Verificación fallida: el archivo está vacío."
+        fi
+    else
+        echo "❌ Verificación fallida: el archivo no se encuentra en el bucket."
+    fi
+
+else
+    echo "❌ Error al realizar el backup"
+fi
+

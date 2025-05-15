@@ -1,0 +1,67 @@
+- name: Backup del servidor web
+  hosts: web
+  become: false
+  tasks:
+    - name: Comprimir contenido de /var/www/html y /var/www/proyecto
+      archive:
+        path:
+          - /var/www/html
+          - /var/www/proyecto
+        dest: /tmp/web_backup_{{ ansible_date_time.date }}.tar.gz
+        format: gz
+
+    - name: Verificar si el archivo de backup fue creado
+      stat:
+        path: /tmp/web_backup_{{ ansible_date_time.date }}.tar.gz
+      register: backup_file
+
+    - name: Mostrar mensaje si el archivo de backup no fue creado
+      debug:
+        msg: "El archivo de backup no fue creado correctamente"
+      when: not backup_file.stat.exists
+
+    - name: Copiar backup al servidor de backups
+      shell: |
+        scp /tmp/web_backup_{{ ansible_date_time.date }}.tar.gz hugo_moreno_donoro99@backups-server:/home/hugo_moreno_donoro99/backups/
+      when: backup_file.stat.exists
+
+    - name: Verificar si el archivo se copió al servidor de backups
+      stat:
+        path: /home/hugo_moreno_donoro99/backups/web_backup_{{ ansible_date_time.date }}.tar.gz
+      delegate_to: backups-server
+      register: backup_on_server
+
+    - name: Mostrar mensaje si el archivo no está en el servidor de backups
+      debug:
+        msg: "El archivo de backup no fue copiado al servidor de backups"
+      when: not backup_on_server.stat.exists
+
+- name: Subir backup a Google Cloud Storage
+  hosts: backups
+  tasks:
+    - name: Subir backup al bucket de Cloud Storage
+      shell: |
+        gsutil cp /home/hugo_moreno_donoro99/backups/web_backup_{{ ansible_date_time.date }}.tar.gz gs://backups-grupo13/
+
+    - name: Verificar si el archivo fue subido correctamente a Google Cloud Storage
+      shell: |
+        gsutil stat gs://backups-grupo13/web_backup_{{ ansible_date_time.date }}.tar.gz
+      register: gcs_check
+      ignore_errors: true
+
+    - name: Mostrar mensaje si el archivo no fue subido correctamente
+      debug:
+        msg: "El archivo de backup no fue subido a Google Cloud Storage"
+      when: gcs_check.failed
+
+- name: Mostrar mensaje final de éxito
+  hosts: web
+  tasks:
+    - name: Mensaje si todo fue exitoso
+      debug:
+        msg: "Backup completo: generado, copiado y subido correctamente."
+      when:
+        - backup_file.stat.exists
+        - backup_on_server.stat.exists
+        - hostvars['backups-server'].gcs_check is defined
+        - not hostvars['backups-server'].gcs_check.failed  
