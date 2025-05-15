@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Variables
+INSTANCE_NAME="cloudsql-db"
+DATABASE_NAME="project_db"
+BACKUP_DIR="/home/hugo_moreno_donoro99/backups"
+TODAY=$(date +%F)
+BACKUP_FILE="backup_${TODAY}.sql"
+BACKUP_PATH="${BACKUP_DIR}/${BACKUP_FILE}"
+
+echo " Buscando backup: $BACKUP_PATH"
+
+# Verificar que el archivo existe
+if [ ! -f "$BACKUP_PATH" ]; then
+    echo " No se encontró el archivo de backup para hoy: $BACKUP_PATH"
+    exit 1
+fi
+
+# Restaurar el backup sin borrar la base de datos
+echo " Restaurando backup en '$DATABASE_NAME' desde $BACKUP_PATH..."
+gcloud sql import sql $INSTANCE_NAME $BACKUP_PATH --database=$DATABASE_NAME
+
+# Verificar resultado
+if [ $? -eq 0 ]; then
+    echo " Restauración completada correctamente."
+else
+    echo " Error durante la restauración."
+fi
