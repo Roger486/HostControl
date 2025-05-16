@@ -19,7 +19,7 @@ class StoreReservationRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Basic validation rules for creating a reservation.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -45,6 +45,12 @@ class StoreReservationRequest extends FormRequest
         ];
     }
 
+    /**
+     * Add custom companion validation after default rule validation.
+     *
+     * @param Validator $validator
+     * @return void
+     */
     public function withValidator(Validator $validator)
     {
         // Validations after rules
@@ -60,6 +66,7 @@ class StoreReservationRequest extends FormRequest
                 return;
             }
 
+            // Custom logic to check consistency between guest and companions
             CompanionValidator::validate($companions, $guestId, $validator);
         });
     }

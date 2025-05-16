@@ -92,7 +92,7 @@ export class AdminInmueblesComponent implements OnInit {
 
   // Método para eliminar un inmueble
   eliminarInmueble(id: number): void {
-    if (confirm('¿Seguro que quieres eliminar este inmueble?')) {
+    if (confirm('¿Seguro que quieres eliminar este inmueble? Esta acción supondrá la eliminacion de las reservas asociadas a este inmueble. Esta acción no se puede deshacer!')) {
       this.inmueblesService.deleteInmueble(id).subscribe({
         next: () => {
           this.inmuebles = this.inmuebles.filter(i => i.id !== id);
@@ -111,14 +111,16 @@ export class AdminInmueblesComponent implements OnInit {
   actualizarPrecioInmueble(): void {
     if (this.idInmuebleActualizar !== null && this.nuevoPrecio !== null) {
       const id = Number(this.idInmuebleActualizar);
-      const nuevoPrecio = Number(this.nuevoPrecio);
+      const PrecioEuros = parseFloat(String(this.nuevoPrecio).replace(',', '.'));
   
-      if (isNaN(id) || isNaN(nuevoPrecio)) {
+      if (isNaN(id) || isNaN(PrecioEuros)) {
         alert('Por favor introduce valores numéricos válidos.');
         return;
       }
+
+      const PrecioCentimos = Math.round(PrecioEuros * 100);
   
-      this.inmueblesService.actualizarPrecio(id, nuevoPrecio).subscribe({
+      this.inmueblesService.actualizarPrecio(id, PrecioCentimos).subscribe({
         next: () => {
           alert('Precio actualizado correctamente.');
           this.obtenerInmuebles(); // Recargar la lista
@@ -131,7 +133,7 @@ export class AdminInmueblesComponent implements OnInit {
         }
       });
     } else {
-      alert('Por favor completa ambos campos.');
+      alert('Por favor completa el campo id y precio.');
     }
   }
   // Método para actualizar la capacidad de un inmueble

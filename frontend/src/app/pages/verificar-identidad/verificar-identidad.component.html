@@ -1,17 +1,28 @@
-<h2>Verificación de identidad</h2>
 
-<form [formGroup]="verificacionForm" (ngSubmit)="onSubmit()">
-  <label>Email:</label>
-  <input type="email" formControlName="email"><br>
+<div class="container my-5" style="max-width: 500px;">
 
-  <label>Contraseña:</label>
-  <input type="password" formControlName="password"><br>
+<h2 class="text-success text-center mb-4">Verificación de identidad</h2>
 
-  <div *ngIf="errorVerificacion" style="color: red; margin-top: 8px;">
+<form [formGroup]="verificacionForm" (ngSubmit)="onSubmit()" class="bg-white p-4 rounded shadow">
+  
+  <div class="mb-3">
+  <label class="form-label">Email:</label>
+  <input type="email" class="form-control" formControlName="email"><br>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Contraseña:</label>
+    <input type="password" class="form-control" formControlName="password"><br>
+  </div>
+
+  <div *ngIf="errorVerificacion" class="form-text text-danger mb-3">
     Email o contraseña incorrectos.
   </div>
 
-  <button type="submit" [disabled]="verificacionForm.invalid">Confirmar</button>
-  <button type="button" (click)="cancelar()">Cancelar</button>
+  <div class="d-flex justify-content-between">
+  <button type="submit" class="btn btn-success" [disabled]="verificacionForm.invalid">Confirmar</button>
+  <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">Cancelar</button>
+  </div>
 </form>
 
+</div>

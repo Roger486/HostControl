@@ -19,6 +19,9 @@ class ReservationLog extends Model
     public const ACTION_CONFIRM = 'confirm';
     public const ACTION_TO_PENDING = 'to_pending';
 
+    /**
+     * Allowed actions for validation or filtering.
+     */
     public const ACTIONS = [
         self::ACTION_CREATE,
         self::ACTION_UPDATE,
@@ -37,13 +40,14 @@ class ReservationLog extends Model
     ];
 
     protected $casts = [
-        'action_type' => 'string' // Ensures the Enum `action_type` is always stored and retrieved as a string
+        // Ensures the Enum `action_type` is always stored and retrieved as a string
+        'action_type' => 'string'
     ];
 
     /**
      * Get the reservation linked to this log entry.
      *
-     * A log entry belongs to a reservation.
+     * @return BelongsTo
      */
     public function reservation(): BelongsTo
     {
@@ -51,9 +55,9 @@ class ReservationLog extends Model
     }
 
     /**
-     * Get the user that performed the action.
+     * Get the user who performed the logged action.
      *
-     * A log entry belongs to a user.
+     * @return BelongsTo
      */
     public function user(): BelongsTo
     {

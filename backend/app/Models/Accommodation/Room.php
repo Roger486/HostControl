@@ -25,15 +25,21 @@ class Room extends Model implements HasDynamicValidation
     ];
 
     /**
-     * Get the main accommodation details for this Room.
+     * Get the base accommodation this room belongs to.
      *
-     * A Room belongs to an accommodation.
+     * @return BelongsTo
      */
     public function accommodation(): BelongsTo
     {
         return $this->belongsTo(Accommodation::class, 'accommodation_id');
     }
 
+    /**
+     * Validation rules for creating or updating a room.
+     *
+     * @param string $operation Either 'store' or 'update'
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     */
     public static function rules(string $operation = 'store'): array
     {
 

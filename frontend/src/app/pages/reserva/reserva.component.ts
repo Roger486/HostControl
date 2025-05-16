@@ -62,6 +62,10 @@ export class ReservaComponent {
       },
       error: (err) => {
         console.error('Error al obtener perfil:', err);
+
+        if (err.status === 401) {
+          alert('Para solicitar una reserva registrate o inicia sesión!')
+        }
       }
     });
   }
@@ -96,9 +100,25 @@ export class ReservaComponent {
         this.paginaActual = res.meta.current_page;
         this.ultimaPagina = res.meta.last_page;
       },
+      // Capturamos errores en la llamada al servicio
       error: (err) => {
-        console.error('Error al obtener alojamientos:', err);
-        alert('Hubo un error al buscar alojamientos.');
+        if (err.status === 422 && err.error?.errors) {
+          const errores = err.error.errors;
+          const mensajes: string[] = [];
+      
+          for (const campo in errores) {
+            if (errores.hasOwnProperty(campo)) {
+              errores[campo].forEach((mensaje: string) => {
+                mensajes.push(mensaje);
+              });
+            }
+          }
+      
+          alert(`Ups, algo salió mal:\n\n${mensajes.join('\n')}`);
+      
+        } else {
+          alert('Ocurrió un error al realizar la reserva.');
+        }
       }
     });
   }
@@ -124,6 +144,13 @@ export class ReservaComponent {
   }
 
   enviarReserva(): void {
+
+    if (!this.usuarioActual) {
+      alert('Debes iniciar sesión para realizar una reserva.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (this.reservaForm.valid && this.usuarioActual) {
       const form = this.reservaForm.value;
   
@@ -160,14 +187,24 @@ export class ReservaComponent {
         },
         error: (err) => {
           console.error('Error al realizar la reserva:', err);
-          if (err.status === 422) {
-            alert('No se ha podido completar la reserva. Revisa los datos introducidos en el formulario.');
+          if (err.status === 422 && err.error?.errors) {
+            const errores = err.error.errors;
+            const mensajes: string[] = [];
+        
+            for (const campo in errores) {
+              if (errores.hasOwnProperty(campo)) {
+                errores[campo].forEach((mensaje: string) => {
+                  mensajes.push(mensaje);
+                });
+              }
+            }
+            alert(`No se pudo completar la reserva:\n\n${mensajes.join('\n')}`);
           } else {
             alert('Ocurrió un error al realizar la reserva.');
           }
         }
       });
-    }
+    } 
 
     }
   }

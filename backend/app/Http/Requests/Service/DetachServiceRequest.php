@@ -15,14 +15,16 @@ class DetachServiceRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Validation rules for detaching a service from a reservation.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
+            // The service ID must exist in the services table
             'service_id' => ['required', 'exists:services,id'],
         ];
     }
+    // TODO: add extra logic to avoid detach services depending on reservation status
 }

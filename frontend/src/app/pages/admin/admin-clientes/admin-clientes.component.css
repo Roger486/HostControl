@@ -1,0 +1,23 @@
+.container {
+    max-width: 700px;
+    margin: auto;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-text.text-danger {
+    font-size: 0.875rem;
+    margin-top: 4px;
+}

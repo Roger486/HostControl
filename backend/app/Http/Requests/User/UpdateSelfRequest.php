@@ -16,7 +16,8 @@ class UpdateSelfRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Validation rules for users updating their own profile.
+     * Only the fields sent will be validated.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */

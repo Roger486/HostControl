@@ -15,9 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->text('description');
-            $table->integer('price');
-            $table->integer('available_slots');
+            $table->integer('price')->default(0);
+            $table->integer('daily_price')->default(0);
+            $table->integer('available_slots')->default(1);
             $table->text('comments')->nullable();
+            $table->timestamp('available_until')->nullable();
+            $table->timestamp('scheduled_at')->nullable();
+            $table->timestamp('ends_at')->nullable();
             $table->timestamps();
         });
     }

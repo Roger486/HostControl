@@ -16,7 +16,9 @@ class UpdateAccommodationRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Validation rules for updating an existing accommodation.
+     *
+     * All fields are optional, but if provided, they must be valid.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -28,7 +30,7 @@ class UpdateAccommodationRequest extends FormRequest
             ],
             'section' => ['sometimes', 'required', 'string', 'max:50'],
             'capacity' => ['sometimes', 'required', 'integer', 'min:1'],
-            'price_per_day' => ['sometimes', 'required', 'integer'], // in € cents
+            'price_per_day' => ['sometimes', 'required', 'integer'], // in cents
             'is_available' => ['sometimes', 'boolean'],
             'comments' => ['sometimes', 'nullable', 'string', 'max:255'],
             'type' => ['prohibited']

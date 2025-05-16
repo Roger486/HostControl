@@ -1,212 +1,240 @@
-<h1>Gestión de Inmuebles</h1>
+<div class="container my-5" style="max-width: 800px;">
+  <h2 class="text-success text-center mb-4">Gestión de Alojamientos</h2>
 
-<button (click)="mostrarFormularioCrear = !mostrarFormularioCrear">
-  {{ mostrarFormularioCrear ? 'Cancelar Creación' : 'Crear Inmueble' }}
-</button>
-
-<br><br>
-
-<!-- Formulario para crear inmueble -->
-<div *ngIf="mostrarFormularioCrear">
-
-  <h2>Crear Nuevo Inmueble</h2>
-
-  <label>Código de alojamiento:</label>
-  <input type="text" [(ngModel)]="nuevoInmueble.accommodation_code">
-
-  <br><br>
-
-  <label>Sección:</label>
-  <input type="text" [(ngModel)]="nuevoInmueble.section">
-
-  <br><br>
-
-  <label>Capacidad:</label>
-  <input type="number" [(ngModel)]="nuevoInmueble.capacity">
-
-  <br><br>
-
-  <label>Precio por día (€):</label>
-  <input type="number" [(ngModel)]="nuevoInmueble.price_per_day">
-
-  <br><br>
-
-  <label>Disponible:</label>
-  <select [(ngModel)]="nuevoInmueble.is_available">
-    <option [ngValue]="true">Sí</option>
-    <option [ngValue]="false">No</option>
-  </select>
-
-  <br><br>
-
-  <label>Comentarios:</label>
-  <input type="text" [(ngModel)]="nuevoInmueble.comments">
-
-  <br><br>
-
-  <label>Tipo de alojamiento:</label>
-  <select [(ngModel)]="nuevoInmueble.type">
-    <option value="">Seleccionar tipo</option>
-    <option value="bungalow">Bungalow</option>
-    <option value="camping_spot">Camping Spot</option>
-    <option value="house">House</option>
-    <option value="room">Room</option>
-  </select>
-
-  <br><br>
-
-  <!-- Campos dinámicos -->
-
-  <div *ngIf="nuevoInmueble.type === 'bungalow' || nuevoInmueble.type === 'house' || nuevoInmueble.type === 'room'">
-    <label>Camas:</label>
-    <input type="number" [(ngModel)]="nuevoInmueble.bed_amount">
-    <br><br>
-    <label>Aire acondicionado:</label>
-    <select [(ngModel)]="nuevoInmueble.has_air_conditioning">
-      <option [ngValue]="true">Sí</option>
-      <option [ngValue]="false">No</option>
-    </select>
-    <br><br>
+  <!------------------------ Creacion inmueble ------------------------>
+  <div class="text-center my-4">
+    <button class="btn btn-outline-primary" (click)="mostrarFormularioCrear = !mostrarFormularioCrear">
+      {{ mostrarFormularioCrear ? 'Cancelar Creación' : 'Crear Inmueble' }}
+    </button>
   </div>
 
-  <div *ngIf="nuevoInmueble.type === 'bungalow'">
-    <label>Cocina:</label>
-    <select [(ngModel)]="nuevoInmueble.has_kitchen">
-      <option [ngValue]="true">Sí</option>
-      <option [ngValue]="false">No</option>
-    </select>
-    <br><br>
-  </div>
+    
 
-  <div *ngIf="nuevoInmueble.type === 'house'">
-    <label>Habitaciones:</label>
-    <input type="number" [(ngModel)]="nuevoInmueble.room_amount">
-    <br><br>
-  </div>
+    <!-- Formulario para crear inmueble -->
+    <div *ngIf="mostrarFormularioCrear" class="bg-white p-4 rounded shadow mb-5" style="max-width: 800px; margin: auto;">
 
-  <div *ngIf="nuevoInmueble.type === 'room'">
-    <label>Baño privado:</label>
-    <select [(ngModel)]="nuevoInmueble.has_private_wc">
-      <option [ngValue]="true">Sí</option>
-      <option [ngValue]="false">No</option>
-    </select>
-    <br><br>
-  </div>
+      <h3 class="text-success mb-4 text-center">Crear Nuevo Inmueble</h3>
 
-  <div *ngIf="nuevoInmueble.type === 'camping_spot'">
-    <label>Área (m²):</label>
-    <input type="number" [(ngModel)]="nuevoInmueble.area_size_m2">
-    <br><br>
-    <label>Electricidad:</label>
-    <select [(ngModel)]="nuevoInmueble.has_electricity">
-      <option [ngValue]="true">Sí</option>
-      <option [ngValue]="false">No</option>
-    </select>
-    <br><br>
-    <label>Acepta caravana:</label>
-    <select [(ngModel)]="nuevoInmueble.accepts_caravan">
-      <option [ngValue]="true">Sí</option>
-      <option [ngValue]="false">No</option>
-    </select>
-    <br><br>
-  </div>
-
-  <button (click)="crearInmueble()">Guardar Inmueble</button>
-
-</div>
-
-
-<!--Busqueda de inmuebles por ID -->
-<!-- Filtro por tipo para busqueda -->
-<div>
-  <label for="tipo">Filtrar por tipo:</label>
-  <select id="tipo" [(ngModel)]="tipoSeleccionado">
-    <option value="">Todos</option>
-    <option value="bungalow">Bungalow</option>
-    <option value="camping_spot">Camping Spot</option>
-    <option value="house">House</option>
-    <option value="room">Room</option>
-  </select>
-  <button (click)="buscarPorTipo()">Buscar</button>
-</div>
-
-<br>
-
-<div *ngIf="cargando">Cargando inmuebles...</div>
-<div *ngIf="error">{{ error }}</div>
-
-<div *ngIf="!cargando && inmuebles.length > 0">
-  <ul>
-    <li *ngFor="let inmueble of inmuebles" style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-      <strong>ID:</strong> {{ inmueble.id }}<br>
-      <strong>Código:</strong> {{ inmueble.accommodation_code }}<br>
-      <strong>Tipo:</strong> {{ inmueble.type }}<br>
-      <strong>Sección:</strong> {{ inmueble.section }}<br>
-      <strong>Capacidad:</strong> {{ inmueble.capacity }} personas<br>
-      <strong>Precio por día:</strong> {{ inmueble.price_per_day }}€<br>
-      <strong>Comentarios:</strong> {{ inmueble.comments || 'Sin comentarios' }}<br>
-
-      <!-- Mostrar campos especiales según el tipo -->
-      <div *ngIf="inmueble.house">
-        <strong>Habitaciones:</strong> {{ inmueble.house.room_amount }}<br>
-        <strong>Camas:</strong> {{ inmueble.house.bed_amount }}<br>
-        <strong>Aire acondicionado:</strong> {{ inmueble.house.has_air_conditioning ? 'Sí' : 'No' }}
+      <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label">Código de alojamiento:</label>
+            <input type="text" class="form-control" [(ngModel)]="nuevoInmueble.accommodation_code">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Sección:</label>
+          <input type="text" class="form-control" [(ngModel)]="nuevoInmueble.section">
+        </div>
       </div>
 
-      <div *ngIf="inmueble.bungalow">
-        <strong>Camas:</strong> {{ inmueble.bungalow.bed_amount }}<br>
-        <strong>Aire acondicionado:</strong> {{ inmueble.bungalow.has_air_conditioning ? 'Sí' : 'No' }}<br>
-        <strong>Cocina:</strong> {{ inmueble.bungalow.has_kitchen ? 'Sí' : 'No' }}
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Capacidad:</label>
+          <input type="number" class="form-control" [(ngModel)]="nuevoInmueble.capacity">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Precio por día (€):</label>
+          <input type="number" class="form-control" [(ngModel)]="nuevoInmueble.price_per_day">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Disponible:</label>
+          <select class="form-select" [(ngModel)]="nuevoInmueble.is_available">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
       </div>
 
-      <div *ngIf="inmueble.camping_spot">
-        <strong>Área (m²):</strong> {{ inmueble.camping_spot.area_size_m2 }}<br>
-        <strong>Electricidad:</strong> {{ inmueble.camping_spot.has_electricity ? 'Sí' : 'No' }}<br>
-        <strong>Acepta caravana:</strong> {{ inmueble.camping_spot.accepts_caravan ? 'Sí' : 'No' }}
+      <div class="mb-3">
+        <label class="form-label">Comentarios:</label>
+        <input type="text" class="form-control" [(ngModel)]="nuevoInmueble.comments">
       </div>
 
-      <div *ngIf="inmueble.room">
-        <strong>Camas:</strong> {{ inmueble.room.bed_amount }}<br>
-        <strong>Aire acondicionado:</strong> {{ inmueble.room.has_air_conditioning ? 'Sí' : 'No' }}<br>
-        <strong>Baño privado:</strong> {{ inmueble.room.has_private_wc ? 'Sí' : 'No' }}
+      <div class="mb-3">
+        <label class="form-label">Tipo de alojamiento:</label>
+        <select class="form-select" [(ngModel)]="nuevoInmueble.type">
+          <option value="">Seleccionar tipo</option>
+          <option value="bungalow">Bungalow</option>
+          <option value="camping_spot">Camping Spot</option>
+          <option value="house">House</option>
+          <option value="room">Room</option>
+        </select>
       </div>
 
-      <!-- Boton eliminar inmueble -->
-      <br>
-      <button (click)="eliminarInmueble(inmueble.id)">Eliminar</button>
-    </li>
-  </ul>
+      <!-- Campos dinámicos -->
 
-  <hr>
+      <div *ngIf="nuevoInmueble.type === 'bungalow' || nuevoInmueble.type === 'house' || nuevoInmueble.type === 'room'" class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Camas:</label>
+          <input type="number" class="form-control" [(ngModel)]="nuevoInmueble.bed_amount">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Aire acondicionado:</label>
+          <select class="form-select" [(ngModel)]="nuevoInmueble.has_air_conditioning">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+      </div>
 
-  <!-- Formulario para actualizar precio y capacidad de inmueble -->
-<h2>Actualizar Precio de Inmueble</h2>
-<div>
-  <label>ID del inmueble:</label>
-  <input type="number" [(ngModel)]="idInmuebleActualizar">
+      <div *ngIf="nuevoInmueble.type === 'bungalow'" class="mb-3">
+        <label class="form-label">Cocina:</label>
+        <select class="form-select" [(ngModel)]="nuevoInmueble.has_kitchen">
+          <option [ngValue]="true">Sí</option>
+          <option [ngValue]="false">No</option>
+        </select>
+      </div>
 
-  <label>Nuevo precio por día (€):</label>
-  <input type="number" [(ngModel)]="nuevoPrecio">
+      <div *ngIf="nuevoInmueble.type === 'house'" class="mb-3">
+        <label class="form-label">Habitaciones:</label>
+        <input type="number" class="form-control" [(ngModel)]="nuevoInmueble.room_amount">
+        
+      </div>
 
-  <button (click)="actualizarPrecioInmueble()">Actualizar Precio</button>
+      <div *ngIf="nuevoInmueble.type === 'room'" class="mb-3">
+        <label class="form-label">Baño privado:</label>
+        <select class="form-select" [(ngModel)]="nuevoInmueble.has_private_wc">
+          <option [ngValue]="true">Sí</option>
+          <option [ngValue]="false">No</option>
+        </select>
+      </div>
 
-  <br><br>
+      <div *ngIf="nuevoInmueble.type === 'camping_spot'">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Área (m²):</label>
+            <input type="number" class="form-control" [(ngModel)]="nuevoInmueble.area_size_m2">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Electricidad:</label>
+            <select class="form-select" [(ngModel)]="nuevoInmueble.has_electricity">
+              <option [ngValue]="true">Sí</option>
+              <option [ngValue]="false">No</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Acepta caravana:</label>
+            <select class="form-select" [(ngModel)]="nuevoInmueble.accepts_caravan">
+              <option [ngValue]="true">Sí</option>
+              <option [ngValue]="false">No</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <button class="btn btn-warning" (click)="crearInmueble()">Guardar Inmueble</button>
+      </div>
+    </div>
 
-  <label>Nueva capacidad (personas):</label>
-  <input type="number" [(ngModel)]="nuevaCapacidad">
 
-  <button (click)="actualizarCapacidadInmueble()">Actualizar Capacidad</button>
-</div>
-
-<hr>
-
-  <div style="margin-top: 20px;">
-    <button (click)="anteriorPagina()" [disabled]="currentPage <= 1">Anterior</button>
-    <span>Página {{ currentPage }} de {{ lastPage }}</span>
-    <button (click)="siguientePagina()" [disabled]="currentPage >= lastPage">Siguiente</button>
+  <!----------------------Busqueda de alojamientos por ID --------------------------->
+  <!-- Filtro por tipo para busqueda -->
+  <div class="bg-white p-4 rounded shadow mb-4">
+    <label for="tipo" class="form-label">Filtrar por tipo:</label>
+    <div class="input-group">
+      <select id="tipo" class="form-select" [(ngModel)]="tipoSeleccionado">
+        <option value="">Todos</option>
+        <option value="bungalow">Bungalow</option>
+        <option value="camping_spot">Camping Spot</option>
+        <option value="house">House</option>
+        <option value="room">Room</option>
+      </select>
+      <button class="btn btn-success" (click)="buscarPorTipo()">Buscar</button>
+    </div>
   </div>
-</div>
 
-<div *ngIf="!cargando && inmuebles.length === 0">
-  No hay inmuebles disponibles.
+  <div *ngIf="cargando">Cargando inmuebles...</div>
+  <div *ngIf="error">{{ error }}</div>
+
+  <!-- Listado de alojamientos -->
+  <div *ngIf="!cargando && inmuebles.length > 0">
+
+    <div *ngFor="let inmueble of inmuebles" class="card shadow-sm mb-4">
+      <div class="card-body">
+        <strong>ID:</strong> {{ inmueble.id }}<br>
+        <strong>Código:</strong> {{ inmueble.accommodation_code }}<br>
+        <strong>Tipo:</strong> {{ inmueble.type }}<br>
+        <strong>Sección:</strong> {{ inmueble.section }}<br>
+        <strong>Capacidad:</strong> {{ inmueble.capacity }} personas<br>
+        <strong>Precio por día:</strong> {{ inmueble.price_per_day / 100 | number: '1.2-2' }}€<br>
+        <strong>Comentarios:</strong> {{ inmueble.comments || 'Sin comentarios' }}<br>
+
+        <!-- Mostrar campos especiales según el tipo -->
+        <div *ngIf="inmueble.house">
+          <strong>Habitaciones:</strong> {{ inmueble.house.room_amount }}<br>
+          <strong>Camas:</strong> {{ inmueble.house.bed_amount }}<br>
+          <strong>Aire acondicionado:</strong> {{ inmueble.house.has_air_conditioning ? 'Sí' : 'No' }}
+        </div>
+
+        <div *ngIf="inmueble.bungalow">
+          <strong>Camas:</strong> {{ inmueble.bungalow.bed_amount }}<br>
+          <strong>Aire acondicionado:</strong> {{ inmueble.bungalow.has_air_conditioning ? 'Sí' : 'No' }}<br>
+          <strong>Cocina:</strong> {{ inmueble.bungalow.has_kitchen ? 'Sí' : 'No' }}
+        </div>
+
+        <div *ngIf="inmueble.camping_spot">
+          <strong>Área (m²):</strong> {{ inmueble.camping_spot.area_size_m2 }}<br>
+          <strong>Electricidad:</strong> {{ inmueble.camping_spot.has_electricity ? 'Sí' : 'No' }}<br>
+          <strong>Acepta caravana:</strong> {{ inmueble.camping_spot.accepts_caravan ? 'Sí' : 'No' }}
+        </div>
+
+        <div *ngIf="inmueble.room">
+          <strong>Camas:</strong> {{ inmueble.room.bed_amount }}<br>
+          <strong>Aire acondicionado:</strong> {{ inmueble.room.has_air_conditioning ? 'Sí' : 'No' }}<br>
+          <strong>Baño privado:</strong> {{ inmueble.room.has_private_wc ? 'Sí' : 'No' }}
+        </div>
+
+        <!-- Formulario para actualizar precio y capacidad de inmueble -->
+        <div class="mt-4 border-top pt-3">
+
+          <div class="col-md-2">
+            <label class="form-label">ID del inmueble:</label>
+            <input type="number" class="form-control" [(ngModel)]="idInmuebleActualizar">
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Nuevo precio por día (€):</label>
+              <input type="number" class="form-control" [(ngModel)]="nuevoPrecio">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <button class="btn btn-outline-primary w-100" (click)="actualizarPrecioInmueble()">Actualizar Precio</button>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Nueva capacidad (personas):</label>
+              <input type="number" class="form-control" [(ngModel)]="nuevaCapacidad">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <button class="btn btn-outline-primary w-100" (click)="actualizarCapacidadInmueble()">Actualizar
+                Capacidad</button>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Boton eliminar inmueble -->
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-outline-danger btn-sm" (click)="eliminarInmueble(inmueble.id)">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+    <button class="btn btn-outline-primary" (click)="anteriorPagina()" [disabled]="currentPage <= 1">Anterior</button>
+    <span class="fw-bold">Página {{ currentPage }} de {{ lastPage }}</span>
+    <button class="btn btn-outline-primary" (click)="siguientePagina()" [disabled]="currentPage >= lastPage">Siguiente</button>
+  </div>
+
+    <div *ngIf="!cargando && inmuebles.length === 0">
+      No hay inmuebles disponibles.
+    </div>
+    
+    <div class="text-center">
+      <a routerLink="/admin" class="btn btn-outline-success mt-3 w-50">Volver al panel de Administración</a>
+    </div>
 </div>

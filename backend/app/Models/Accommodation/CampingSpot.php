@@ -24,16 +24,23 @@ class CampingSpot extends Model implements HasDynamicValidation
         'accepts_caravan' => 'boolean'
     ];
 
+
     /**
-     * Get the main accommodation details for this Camping Spot.
+     * Get the associated base accommodation.
      *
-     * A Camping Spot belongs to an accommodation.
+     * @return BelongsTo
      */
     public function accommodation(): BelongsTo
     {
         return $this->belongsTo(Accommodation::class, 'accommodation_id');
     }
 
+    /**
+     * Validation rules for creating or updating a camping spot.
+     *
+     * @param string $operation The validation context: 'store' or 'update'
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     */
     public static function rules(string $operation = 'store'): array
     {
 

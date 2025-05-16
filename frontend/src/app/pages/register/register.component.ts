@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -8,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -73,10 +74,22 @@ export class RegisterComponent {
         error: (err) => {
           console.error('Error al registrar usuario:', err);
 
-          if (err.status === 422) {
-            alert('No se pudo completar el registro. Revisa que todos los datos sean correctos.');
+          if (err.status === 422 && err.error?.errors) {
+            const errores = err.error.errors;
+            const mensajes: string[] = [];
+        
+            for (const campo in errores) {
+              if (errores.hasOwnProperty(campo)) {
+                errores[campo].forEach((mensaje: string) => {
+                  mensajes.push(mensaje);
+                });
+              }
+            }
+        
+            alert(`Ups, algo salió mal:\n\n${mensajes.join('\n')}`);
+        
           } else {
-            alert('Ha ocurrido un error inesperado. Intenta de nuevo más tarde.');
+            alert('Ocurrió un error al realizar el registro.');
           }
         }
       });

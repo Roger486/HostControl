@@ -1,12 +1,17 @@
 
-<h2>Panel de Administración</h2>
+<div class="container my-5 text-center" style="max-width: 600px;">
+  <h2 class="text-success mb-4">Panel de Administración</h2>
 
-<div class="admin-buttons">
-  <button (click)="irAClientes()">Clientes</button>
-  <button (click)="irAReservas()">Reservas</button>
-  <button (click)="irAInmuebles()">Inmuebles</button>
+  <div class="d-grid gap-3 mb-5">
+    <button class="btn btn-outline-primary" (click)="irAClientes()">Clientes</button>
+    <button class="btn btn-outline-primary" (click)="irAReservas()">Reservas</button>
+    <button class="btn btn-outline-primary" (click)="irAInmuebles()">Inmuebles</button>
+  </div>
+
+  <hr>
+
+  <div class="text-center mt-4">
+    <button class="btn btn-outline-success"(click)="volverInicio()">Volver al inicio</button>
+  </div>
+
 </div>
-
-<hr />
-
-<button (click)="volverInicio()">Volver al inicio</button>

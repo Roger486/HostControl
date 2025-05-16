@@ -179,11 +179,11 @@ return [
             '*' => [
                 'document_number' => [
                     'required_for_adults' =>
-                        'Document type and number are required for adults.',
+                    'Document type and number are required for adults.',
                     'not_repeated' =>
-                        'Each companion must have a unique document number and not be the same as de guest',
+                    'Each companion must have a unique document number and not be the same as de guest',
                     'both_or_none_for_minors' =>
-                        'For minors, document type and number must be both present or both omitted.',
+                    'For minors, document type and number must be both present or both omitted.',
                 ],
             ],
         ],
@@ -192,10 +192,18 @@ return [
             'no_results' => 'No results for this search.',
         ],
         'reservation' => [
-            'not_free_by_date' => 'This accommodation is already booked between the specified dates'
+            'not_free_by_date' => 'This accommodation is already booked between the specified dates',
+            'status_doesnt_allow_service_attachment' => 'You cannot add services to this reservation at its current status: :status.'
         ],
         'service' => [
-            'not_enough_slots' => 'Not enough slot available for this service. Only :available left.'
+            'not_enough_slots' => 'Not enough slot available for this service. Only :available left.',
+            'invalid_request_data' => 'Missing or invalid request data. Please try again.',
+            'available_until_after_scheduled_at' => 'The availability end date must be before or equal to the scheduled start date.',
+            'ends_before_scheduled_at' => 'The end date must be after the scheduled start date.',
+            'available_until_after_ends_at' => 'The availability end date must be before or equal to the service end date.',
+            'unavailable_due_to_available_until' => 'This service is no longer available for reservation.',
+            'unavailable_due_to_scheduled_at' => 'This service has already started and cannot be reserved.',
+            'unavailable_due_to_ended' => 'This service has already ended.'
         ]
     ],
 
@@ -210,6 +218,58 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        // Multiple models
+        'comments' => 'comments',
+        // Accommodation
+        'min_capacity' => 'minimum capacity',
+        'max_capacity' => 'maximum capacity',
+        'check_in_date' => 'check-in date',
+        'check_out_date' => 'check-out date',
+        'accommodation_code' => 'accommodation code',
+        'section' => 'section',
+        'capacity' => 'capacity',
+        'price_per_day' => 'price per day',
+        'is_available' => 'availability',
+        'type' => 'type',
+        // Reservation
+        'booked_by_id' => 'booking user',
+        'guest_id' => 'guest',
+        'accommodation_id' => 'accommodation',
+        'status' => 'status',
+        // companion specific fields on Reservation
+        'companions' => 'companions',
+        'companions.*.document_type' => 'companion document type',
+        'companions.*.first_name' => 'companion first name',
+        'companions.*.last_name_1' => 'companion last name',
+        'companions.*.last_name_2' => 'companion second last name',
+        'companions.*.birthdate' => 'companion birthdate',
+        // Reservation logs
+        'log_detail' => 'log detail',
+        // Service
+        'service_id' => 'service',
+        'name' => 'name',
+        'description' => 'description',
+        'price' => 'price',
+        'daily_price' => 'daily price',
+        'available_slots' => 'available slots',
+        'available_until' => 'available until',
+        'scheduled_at' => 'start date',
+        'ends_at' => 'end date',
+        // Service-Reservation attachment
+        'amount' => 'quantity',
+        // User
+        'first_name' => 'first name',
+        'last_name_1' => 'last name',
+        'last_name_2' => 'second last name',
+        'email' => 'email address',
+        'password' => 'password',
+        'birthdate' => 'birthdate',
+        'address' => 'address',
+        'document_type' => 'document type',
+        'document_number' => 'document number',
+        'phone' => 'phone number',
+        'role' => 'role',
+    ],
 
 ];

@@ -1,79 +1,142 @@
-<h2>Gestión de clientes</h2>
 
-<!-- Formulario de búsqueda -->
-<form [formGroup]="busquedaForm" (ngSubmit)="buscarCliente()">
 
-  <label for="email">Email:</label>
-  <input id="email" type="email" formControlName="email" />
-  <div *ngIf="busquedaForm.get('email')?.invalid && busquedaForm.get('email')?.touched" style="color: red;">
-    Email obligatorio y con formato válido.
-  </div>
+<div class="container my-5" style="max-width: 700px;">
 
-  <label for="document">Número de documento:</label>
-  <input id="document" type="text" formControlName="document_number" />
-  <div *ngIf="busquedaForm.get('document_number')?.invalid && busquedaForm.get('document_number')?.touched" style="color: red;">
-    Número de documento obligatorio.
-  </div>
+  <h2 class="text-success text-center mb-4">Gestión de clientes</h2>
 
-  <button type="submit">Buscar</button>
-</form>
+  <!-- Formulario de búsqueda -->
+  <form [formGroup]="busquedaForm" (ngSubmit)="buscarCliente()" class="bg-white p-4 rounded shadow mb-4">
 
-<hr />
-
-<!-- Resultado encontrado -->
-<div *ngIf="cliente">
-  <h3>Datos del cliente</h3>
-  <p><strong>Nombre:</strong> {{ cliente.first_name }}</p>
-  <p><strong>Primer apellido:</strong> {{ cliente.last_name_1 }}</p>
-  <p><strong>Segundo apellido:</strong> {{ cliente.last_name_2 }}</p>
-  <p><strong>Email:</strong> {{ cliente.email }}</p>
-  <p><strong>Fecha de nacimiento:</strong> {{ cliente.birthdate }}</p>
-  <p><strong>Dirección:</strong> {{ cliente.address }}</p>
-  <p><strong>Tipo de documento:</strong> {{ cliente.document_type }}</p>
-  <p><strong>Número de documento:</strong> {{ cliente.document_number }}</p>
-  <p><strong>Teléfono:</strong> {{ cliente.phone }}</p>
-  <p><strong>Rol:</strong> {{ cliente.role }}</p>
-</div>
-
-<!-- Mensaje si no hay resultados -->
-<div *ngIf="cliente === null && busquedaRealizada">
-  <p style="color: red;">No se han encontrado coincidencias.</p>
-</div>
-
-<div *ngIf="mostrarEdicion">
-  <h3>Modificar datos del cliente</h3>
-
-  <form [formGroup]="edicionForm">
-    <label>Nombre:</label>
-    <input type="text" formControlName="first_name" />
-
-    <label>Primer apellido:</label>
-    <input type="text" formControlName="last_name_1" />
-
-    <label>Segundo apellido:</label>
-    <input type="text" formControlName="last_name_2" />
-
-    <label>Fecha de nacimiento:</label>
-    <input type="date" formControlName="birthdate" />
-
-    <label>Dirección:</label>
-    <input type="text" formControlName="address" />
-
-    <label>Teléfono:</label>
-    <input type="text" formControlName="phone" />
-    <label>Nueva contraseña:</label>
-    <input type="password" formControlName="password1" />
-
-    <label>Repetir contraseña:</label>
-    <input type="password" formControlName="password2" />
-
-    <div *ngIf="edicionForm.errors?.['passwordMismatch'] && edicionForm.dirty" style="color:red;">
-      Las contraseñas no coinciden.
+    <div class="mb-3">
+      <label for="email" class="form-label">Email:</label>
+      <input id="email" type="email" class="form-control" formControlName="email" />
+      <div *ngIf="busquedaForm.get('email')?.invalid && busquedaForm.get('email')?.touched" class="form-text text-danger">
+        Email obligatorio y con formato válido.
+      </div>
     </div>
-    <br><br>
-    <button type="button" (click)="confirmarCambios()">Guardar cambios</button>
-    <button type="button" (click)="cancelarEdicion()">Cancelar</button>
-    <h3>Dar de baja al cliente</h3>
-    <button type="button" (click)="confirmarEliminacion()">Dar de baja al cliente</button>
+
+    <div class="mb-3">
+      <label for="document" class="form-label">Número de documento:</label>
+      <input id="document" type="text" class="form-control" formControlName="document_number" />
+      <div *ngIf="busquedaForm.get('document_number')?.invalid && busquedaForm.get('document_number')?.touched" class="form-text text-danger">
+        Número de documento obligatorio.
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success w-100" [disabled]="busquedaForm.invalid">Buscar</button>
   </form>
+
+  <hr />
+
+  <!-- Resultado encontrado -->
+  <div *ngIf="cliente" class="bg-white p-4 rounded shadow mb-4">
+    <h3 class="text-primary mb-3">Datos del cliente</h3>
+    <p><strong>Nombre:</strong> {{ cliente.first_name }}</p>
+    <p><strong>Primer apellido:</strong> {{ cliente.last_name_1 }}</p>
+    <p><strong>Segundo apellido:</strong> {{ cliente.last_name_2 }}</p>
+    <p><strong>Email:</strong> {{ cliente.email }}</p>
+    <p><strong>Fecha de nacimiento:</strong> {{ cliente.birthdate | date: 'dd/MM/yyyy'}}</p>
+    <p><strong>Dirección:</strong> {{ cliente.address }}</p>
+    <p><strong>Tipo de documento:</strong> {{ cliente.document_type }}</p>
+    <p><strong>Número de documento:</strong> {{ cliente.document_number }}</p>
+    <p><strong>Teléfono:</strong> {{ cliente.phone }}</p>
+    <p><strong>Rol:</strong> {{ cliente.role }}</p>
+  </div>
+
+  <!-- Mensaje si no hay resultados -->
+  <div *ngIf="cliente === null && busquedaRealizada" class="text-center text-danger">
+    <p>No se han encontrado coincidencias.</p>
+  </div>
+
+  <!-- Edicion de cliente -->
+  <div *ngIf="mostrarEdicion" class="bg-white p-4 rounded shadow mb-4">
+    <h3 class="text-primary mb-3">Modificar datos del cliente</h3>
+
+    <form [formGroup]="edicionForm">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Nombre:</label>
+          <input type="text" class="form-control" formControlName="first_name" />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Primer apellido:</label>
+          <input type="text" class="form-control" formControlName="last_name_1" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Segundo apellido:</label>
+        <input type="text" class="form-control" formControlName="last_name_2" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Fecha de nacimiento:</label>
+        <input type="date" class="form-control" formControlName="birthdate" />
+      </div>
+      
+
+      <div class="mb-3">
+        <label class="form-label">Dirección:</label>
+        <input type="text" class="form-control" formControlName="address" />
+      </div>
+      
+
+      <div class="mb-3">
+        <label class="form-label">Teléfono:</label>
+        <input type="text" class="form-control" formControlName="phone" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Correo electrónico:</label>
+        <input type="email" class="form-control" formControlName="email" />
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Tipo de documento:</label>
+          <select class="form-select" formControlName="document_type">
+            <option value="DNI">DNI</option>
+            <option value="NIE">NIE</option>
+            <option value="Passport">Pasaporte</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Número de documento:</label>
+          <input type="text" class="form-control" formControlName="document_number" />
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="mb-3">
+          <label class="form-label">Nueva contraseña:</label>
+          <input type="password" class="form-control" formControlName="password1" />
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Repetir contraseña:</label>
+          <input type="password" class="form-control" formControlName="password2" />
+        </div>
+      </div>
+
+      
+
+      <div *ngIf="edicionForm.errors?.['passwordMismatch'] && edicionForm.dirty" class="form-text text-danger mb-3">
+        Las contraseñas no coinciden.
+      </div>
+      <br><br>
+
+      <div class="d-flex justify-content-between mt-3">
+      <button type="button" class="btn btn-success" (click)="confirmarCambios()">Guardar cambios</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="cancelarEdicion()">Cancelar</button>
+      </div>
+
+      <hr class="my-4">
+
+      <h4 class="text-danger">Dar de baja al cliente</h4>
+      <button type="button" class="btn btn-outline-danger" (click)="confirmarEliminacion()">Eliminar</button>
+    </form>
+  </div>
+  <div class="text-center">
+    <a routerLink="/admin" class="btn btn-outline-success mt-3 w-50">Volver al panel de Administración</a>
+  </div>
+  
 </div>

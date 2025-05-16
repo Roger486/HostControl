@@ -16,11 +16,12 @@ return [
     */
 
     'log_messages' => [
-        'created' => 'Reservation created.',
-        'updated' => 'Reservation updated.',
-        'cancelled' => 'Reservation cancelled.',
-        'checked_in' => 'Checked in to reservation.',
-        'checked_out' => 'Checked out from reservation.',
+        'create' => 'Reservation created.',
+        'update' => 'Reservation updated.',
+        'cancel' => 'Reservation cancelled.',
+        'check_in' => 'Checked in to reservation.',
+        'confirm' => 'Checked out from reservation.',
+        'to_pending' => 'Reservation status set up to pending.',
         'default' => 'Action performed: :action',
     ]
 ];

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Service;
 
 use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\DB;
+use App\Validation\ServiceValidator;
 
 class AttachServiceRequest extends FormRequest
 {
@@ -17,7 +17,7 @@ class AttachServiceRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Basic validation rules for attaching a service to a reservation.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -29,35 +29,44 @@ class AttachServiceRequest extends FormRequest
         ];
     }
 
+    /**
+     * Add custom logic after basic validation is done.
+     * This checks:
+     * - if the reservation allows adding services
+     * - if the service is attachable (e.g. stock, limits, etc.)
+     *
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return void
+     */
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
+            // get relevant data
             $serviceId = $this->input('service_id');
-            $amount = $this->input('amount');
+            $amount = (int) $this->input('amount');
+            $reservation = $this->route('reservation');
 
-            // if serviceId or amount validation already failed on the rules, then exit
-            if (!$serviceId || !$amount) {
-                return;
-            }
-
-            // Already checked on the rules, extra safety
-            $service = Service::find($serviceId);
-            if (!$service) {
-                return;
-            }
-
-             // Calculates total service slots consumed by existing reservations at the moment
-            $totalReserved = DB::table('reservation_service')
-                ->where('service_id', $service->id)
-                ->sum('amount');
-
-            $available = $service->available_slots - $totalReserved;
-
-            if ($amount > $available) {
+            // Exit early if critical inputs are missing
+            if (!$serviceId || !$amount || !$reservation) {
                 $validator->errors()->add(
-                    'amount',
-                    __('validation.custom.service.not_enough_slots', ['available' => $available])
+                    'general',
+                    __('validation.custom.service.invalid_request_data')
                 );
+                return;
+            }
+
+            // Check if the reservation is in an status that allows service attachment
+            if (! $reservation->canAddServices()) {
+                $validator->errors()->add(
+                    'reservation',
+                    __('validation.custom.reservation.status_doesnt_allow_service_attachment', ['status' => $reservation->status])
+                );
+            }
+
+            // Run custom validation rules for service attachability
+            $service = Service::find($serviceId);
+            if ($service) {
+                ServiceValidator::validateServiceAttachability($service, $amount, $validator);
             }
         });
     }

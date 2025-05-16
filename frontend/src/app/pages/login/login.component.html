@@ -1,29 +1,41 @@
-<section>
-  <h2>Iniciar sesión</h2>
+<div class="container my-5" style="max-width: 500px;">
+  <h2 class="text-success text-center mb-4">Iniciar sesión</h2>
 
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <label>Email:</label>
-    <input type="email" formControlName="email">
-    <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" style="color:red;">
-      Email inválido
+
+    <!-- Campo de entrada para el email -->
+    <div class="mb-3">
+      <label for="email" class="form-label">Email:</label>
+      <input type="email" id="email" class="form-control" formControlName="email">
+      <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="form-text text-danger">
+        Email inválido
+      </div>
     </div>
 
-    <label>Contraseña:</label>
-    <input type="password" formControlName="password">
-    <!-- 
-    Esta línea muestra un mensaje de error solo si:
-    - El campo 'password' es inválido (por ejemplo, está vacío)
-    - Y el usuario ya ha interactuado con él (touched = lo tocó y salió del campo)
-    -->
-    <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" style="color:red;">
-      La contraseña es obligatoria
+    <!-- Campo de entrada para la contraseña -->
+    <div class="mb-3">
+      <label for="password" class="form-label">Contraseña:</label>
+      <input type="password" id="password" class="form-control" formControlName="password">
+      <!-- 
+      Esta línea muestra un mensaje de error solo si:
+      - El campo 'password' es inválido (por ejemplo, está vacío)
+      - Y el usuario ya ha interactuado con él (touched = lo tocó y salió del campo)
+      -->
+      <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" style="color:red;">
+        La contraseña es obligatoria
+      </div>
     </div>
 
     <!-- Mensaje de error cuando el backend devuelve fallo -->
-    <div *ngIf="loginError" style="color:red; margin-top: 10px;">
+    <div *ngIf="loginError" class="alert alert-danger">
       Credenciales incorrectas. Inténtalo de nuevo.
     </div>
 
-    <button type="submit">Entrar</button>
+    <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="loginForm.invalid">Entrar</button>
+    <p>¿Aún no tienes cuenta? Creala <a routerLink="/register">aquí!</a></p>
   </form>
-</section>
+
+<div class="text-center mt-4">
+  <a routerLink="/" class="btn btn-outline-success">Volver a inicio</a>
+</div>
+</div>

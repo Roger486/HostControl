@@ -13,7 +13,9 @@ use Illuminate\Validation\ValidationException;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get a paginated list of all users (admin only).
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -22,9 +24,18 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
+    /**
+     * Search for a user by email or document number.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws ValidationException if no results found.
+     */
     public function search(Request $request)
     {
         $this->authorize('viewAny', User::class);
+        // TODO: use a form request
         $request->validate([
             'email' => ['email', 'max:255', 'required_without:document_number'],
             'document_number' => ['string', 'max:20', 'required_without:email']
@@ -59,7 +70,10 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new user.
+     *
+     * @param StoreUserRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreUserRequest $request)
     {
@@ -72,14 +86,25 @@ class UserController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * Show details of a specific user.
+     *
+     * @param User $user
+     * @return UserResource
+     */
     public function show(User $user)
     {
         $this->authorize('view', $user);
         return new UserResource($user);
     }
 
+
     /**
-     * Update the specified resource in storage.
+     * Update a user's data (admin).
+     *
+     * @param UpdateUserRequest $request
+     * @param User $user
+     * @return UserResource
      */
     public function update(UpdateUserRequest $request, User $user)
     {
@@ -89,7 +114,10 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a user.
+     *
+     * @param User $user
+     * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)
     {
@@ -99,12 +127,24 @@ class UserController extends Controller
         // same as using response()->json([], 204);
     }
 
+    /**
+     * Get the authenticated user's profile.
+     *
+     * @param Request $request
+     * @return UserResource
+     */
     public function me(Request $request)
     {
         $user = $request->user();
         return new UserResource($user);
     }
 
+    /**
+     * Update the authenticated user's own data.
+     *
+     * @param UpdateSelfRequest $request
+     * @return UserResource
+     */
     public function updateSelf(UpdateSelfRequest $request)
     {
         $user = $request->user();

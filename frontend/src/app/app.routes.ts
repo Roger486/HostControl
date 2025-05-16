@@ -17,6 +17,11 @@ import { AdminReservasComponent } from './pages/admin/admin-reservas/admin-reser
 import { AdminInmueblesComponent } from './pages/admin/admin-inmuebles/admin-inmuebles.component';
 import { PoliticaCookiesComponent } from './pages/politica-cookies/politica-cookies.component';
 import { SobreNosotrosComponent } from './pages/sobre-nosotros/sobre-nosotros.component';
+import { authGuard } from './guards/auth.guard'; // Importar el guardia de autenticación
+import { userGuard } from './guards/user.guard'; // Importar el guardia de usuario
+import { ExternosComponent } from './pages/externos/externos.component';
+
+
 export const routes: Routes = [
     {
         path: '',
@@ -26,19 +31,20 @@ export const routes: Routes = [
             { path: 'login', component: LoginComponent }, // Ruta a login
             { path: 'register', component: RegisterComponent }, // Ruta a register
             { path: 'reserva', component: ReservaComponent }, // Ruta a reserva
-            { path: 'confirmacion', component: ConfirmacionReservaComponent }, // Ruta a confirmacion-reserva
-            { path: 'reserva-confirmada', component: ReservaConfirmadaComponent }, // Ruta a reserva-confirmada  
+            { path: 'confirmacion', component: ConfirmacionReservaComponent, canActivate: [userGuard] }, // Ruta a confirmacion-reserva
+            { path: 'reserva-confirmada', component: ReservaConfirmadaComponent, canActivate: [userGuard] }, // Ruta a reserva-confirmada  
             { path: 'registro-confirmado', component: RegistroConfirmadoComponent}, // Ruta a registro-confirmado
-            { path: 'perfil', component: PerfilComponent }, // Ruta a perfil de cliente
-            { path: 'perfil/editar', component: ModificarPerfilComponent }, // Ruta a modificar perfil de cliente
-            { path: 'verificar', component: VerificarIdentidadComponent }, // Ruta a verificar identidad
-            { path: 'perfil/modificado', component: PerfilModificadoComponent }, // Ruta a perfil modificado
-            { path: 'admin', component: AdminComponent }, // Ruta a panel administrador
-            { path: 'admin/clientes', component: AdminClientesComponent }, // Ruta a gestion de clientes
-            { path: 'admin/reservas', component: AdminReservasComponent }, // Ruta a gestion de reservas
-            { path: 'admin/inmuebles', component: AdminInmueblesComponent }, // Ruta a gestion de inmuebles
+            { path: 'perfil', component: PerfilComponent, canActivate: [userGuard] }, // Ruta a perfil de cliente
+            { path: 'perfil/editar', component: ModificarPerfilComponent, canActivate: [userGuard] }, // Ruta a modificar perfil de cliente
+            { path: 'verificar', component: VerificarIdentidadComponent, canActivate: [userGuard] }, // Ruta a verificar identidad
+            { path: 'perfil/modificado', component: PerfilModificadoComponent, canActivate: [userGuard] }, // Ruta a perfil modificado
+            { path: 'admin', component: AdminComponent, canActivate: [authGuard] }, // Ruta a panel administrador
+            { path: 'admin/clientes', component: AdminClientesComponent, canActivate: [authGuard] }, // Ruta a gestion de clientes
+            { path: 'admin/reservas', component: AdminReservasComponent, canActivate: [authGuard] }, // Ruta a gestion de reservas
+            { path: 'admin/inmuebles', component: AdminInmueblesComponent, canActivate: [authGuard] }, // Ruta a gestion de inmuebles
             { path: 'politica-cookies', component: PoliticaCookiesComponent }, // Ruta a politica de cookies
-            { path: 'sobre-nosotros', component: SobreNosotrosComponent } // Ruta a sobre nosotros
+            { path: 'sobre-nosotros', component: SobreNosotrosComponent }, // Ruta a sobre nosotros
+            { path: 'externos', component: ExternosComponent } // Ruta a externos
         ]
         },
         {

@@ -10,6 +10,7 @@ use App\Models\Accommodation\Accommodation;
 use App\Models\Reservation;
 use App\Models\ReservationLog;
 use App\Models\User;
+use App\Notifications\ReservationConfirmed;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 class ReservationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get a paginated list of all reservations (admin only).
      */
     public function index()
     {
@@ -31,7 +32,7 @@ class ReservationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new reservation and check availability.
      */
     public function store(StoreReservationRequest $request)
     {
@@ -51,6 +52,7 @@ class ReservationController extends Controller
             ]);
         }
 
+        // Save reservation and companions inside a transaction
         $reservation = DB::transaction(function () use ($validated) {
 
             $reservation = Reservation::create(Arr::except($validated, ['companions']));
@@ -64,6 +66,7 @@ class ReservationController extends Controller
             return $reservation;
         });
 
+        // Log creation
         // Trigger event to register a new ReservationLog after creating a new Reservation
         event(new ReservationActionPerformed(
             $reservation,
@@ -76,7 +79,7 @@ class ReservationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show details of a reservation (with related info).
      */
     public function show(Reservation $reservation)
     {
@@ -86,11 +89,11 @@ class ReservationController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a reservation. Handles status changes and companion sync.
      */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
-
+        // TODO: Look for possible refactors on this update function
         $this->authorize('update', $reservation); // use a policy, only for admins
         // "check /app/Http/Policies" for more info
 
@@ -131,6 +134,7 @@ class ReservationController extends Controller
         // Determine the specific log action based on status change
         $logAction = ReservationLog::ACTION_UPDATE;
 
+        // Decide log type based on status change
         $statusToActionMap = [
             Reservation::STATUS_CANCELLED => ReservationLog::ACTION_CANCEL,
             Reservation::STATUS_CHECKED_IN => ReservationLog::ACTION_CHECK_IN,
@@ -141,6 +145,9 @@ class ReservationController extends Controller
 
         if (isset($validated['status']) && $validated['status'] !== $previousStatus) {
             $logAction = $statusToActionMap[$validated['status']] ?? ReservationLog::ACTION_UPDATE;
+            if ($logAction === ReservationLog::ACTION_CONFIRM) {
+                $reservation->guest->notify(new ReservationConfirmed($reservation));
+            }
         }
 
         // Trigger event to register the ReservationLog based on action
@@ -155,7 +162,7 @@ class ReservationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Permanently delete a reservation from the database.
      */
     public function destroy(Reservation $reservation)
     {
@@ -166,10 +173,7 @@ class ReservationController extends Controller
     }
 
     /**
-     * Retrieve all reservations for the authenticated user.
-     *
-     * @param \Illuminate\Http\Request $request The current HTTP request instance, used to get the authenticated user.
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection A collection of the user's reservations.
+     * Get reservations made by the authenticated user.
      */
     public function ownReservations(Request $request)
     {
@@ -179,16 +183,9 @@ class ReservationController extends Controller
         return ReservationResource::collection($reservations);
     }
 
+
     /**
-     * Retrieve all reservations for a specific guest user, only accessible by authorized users.
-     *
-     * @param \App\Models\User $user
-     * The user (guest) whose reservations are being retrieved.
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     * A collection of the specified user's reservations.
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     * If the current user is not authorized to view others' reservations.
+     * Get reservations for a specific user (admin only).
      */
     public function getByGuest(User $user)
     {

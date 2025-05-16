@@ -14,7 +14,9 @@ class DocumentValidator
     // TODO: include oficial document validation in the future
 
     /**
-     * Validates the document number based on the given type (DNI, NIE, Passport).
+     * Validates the document number based on the given type.
+     *
+     * Uses regex rules defined in RegexRules for each supported type.
      *
      * @param string $type The document type (e.g., 'DNI', 'NIE', 'Passport').
      * @param string $document The document number to validate.

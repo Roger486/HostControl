@@ -1,0 +1,44 @@
+.container {
+    max-width: 900px;
+}
+
+/* Sección de datos del usuario */
+.bg-white {
+    background-color: #ffffff;
+}
+
+.shadow {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+p {
+    margin-bottom: 0.5rem;
+}
+
+/* Botones con animación suave */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Cards de reservas */
+.card {
+    border: none;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Acompañantes en lista más limpia */
+ul {
+    padding-left: 1.25rem;
+}
+
+ul li {
+    margin-bottom: 4px;
+}
