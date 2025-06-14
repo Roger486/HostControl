@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    container_name: hostcontrol-frontend
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+    networks:
+      - hostcontrol-net
+
+  backend:
+    build:
+      context: ./backend
+    container_name: hostcontrol-backend
+    restart: unless-stopped
+    networks:
+      - hostcontrol-net
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: project_db
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+  proxy:
+    image: nginx:stable-alpine
+    container_name: hostcontrol-proxy
+    depends_on:
+      - backend
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www
+      - ./backend/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - hostcontrol-net
+
+  db:
+    image: mariadb:10.7
+    container_name: hostcontrol-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: project_db
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - hostcontrol-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    container_name: hostcontrol-adminer
+    restart: unless-stopped
+    ports:
+      - "8082:8080"
+    depends_on:
+      - db
+    networks:
+      - hostcontrol-net
+
+networks:
+  hostcontrol-net:
+
+volumes:
+  db_data:
