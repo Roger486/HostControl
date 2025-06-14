@@ -16,6 +16,8 @@ services:
       context: ./backend
     container_name: hostcontrol-backend
     restart: unless-stopped
+    depends_on:
+      - db
     networks:
       - hostcontrol-net
     environment:
@@ -28,6 +30,7 @@ services:
   proxy:
     image: nginx:stable-alpine
     container_name: hostcontrol-proxy
+    restart: unless-stopped
     depends_on:
       - backend
     ports:
